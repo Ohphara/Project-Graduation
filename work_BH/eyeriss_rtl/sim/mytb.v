@@ -1,21 +1,24 @@
 `timescale 1ns / 1ps
 
 module mytb();
-	parameter ADDR_BITWIDTH_GLB = 8;
-	parameter ADDR_BITWIDTH_SPAD = 8;
+	// parameter DATA_BITWIDTH = 16;
+	// parameter ADDR_BITWIDTH = 7;
+	parameter ADDR_BITWIDTH_GLB = 10;
+	parameter ADDR_BITWIDTH_SPAD = 10;
 	parameter DATA_BITWIDTH = 16;
-	parameter ADDR_BITWIDTH = 8;
+	parameter ADDR_BITWIDTH = 10;
     parameter A_READ_ADDR = 10;
 	parameter A_LOAD_ADDR = 10;
 	parameter W_READ_ADDR = 0;
 	parameter W_LOAD_ADDR = 0;
 	parameter PSUM_READ_ADDR = 0;
 	parameter PSUM_LOAD_ADDR = 0;
-	parameter PSUM_ADDR = 100; //for pe spad
-    parameter X_dim = 5;
+	parameter PSUM_ADDR =110;
+    parameter X_dim = 8;
     parameter Y_dim = 3;
+    
     parameter kernel_size = 3;
-    parameter act_size = 7;
+    parameter act_size = 10;
     parameter NUM_GLB_IACT = 1;
     parameter NUM_GLB_PSUM = 1;
     parameter NUM_GLB_WGHT = 1;
@@ -23,11 +26,11 @@ module mytb();
 
 
     reg clk, reset;
-	
 //  PE interfaces                     //
 	reg start;
 	wire compute_done;
 	wire load_done;
+
 
 
 //          GLB Interfaces              //
@@ -46,11 +49,13 @@ module mytb();
 	wire [DATA_BITWIDTH-1:0] r_data_psum_west_0;
 	reg r_req_psum_west_0;
 
+
 	reg [ADDR_BITWIDTH-1:0] r_addr_psum_inter_west_0;
 	reg r_req_psum_inter_west_0;
 
 
 //    west 1 glb interfaces            //
+
 	reg write_en_iact_west_1;
 	reg [DATA_BITWIDTH-1:0] w_data_iact_west_1;
 	reg [ADDR_BITWIDTH-1:0] w_addr_iact_west_1;
@@ -66,8 +71,8 @@ module mytb();
 	reg [ADDR_BITWIDTH-1:0] r_addr_psum_inter_west_1;
 	reg r_req_psum_inter_west_1;
 
-
 //   east 0   glb interfaces          //
+
 	reg write_en_iact_east_0;
 	reg [DATA_BITWIDTH-1:0] w_data_iact_east_0;
 	reg [ADDR_BITWIDTH-1:0] w_addr_iact_east_0;
@@ -80,11 +85,15 @@ module mytb();
 	wire [DATA_BITWIDTH-1:0] r_data_psum_east_0;
 	reg r_req_psum_east_0;
 
+
 	reg [ADDR_BITWIDTH-1:0] r_addr_psum_inter_east_0;
 	reg r_req_psum_inter_east_0;
 
 
+
 //   east 1 glb interfaces           //
+
+
 	reg write_en_iact_east_1;
 	reg [DATA_BITWIDTH-1:0] w_data_iact_east_1;
 	reg [ADDR_BITWIDTH-1:0] w_addr_iact_east_1;
@@ -96,6 +105,7 @@ module mytb();
 	reg [ADDR_BITWIDTH-1:0] r_addr_psum_east_1;
 	wire [DATA_BITWIDTH-1:0] r_data_psum_east_1;
 	reg r_req_psum_east_1;
+
 
 	reg [ADDR_BITWIDTH-1:0] r_addr_psum_inter_east_1;
 	reg r_req_psum_inter_east_1;
@@ -146,6 +156,19 @@ module mytb();
 
 	reg [3:0] router_mode_east_1_psum;
 
+
+
+
+
+
+
+//   test signal for tb    //
+	// reg [DATA_BITWIDTH-1:0] west_data_o_west_0_psum_tb;
+	// reg west_enable_o_west_0_psum_tb;
+	// reg [DATA_BITWIDTH*X_dim-1:0] west_data_i_west_0_psum_tb;
+	// reg [DATA_BITWIDTH*X_dim-1:0] east_data_o_west_0_psum_tb;
+	// reg [ADDR_BITWIDTH-1:0] west_addr_o_west_0_psum_tb;
+	// reg [DATA_BITWIDTH*X_dim-1:0] east_data_i_west_0_psum_tb;
 
 	HMNOC_4cluster_wpsum
 
@@ -281,17 +304,21 @@ module mytb();
 		// .east_data_o_west_0_psum_tb(east_data_o_west_0_psum_tb),
 		// .west_addr_o_west_0_psum_tb(west_addr_o_west_0_psum_tb),
 		// .east_data_i_west_0_psum_tb(east_data_i_west_0_psum_tb)
-		);
+	);
 
 	integer clk_prd = 10;
-	integer i,a,r_idx;
+	integer i,j,a,m,n, r_idx;
+	localparam size=640;
+	integer handle_west_0,handle_west_1,handle_east_0,handle_east_1;
+	integer desc_west_0,desc_west_1,desc_east_0,desc_east_1;
 	reg [DATA_BITWIDTH-1:0] cluster_out_1[0:8];
-	
+	reg [DATA_BITWIDTH-1:0] mem[0:size*size-1];
 	always begin
 		clk = 0; #(clk_prd/2);
 		clk = 1; #(clk_prd/2);
 		//0.1GHz
 	end
+	
 	
 	localparam ALL=0;
 	localparam NORTH=1;
@@ -305,182 +332,217 @@ module mytb();
 	localparam WESTSOUTH=9;
 	localparam WESTEAST = 10;
 	localparam CLOSED=11;
-	
+
 	initial begin
-        //reset!
-		reset = 1; #30;
-		reset = 0;
-		start = 0;
-		west_enable_i_west_0_wght = 0;
-		west_enable_i_west_1_wght = 0;
-		west_enable_i_east_0_wght = 0;
-		west_enable_i_east_1_wght = 0;
-		west_enable_i_east_0_iact = 0;
-		west_enable_i_east_1_iact = 0;
-		west_enable_i_west_0_iact = 0;
-		west_enable_i_west_1_iact = 0;
-		router_mode_west_0_wght = CLOSED;
-		router_mode_east_0_wght = CLOSED;		
-		router_mode_west_1_wght = CLOSED;		
-		router_mode_east_1_wght = CLOSED;
-		router_mode_east_0_iact = CLOSED;
-		router_mode_east_1_iact = CLOSED;	
-		router_mode_west_0_iact = CLOSED;
-		router_mode_west_1_iact = CLOSED;
-		router_mode_west_0_psum = CLOSED;
-		router_mode_west_1_psum = CLOSED;
-		router_mode_east_0_psum = CLOSED;
-		router_mode_east_1_psum = CLOSED;
-		
+		for(m=0;m<size/16;m=m+1) begin
+			for(n=0;n<size/16;n=n+1) begin
+				reset = 1; #30;
+				reset = 0;
+				start = 0;
+				west_enable_i_west_0_wght = 0;
+				west_enable_i_west_1_wght = 0;
+				west_enable_i_east_0_wght = 0;
+				west_enable_i_east_1_wght = 0;
+				west_enable_i_east_0_iact = 0;
+				west_enable_i_east_1_iact = 0;
+				west_enable_i_west_0_iact = 0;
+				west_enable_i_west_1_iact = 0;
+				router_mode_west_0_wght = CLOSED;
+				router_mode_east_0_wght = CLOSED;		
+				router_mode_west_1_wght = CLOSED;		
+				router_mode_east_1_wght = CLOSED;
+				router_mode_east_0_iact = CLOSED;
+				router_mode_east_1_iact = CLOSED;	
+				router_mode_west_0_iact = CLOSED;
+				router_mode_west_1_iact = CLOSED;
+				router_mode_west_0_psum = CLOSED;
+				router_mode_west_1_psum = CLOSED;
+				router_mode_east_0_psum = CLOSED;
+				router_mode_east_1_psum = CLOSED;
 
-        //writing weights to glb_wght
-		#100;
-		write_en_wght_west_0 = 1;		
-		for(i=0; i<kernel_size**2;i=i+1) begin
-			w_data_wght_west_0 = 1;
-			w_addr_wght_west_0 = W_LOAD_ADDR+i;
-			#(clk_prd);
+				// router_mode = 0;
+				
+
+				#100;
+				$readmemb("C:\\LAB\\etc\\try2\\output.txt",mem);
+				// $display("memory 0 is %b",mem[0]);
+				// $readmemb("..\\lena_pixel.txt",mem);
+				handle_west_0=$fopen("..\\output_west_0.txt");
+				handle_west_1=$fopen("..\\output_west_1.txt");
+				handle_east_0=$fopen("..\\output_east_0.txt");
+				handle_east_1=$fopen("..\\output_east_1.txt");
+				desc_west_0=handle_west_0|1;
+				desc_west_1=handle_west_1|1;
+				desc_east_0=handle_east_0|1;
+				desc_east_1=handle_east_1|1;
+				// pe_before=0;
+				
+				
+				//writing weights to glb_wght
+				write_en_wght_west_0 = 1;	
+
+				
+				for(i=0; i<kernel_size**2;i=i+1) begin
+					w_data_wght_west_0 = 1;
+					w_addr_wght_west_0 = W_LOAD_ADDR+i;
+					#(clk_prd);
+				end
+				
+				write_en_wght_west_0 = 0;
+				
+				//writing activations to  glb_iact
+				write_en_iact_west_0 = 1;
+				write_en_iact_west_1 = 1;
+				write_en_iact_east_0 = 1;
+				write_en_iact_east_1 = 1;
+
+				for(i=0; i<act_size;i=i+1) begin
+					for(j=0;j<act_size;j=j+1) begin
+						w_data_iact_west_0 = mem[size*(8*m+i)+(8*n+j)];
+						w_data_iact_west_1 = mem[size*(8*m+i+(size/2)-2)+(8*n+j)];
+						w_data_iact_east_0 = mem[size*(8*m+i)+(8*n+j+(size/2)-2)];
+						w_data_iact_east_1 = mem[size*(8*m+i+(size/2)-2)+(8*n+j+(size/2)-2)];
+
+						w_addr_iact_west_0 = A_LOAD_ADDR + i*act_size+j;
+						w_addr_iact_west_1 = A_LOAD_ADDR + i*act_size+j;
+						w_addr_iact_east_0 = A_LOAD_ADDR + i*act_size+j;
+						w_addr_iact_east_1 = A_LOAD_ADDR + i*act_size+j;
+						// $display("west_0 data iact is %16b",w_data_iact_west_0);
+						#(clk_prd);
+					end
+				end
+				write_en_iact_west_0 = 0;
+				write_en_iact_west_1 = 0;
+				write_en_iact_east_0 = 0;
+				write_en_iact_east_1 = 0;
+				#(clk_prd);
+
+
+				$display("\n\nLoading Begins: Weights.....\n\n");
+				// read_req_wght = 1;
+				// r_addr_wght	= 0;
+				#(clk_prd);
+				#(clk_prd/2);
+				west_enable_i_west_0_wght = 1;
+				// west_enable_i_west_1_wght = 0;
+				// east_enable_i_east_0_wght = 0;
+				// east_enable_i_east_1_wght = 0;
+
+				// router_mode_west_0_wght = WEST;
+
+				router_mode_west_0_wght = ALL;
+
+				router_mode_east_0_wght = EASTSOUTH;
+				
+				router_mode_west_1_wght = WEST;
+				
+				router_mode_east_1_wght = EAST;
+				
+				// load_en_wght = 1;
+				#(clk_prd);
+				#(clk_prd);
+				#(clk_prd);
+				for(i=1; i<=kernel_size**2; i=i+1) begin
+					#(clk_prd);
+				end
+				
+				// read_req_wght = 0;
+				
+				// #(clk_prd);
+				// #(clk_prd);
+				west_enable_i_west_0_wght = 0; 
+
+					
+				router_mode_west_0_wght = CLOSED;
+
+				router_mode_east_0_wght = CLOSED;
+				
+				router_mode_west_1_wght = CLOSED;
+				
+				router_mode_east_1_wght = CLOSED;
+				
+						wait(load_done==1);
+
+				$display("\n\nLoading Begins: Iacts.....\n\n");
+				// read_req_iact = 1;
+				// r_addr_iact	= 0;
+				#(clk_prd);
+				west_enable_i_west_0_iact = 1;
+				west_enable_i_west_1_iact = 1;
+				west_enable_i_east_0_iact = 1;
+				west_enable_i_east_1_iact = 1;
+				router_mode_west_0_iact = WEST;
+				router_mode_west_1_iact = WEST;
+				router_mode_east_0_iact = WEST;
+				router_mode_east_1_iact = WEST;
+				
+
+				// load_en_iact = 1;
+				#(clk_prd);
+				#(clk_prd);
+				#(clk_prd);
+				for(i=1; i<=act_size**2; i=i+1) begin
+					// r_addr_iact= i;
+					#(clk_prd);
+					// load_en_iact = 0;
+				end
+
+				west_enable_i_west_0_iact = 0;
+				west_enable_i_west_1_iact = 0;
+				west_enable_i_east_0_iact = 0;
+				west_enable_i_east_1_iact = 0;
+				router_mode_west_0_iact = CLOSED;
+				router_mode_west_1_iact = CLOSED;
+				router_mode_east_0_iact = CLOSED;
+				router_mode_east_1_iact = CLOSED;
+
+				wait(load_done==1);	
+
+				//start computing
+				#(clk_prd);
+				#(clk_prd);
+
+				for(r_idx=0; r_idx<X_dim; r_idx=r_idx+1) begin
+					start = 1; #25; 
+					$display("\n\nReading & Computing Begins for row %d\n\n",r_idx+1);
+					start = 0;
+					wait (compute_done == 1);
+					$display("\n\nrow %d",r_idx+1);
+
+					#80;
+					for(i=0;i<X_dim;i=i+1)
+					begin
+						r_req_psum_west_0 = 1;
+						r_addr_psum_west_0 = PSUM_LOAD_ADDR + (r_idx * X_dim) + i;
+						r_req_psum_west_1 = 1;
+						r_addr_psum_west_1 = PSUM_LOAD_ADDR + (r_idx * X_dim) + i;
+						r_req_psum_east_0 = 1;
+						r_addr_psum_east_0 = PSUM_LOAD_ADDR + (r_idx * X_dim) + i;
+						r_req_psum_east_1 = 1;
+						r_addr_psum_east_1 = PSUM_LOAD_ADDR + (r_idx * X_dim) + i;
+						#(clk_prd);
+						$fdisplay(desc_west_0,"%b",r_data_psum_west_0);
+						$fdisplay(desc_west_1,"%b",r_data_psum_west_1);
+						$fdisplay(desc_east_0,"%b",r_data_psum_east_0);
+						$fdisplay(desc_east_1,"%b",r_data_psum_east_1);
+					end
+					r_req_psum_west_0=0;
+					r_req_psum_west_1=0;
+					r_req_psum_east_0=0;
+					r_req_psum_east_1=0;
+				end
+			end
 		end
-		write_en_wght_west_0 = 0;
-	
-
-		//writing activations to each glb_iact
-		write_en_iact_west_0 = 1;
-		write_en_iact_west_1 = 1;
-		write_en_iact_east_0 = 1;
-		write_en_iact_east_1 = 1;
-		for(i=0; i<act_size**2;i=i+1) begin
-			w_data_iact_west_0 = i+1;
-			w_data_iact_west_1 = i+2;
-			w_data_iact_east_0 = i+3;
-			w_data_iact_east_1 = i+4;
-			w_addr_iact_west_0 = A_LOAD_ADDR + i;
-			w_addr_iact_west_1 = A_LOAD_ADDR + i;
-			w_addr_iact_east_0 = A_LOAD_ADDR + i;
-			w_addr_iact_east_1 = A_LOAD_ADDR + i;
-			#(clk_prd);
-		end
-		write_en_iact_west_0 = 0;
-		write_en_iact_west_1 = 0;
-		write_en_iact_east_0 = 0;
-		write_en_iact_east_1 = 0;
-		#(clk_prd);
-
-        
-        //loading weights to all clusters
-		$display("\n\nLoading Begins: Weights.....\n\n");		
-		#(clk_prd);
-		#(clk_prd/2);
-		west_enable_i_west_0_wght = 1;
-
-		router_mode_west_0_wght = ALL;
-		router_mode_east_0_wght = EASTSOUTH;
-		router_mode_west_1_wght = WEST;
-		router_mode_east_1_wght = EAST;
-
-		#(clk_prd);
-		#(clk_prd);
-		#(clk_prd)
-
-		for(i=1; i<=kernel_size**2; i=i+1) begin	
-			#(clk_prd);
-		end
-		
-		west_enable_i_west_0_wght = 0; 
-		
-		router_mode_west_0_wght = CLOSED;
-		router_mode_east_0_wght = CLOSED;
-		router_mode_west_1_wght = CLOSED;
-		router_mode_east_1_wght = CLOSED;
-		
-		wait(load_done==1);
-
-
-
-        //loading iacts to all clusters
-		$display("\n\nLoading Begins: Iacts.....\n\n");
-		#(clk_prd);
-		west_enable_i_west_0_iact = 1;
-		west_enable_i_west_1_iact = 1;
-		west_enable_i_east_0_iact = 1;
-		west_enable_i_east_1_iact = 1;
-		router_mode_west_0_iact = WEST;
-		router_mode_west_1_iact = WEST;
-		router_mode_east_0_iact = WEST;
-		router_mode_east_1_iact = WEST;
-		
-		// load_en_iact = 1;
-		#(clk_prd);
-		#(clk_prd);
-		#(clk_prd);
-		for(i=1; i<=act_size**2; i=i+1) begin
-			// r_addr_iact= i;
-			#(clk_prd);
-			// load_en_iact = 0;
-		end
-
-		west_enable_i_west_0_iact = 0;
-		west_enable_i_west_1_iact = 0;
-		west_enable_i_east_0_iact = 0;
-		west_enable_i_east_1_iact = 0;
-		router_mode_west_0_iact = CLOSED;
-		router_mode_west_1_iact = CLOSED;
-		router_mode_east_0_iact = CLOSED;
-		router_mode_east_1_iact = CLOSED;
-
-		wait(load_done==1);	
-
-
-        //start computing
-		#(clk_prd);
-		#(clk_prd);
-
-        for(r_idx=0; r_idx< act_size-kernel_size+1; r_idx=r_idx+1) begin
-            start = 1; #25; 
-            $display("\n\nReading & Computing Begins for row %d\n\n",r_idx+1);
-            start = 0;
-            wait (compute_done == 1);
-            $display("\n\nrow %d",r_idx+1);
-
-            #80;
-            for(i=0;i<5;i=i+1)
-            begin
-                r_req_psum_west_0 = 1;
-                r_addr_psum_west_0 = PSUM_LOAD_ADDR + (r_idx * X_dim) + i;
-                r_req_psum_west_1 = 1;
-                r_addr_psum_west_1 = PSUM_LOAD_ADDR + (r_idx * X_dim) + i;
-                r_req_psum_east_0 = 1;
-                r_addr_psum_east_0 = PSUM_LOAD_ADDR + (r_idx * X_dim) + i;
-                r_req_psum_east_1 = 1;
-                r_addr_psum_east_1 = PSUM_LOAD_ADDR + (r_idx * X_dim) + i;
-                #(clk_prd);
-                $display("\npsum from column %d on west_0 is:%d",i+1,r_data_psum_west_0);
-                $display("\npsum from column %d on west_1 is:%d",i+1,r_data_psum_west_1);
-                $display("\npsum from column %d on east_0 is:%d",i+1,r_data_psum_east_0);
-                $display("\npsum from column %d on east_1 is:%d",i+1,r_data_psum_east_1);
-                
-            end
-            r_req_psum_west_0=0;
-            r_req_psum_west_1=0;
-            r_req_psum_east_0=0;
-            r_req_psum_east_1=0;
-        end
-		
-		$display("\tTotal #cycles taken: %d",cycles);
+		// 파일 버퍼 flush (simulator에 따라 $fflush 지원 여부 확인)
+		$fflush(desc_west_0);
+		$fflush(desc_west_1);
+		$fflush(desc_east_0);
+		$fflush(desc_east_1);
+		// 파일 닫기: $fclose는 내부적으로 flush도 수행합니다.
+		$fclose(desc_west_0);
+		$fclose(desc_west_1);
+		$fclose(desc_east_0);
+		$fclose(desc_east_1);
 		$stop;
-
-		
-	end 
-	
-	integer cycles;
-		// track # of cycles
-	always @(posedge clk)
-	begin
-		if (reset)
-			cycles = 0;
-		else
-			cycles = cycles + 1;
 	end
-
-
 endmodule

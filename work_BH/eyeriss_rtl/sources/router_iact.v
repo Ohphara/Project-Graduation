@@ -37,7 +37,7 @@ module router_iact #( parameter DATA_BITWIDTH = 16,
 		localparam READ_GLB=3'b001;
 		localparam WRITE_SPAD=3'b010;
 		
-		reg [5:0] filt_count;
+		reg [6:0] filt_count;
 		
 		always@(posedge clk) begin
 			// $display("State: %s,filt_count: %d", state.name(),filt_count);
@@ -72,10 +72,14 @@ module router_iact #( parameter DATA_BITWIDTH = 16,
 					
 					WRITE_SPAD:begin
 						load_en_spad <= 1;
-						if(filt_count == (act_size**2)) begin
+						if(filt_count == (act_size**2)-1) begin
 							w_data_spad <= r_data_glb_iact;
 							filt_count <= 0;
 							r_addr_glb_iact <= A_READ_ADDR;
+							///////////////////////
+							read_req_glb_iact <= 0;
+							load_en_spad <=0;
+							///////////////////////
 							state <= IDLE;
 
 						end else begin

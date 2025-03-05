@@ -1,144 +1,117 @@
 `timescale 1ns/1ps
 
 
-module router_cluster_wpsum
-	#(
-		parameter DATA_BITWIDTH = 16,
+module router_cluster_wpsum #(
+	parameter DATA_BITWIDTH = 16,
 
-		parameter ADDR_BITWIDTH_GLB = 10,
-		parameter ADDR_BITWIDTH_SPAD = 9,
+	parameter ADDR_BITWIDTH_GLB = 10,
+	parameter ADDR_BITWIDTH_SPAD = 9,
 
-		parameter A_READ_ADDR = 100,
-		parameter A_LOAD_ADDR = 0,
-		parameter W_READ_ADDR = 0, 
-        parameter W_LOAD_ADDR = 0,
+	parameter A_READ_ADDR = 100,
+	parameter A_LOAD_ADDR = 0,
+	parameter W_READ_ADDR = 0, 
+	parameter W_LOAD_ADDR = 0,
 
-		parameter X_dim = 5,
-        parameter Y_dim = 3,
-        parameter kernel_size = 3,
-        parameter act_size = 5,
+	parameter X_dim = 5,
+	parameter Y_dim = 3,
+	parameter kernel_size = 3,
+	parameter act_size = 5,
 
-        parameter PSUM_READ_ADDR = 0,
-        parameter PSUM_LOAD_ADDR = 0
-    )
-	(
-		input clk,
-		input reset,
+	parameter PSUM_READ_ADDR = 0,
+	parameter PSUM_LOAD_ADDR = 0
+) (
+	input clk,
+	input reset,
 
 
-		///////////////      ROUTER IACT      ///////////////////////////////////
-		output [ADDR_BITWIDTH_GLB-1:0] west_0_addr_read_iact,
-		output west_0_req_read_iact,
-		input [3:0] router_mode_west_0_iact,
-		//Interface with West
-		//Source ports
-		input signed [DATA_BITWIDTH-1:0] west_data_i_west_0_iact,
-		input west_enable_i_west_0_iact,
-		//Destination ports
-		output signed [DATA_BITWIDTH-1:0] west_data_o_west_0_iact,
-		output west_enable_o_west_0_iact,
+/////////////  IACT interports with other directions   ////////////
+	input signed [DATA_BITWIDTH-1:0] north_data_i_iact,
+	input signed [DATA_BITWIDTH-1:0] south_data_i_iact,
+	input signed [DATA_BITWIDTH-1:0] east_data_i_iact,
+
+	output signed [DATA_BITWIDTH-1:0] north_data_o_iact,
+	output signed [DATA_BITWIDTH-1:0] south_data_o_iact,
+	output signed [DATA_BITWIDTH-1:0] east_data_o_iact,
+
+	input north_enable_i_iact,
+	input south_enable_i_iact,
+	input east_enable_i_iact,
+
+	output  north_enable_o_iact,
+	output  south_enable_o_iact,	
+	output  east_enable_o_iact,
 
 
+/////////////  WGHT interports with other directions   ////////////
+	input signed [DATA_BITWIDTH-1:0] north_data_i_wght,
+	input signed [DATA_BITWIDTH-1:0] south_data_i_wght,
+	input signed [DATA_BITWIDTH-1:0] east_data_i_wght,
+
+	output signed [DATA_BITWIDTH-1:0] north_data_o_wght,
+	output signed [DATA_BITWIDTH-1:0] south_data_o_wght,
+	output signed [DATA_BITWIDTH-1:0] east_data_o_wght,
+
+	input north_enable_i_wght,
+	input south_enable_i_wght,
+	input east_enable_i_wght,
+
+	output  north_enable_o_wght,	
+	output  south_enable_o_wght,
+	output  east_enable_o_wght,
 
 
-		///////////////      ROUTER WGHT      ///////////////////////////////////
-		output [ADDR_BITWIDTH_GLB-1:0] west_0_addr_read_wght,
-		output west_0_req_read_wght,
-		input [3:0] router_mode_west_0_wght,	
-		//Interface with West
-		//Source ports
-		input signed [DATA_BITWIDTH-1:0] west_data_i_west_0_wght,
-		input west_enable_i_west_0_wght,
-		
-		//Destination ports
-		output signed [DATA_BITWIDTH-1:0] west_data_o_west_0_wght,
-		output west_enable_o_west_0_wght,
+/////////////  PSUM interports with other directions   ////////////
+	input [DATA_BITWIDTH*X_dim-1:0] north_data_i_psum,
+	output [DATA_BITWIDTH*X_dim-1:0] south_data_o_psum,
 
-
-
-		/////////////  IACT interports with other directions   ////////////
-		input signed [DATA_BITWIDTH-1:0] north_data_i_iact,
-		input north_enable_i_iact,
-	//		output  north_ready_o_iact,
-		
-		//Destination ports
-		output signed [DATA_BITWIDTH-1:0] north_data_o_iact,
-		output  north_enable_o_iact,
-	//		input north_ready_i_iact,
-		
-		
-		//Interface with South
-		//Source ports
-		input signed [DATA_BITWIDTH-1:0] south_data_i_iact,
-		input south_enable_i_iact,
-	//		output  south_ready_o_iact,
-		
-		//Destination ports
-		output signed [DATA_BITWIDTH-1:0] south_data_o_iact,
-		output  south_enable_o_iact,
-	//		input south_ready_i_iact,
-		
-		//Interface with East - Devices
-		//Source ports
-		input signed [DATA_BITWIDTH-1:0] east_data_i_iact,
-		input east_enable_i_iact,
-	//		output  east_ready_o_iact,
-		
-		//Destination ports
-		output signed [DATA_BITWIDTH-1:0] east_data_o_iact,
-		output  east_enable_o_iact,
+	input north_enable_i_psum,
+	output south_enable_o_psum,
 
 
 
-	/////////////  WGHT interports with other directions   ////////////
-		input signed [DATA_BITWIDTH-1:0] north_data_i_wght,
-		input north_enable_i_wght,
-	//		output  north_ready_o_wght,
-		
-		//Destination ports
-		output signed [DATA_BITWIDTH-1:0] north_data_o_wght,
-		output  north_enable_o_wght,
-	//		input north_ready_i_wght,
-		
-		
-		//Interface with South
-		//Source ports
-		input signed [DATA_BITWIDTH-1:0] south_data_i_wght,
-		input south_enable_i_wght,
-	//		output  south_ready_o_wght,
-		
-		//Destination ports
-		output signed [DATA_BITWIDTH-1:0] south_data_o_wght,
-		output  south_enable_o_wght,
-	//		input south_ready_i_wght,
-		
-		//Interface with East - Devices
-		//Source ports
-		input signed [DATA_BITWIDTH-1:0] east_data_i_wght,
-		input east_enable_i_wght,
-	//		output  east_ready_o_wght,
-		
-		//Destination ports
-		output signed [DATA_BITWIDTH-1:0] east_data_o_wght,
-		output  east_enable_o_wght,
+/////////////  IACT ROUTER interports for inner structure   ////////////
+	input [3:0] router_mode_west_0_iact,
 
-	//  ROUTER PSUM   //
-		input [3:0] router_mode_west_0_psum,
-		input [DATA_BITWIDTH*X_dim-1:0] north_data_i_psum,
-		input north_enable_i_psum,
-		output  [DATA_BITWIDTH*X_dim-1:0] south_data_o_psum,
-		output  south_enable_o_psum,
-		input [DATA_BITWIDTH*X_dim-1:0] west_data_i_west_0_psum,
-		input west_enable_i_west_0_psum,
-		output  [DATA_BITWIDTH-1:0] west_data_o_west_0_psum,
-		output  west_enable_o_west_0_psum,
-		input [DATA_BITWIDTH*X_dim-1:0] east_data_i_west_0_psum,
-		input east_enable_i_west_0_psum,
-		output  [DATA_BITWIDTH*X_dim-1:0] east_data_o_west_0_psum,
-		// output  east_enable_o_west_0_psum,
-		output  [ADDR_BITWIDTH_GLB-1:0] west_addr_o_west_0_psum
+	output west_0_req_read_iact,
+	output [ADDR_BITWIDTH_GLB-1:0] west_0_addr_read_iact,
 
-	);
+	input signed [DATA_BITWIDTH-1:0] west_data_i_west_0_iact,
+	output signed [DATA_BITWIDTH-1:0] west_data_o_west_0_iact,
+	
+	input west_enable_i_west_0_iact,
+	output west_enable_o_west_0_iact,	
+
+
+/////////////  WGHT ROUTER interports for inner structure   ////////////
+	input [3:0] router_mode_west_0_wght,
+	
+	output west_0_req_read_wght,	
+	output [ADDR_BITWIDTH_GLB-1:0] west_0_addr_read_wght,
+
+	input signed [DATA_BITWIDTH-1:0] west_data_i_west_0_wght,
+	output signed [DATA_BITWIDTH-1:0] west_data_o_west_0_wght,
+	
+	input west_enable_i_west_0_wght,
+	output west_enable_o_west_0_wght,
+
+
+/////////////  PSUM ROUTER interports for inner structure   ////////////
+	input [3:0] router_mode_west_0_psum,
+
+	output [ADDR_BITWIDTH_GLB-1:0] west_addr_o_west_0_psum,
+
+	input [DATA_BITWIDTH*X_dim-1:0] west_data_i_west_0_psum,
+	output [DATA_BITWIDTH-1:0] west_data_o_west_0_psum,
+
+	input west_enable_i_west_0_psum,
+	output west_enable_o_west_0_psum,
+
+	input [DATA_BITWIDTH*X_dim-1:0] east_data_i_west_0_psum,
+	
+	output [DATA_BITWIDTH*X_dim-1:0] east_data_o_west_0_psum,
+
+	input east_enable_i_west_0_psum
+);
 
 	
 	router_west_iact

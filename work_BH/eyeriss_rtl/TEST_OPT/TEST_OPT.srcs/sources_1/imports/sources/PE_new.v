@@ -45,7 +45,7 @@ module PE_new #(
 	#(
 		.DATA_BITWIDTH(DATA_BITWIDTH),
 		.ADDR_BITWIDTH(ADDR_BITWIDTH)
-		)
+	)
 	spad_pe0 ( 
 		.clk(clk), 
 		.reset(reset), 
@@ -55,7 +55,7 @@ module PE_new #(
 		.w_addr(w_addr),
 		.w_data(w_data),
 		.r_data(r_data)
-		);
+	);
 					
 
 	wire signed [DATA_BITWIDTH-1:0] psum_reg;
@@ -68,30 +68,34 @@ module PE_new #(
 	reg mac_en;
 	//MAC Instantiation
 	
-	MAC  #( 
+	MAC 
+	#( 
 		.IN_BITWIDTH(DATA_BITWIDTH),
-		.OUT_BITWIDTH(DATA_BITWIDTH) )
+		.OUT_BITWIDTH(DATA_BITWIDTH)
+	)
 	mac_0
-				( .a_in(act_in_reg),
-				  .w_in(filt_in_reg),
-				  .sum_in(sum_in),
-				  .en(mac_en),
-				  .clk(clk),
-				  .out(psum_reg)
-				);
+	(
+		.a_in(act_in_reg),
+		.w_in(filt_in_reg),
+		.sum_in(sum_in),
+		.en(mac_en),
+		.clk(clk),
+		.out(psum_reg)
+	);
 			
-	mux2 #( .WIDTH(DATA_BITWIDTH) )
+	mux2 #(
+		.WIDTH(DATA_BITWIDTH)
+	)
 	mux2_0 (
 			.a_in(psum_reg), 
 			.b_in({(DATA_BITWIDTH){1'b0}}), 
 			.sel(sum_in_mux_sel), 
 			.out(sum_in) 
-			);
-	
+	);
 	
 	reg [7:0] filt_count;
 	reg [2:0] iter;
-	// assign  filt_count_n = filt_count ;
+
 	// FSM for PE
 	always@(posedge clk) begin
 //		$display("State: %s", state.name());
@@ -127,14 +131,6 @@ module PE_new #(
 							state <= READ_W;
 						end
 					end else begin
-/* 						if(load_en) begin
-							
-							w_addr <= W_LOAD_ADDR;  //***Loading of weights starts at index 0***
-							
-							w_data <= filt_in;
-							write_en <= 1;
-							filt_count <= 0;
-							state <= LOAD_W; */
 						if(load_en_wght) begin
 							w_addr <= W_LOAD_ADDR;  //***Loading of weights starts at index 0***
 							w_data <= filt_in;
@@ -162,10 +158,8 @@ module PE_new #(
 					filt_in_reg <= r_data;
 					read_en <= 1;
 					filt_count <= filt_count + 1;
-					
 					// $display("Weight read: %d from address: %d", r_data, r_addr);
 					// $display("Read Enable: %d", read_en);
-					
 					state <= READ_A;
 				end
 				
@@ -182,7 +176,6 @@ module PE_new #(
 				COMPUTE:begin
 				// $display("Weight in reg: %d  |  Act in reg: %d", filt_in_reg, act_in_reg);
 				// $display("MAC out: %d", psum_reg);
-				
 					mac_en <= 0;
 					if(filt_count == kernel_size) begin
 						act_in_reg <= r_data;

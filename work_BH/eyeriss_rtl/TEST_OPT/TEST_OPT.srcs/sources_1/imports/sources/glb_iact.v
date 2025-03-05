@@ -15,8 +15,6 @@ module glb_iact #(
 );
 	
 	reg [DATA_BITWIDTH-1 : 0] mem [0 : (1 << ADDR_BITWIDTH) - 1]; 
-	// default - 1024(2^10) 16-bit memory. Total size = 2kB 
-	
 	reg signed [DATA_BITWIDTH-1 : 0] data;
 	
 	always@(posedge clk) begin : READ

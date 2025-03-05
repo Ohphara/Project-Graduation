@@ -5,7 +5,7 @@ module HMNOC_4cluster_wpsum
 	parameter ADDR_BITWIDTH_GLB = 10,
 	parameter ADDR_BITWIDTH_SPAD = 9,
 	parameter DATA_BITWIDTH = 16,
-	parameter ADDR_BITWIDTH = 10,
+	
     parameter A_READ_ADDR = 100,
 	parameter A_LOAD_ADDR = 100,
 	parameter W_READ_ADDR = 0,
@@ -39,18 +39,18 @@ module HMNOC_4cluster_wpsum
 //    west 0 glb interfaces             //
 	input write_en_iact_west_0,
 	input signed [DATA_BITWIDTH-1:0] w_data_iact_west_0,
-	input [ADDR_BITWIDTH-1:0] w_addr_iact_west_0,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_iact_west_0,
 	
 	input signed [DATA_BITWIDTH-1:0] w_data_wght_west_0,
-	input [ADDR_BITWIDTH-1:0] w_addr_wght_west_0,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_wght_west_0,
 	input write_en_wght_west_0,
 
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_west_0,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_west_0,
 	output signed [DATA_BITWIDTH-1:0] r_data_psum_west_0,
 	input r_req_psum_west_0,
 
 
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_inter_west_0,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_inter_west_0,
 	input r_req_psum_inter_west_0,
 
 
@@ -58,35 +58,34 @@ module HMNOC_4cluster_wpsum
 
 	input write_en_iact_west_1,
 	input signed [DATA_BITWIDTH-1:0] w_data_iact_west_1,
-	input [ADDR_BITWIDTH-1:0] w_addr_iact_west_1,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_iact_west_1,
 	
 	input signed [DATA_BITWIDTH-1:0] w_data_wght_west_1,
-	input [ADDR_BITWIDTH-1:0] w_addr_wght_west_1,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_wght_west_1,
 	input write_en_wght_west_1,
 
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_west_1,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_west_1,
 	output signed [DATA_BITWIDTH-1:0] r_data_psum_west_1,
 	input r_req_psum_west_1,
 
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_inter_west_1,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_inter_west_1,
 	input r_req_psum_inter_west_1,
 
 //   east 0   glb interfaces          //
 
 	input write_en_iact_east_0,
 	input signed [DATA_BITWIDTH-1:0] w_data_iact_east_0,
-	input [ADDR_BITWIDTH-1:0] w_addr_iact_east_0,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_iact_east_0,
 	
 	input signed [DATA_BITWIDTH-1:0] w_data_wght_east_0,
-	input [ADDR_BITWIDTH-1:0] w_addr_wght_east_0,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_wght_east_0,
 	input write_en_wght_east_0,
 
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_east_0,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_east_0,
 	output signed [DATA_BITWIDTH-1:0] r_data_psum_east_0,
 	input r_req_psum_east_0,
 
-
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_inter_east_0,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_inter_east_0,
 	input r_req_psum_inter_east_0,
 
 
@@ -96,18 +95,17 @@ module HMNOC_4cluster_wpsum
 
 	input write_en_iact_east_1,
 	input signed [DATA_BITWIDTH-1:0] w_data_iact_east_1,
-	input [ADDR_BITWIDTH-1:0] w_addr_iact_east_1,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_iact_east_1,
 	
 	input signed [DATA_BITWIDTH-1:0] w_data_wght_east_1,
-	input [ADDR_BITWIDTH-1:0] w_addr_wght_east_1,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_wght_east_1,
 	input write_en_wght_east_1,
 
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_east_1,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_east_1,
 	output signed [DATA_BITWIDTH-1:0] r_data_psum_east_1,
 	input r_req_psum_east_1,
 
-
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_inter_east_1,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_inter_east_1,
 	input r_req_psum_inter_east_1,
 
 
@@ -219,10 +217,9 @@ HMNOC_1cluster_wpsum
 		#(
 		 // .DATA_BITWIDTH(DATA_BITWIDTH),
 		 // .ADDR_BITWIDTH(ADDR_BITWIDTH),
+		 .DATA_BITWIDTH(DATA_BITWIDTH),
 		 .ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 		 .ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
-		 .DATA_BITWIDTH(DATA_BITWIDTH),
-		 .ADDR_BITWIDTH(ADDR_BITWIDTH),
 		 .A_LOAD_ADDR(A_LOAD_ADDR),
 		 .A_READ_ADDR(A_READ_ADDR),
 		 .W_LOAD_ADDR(W_LOAD_ADDR),
@@ -310,10 +307,9 @@ HMNOC_1cluster_wpsum
 		#(
 		 // .DATA_BITWIDTH(DATA_BITWIDTH),
 		 // .ADDR_BITWIDTH(ADDR_BITWIDTH),
+		 .DATA_BITWIDTH(DATA_BITWIDTH),
 		 .ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 		 .ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
-		 .DATA_BITWIDTH(DATA_BITWIDTH),
-		 .ADDR_BITWIDTH(ADDR_BITWIDTH),
 		 .A_LOAD_ADDR(A_LOAD_ADDR),
 		 .A_READ_ADDR(A_READ_ADDR),
 		 .W_LOAD_ADDR(W_LOAD_ADDR),
@@ -403,10 +399,9 @@ HMNOC_1cluster_wpsum
 		#(
 		 // .DATA_BITWIDTH(DATA_BITWIDTH),
 		 // .ADDR_BITWIDTH(ADDR_BITWIDTH),
+		 .DATA_BITWIDTH(DATA_BITWIDTH),
 		 .ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 		 .ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
-		 .DATA_BITWIDTH(DATA_BITWIDTH),
-		 .ADDR_BITWIDTH(ADDR_BITWIDTH),
 		 .A_LOAD_ADDR(A_LOAD_ADDR),
 		 .A_READ_ADDR(A_READ_ADDR),
 		 .W_LOAD_ADDR(W_LOAD_ADDR),
@@ -494,10 +489,9 @@ HMNOC_1cluster_wpsum
 		#(
 		 // .DATA_BITWIDTH(DATA_BITWIDTH),
 		 // .ADDR_BITWIDTH(ADDR_BITWIDTH),
+		 .DATA_BITWIDTH(DATA_BITWIDTH),
 		 .ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 		 .ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
-		 .DATA_BITWIDTH(DATA_BITWIDTH),
-		 .ADDR_BITWIDTH(ADDR_BITWIDTH),
 		 .A_LOAD_ADDR(A_LOAD_ADDR),
 		 .A_READ_ADDR(A_READ_ADDR),
 		 .W_LOAD_ADDR(W_LOAD_ADDR),

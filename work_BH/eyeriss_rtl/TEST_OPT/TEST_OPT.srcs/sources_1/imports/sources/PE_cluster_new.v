@@ -73,7 +73,6 @@ module PE_cluster_new #(parameter DATA_BITWIDTH = 16,
 								.compute_done(cluster_done[i*Y_dim+j]),
 								.load_done(cluster_load_done[i*Y_dim+j])
 							);
-					
 					end
 			end
 		endgenerate
@@ -111,13 +110,3 @@ module PE_cluster_new #(parameter DATA_BITWIDTH = 16,
 		assign load_done = cluster_load_done[0];
 			  
 endmodule
-				   
-				   
-				   
-				   
-				   
-				   
-				   
-				   
-				   
-				   

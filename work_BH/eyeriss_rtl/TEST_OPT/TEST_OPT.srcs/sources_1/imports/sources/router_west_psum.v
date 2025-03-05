@@ -13,7 +13,7 @@ module router_west_psum #(
 	parameter PSUM_READ_ADDR = 0,
 	parameter PSUM_LOAD_ADDR = 0
 
-)(	
+)(
 	input clk,
 	input reset,
 
@@ -23,16 +23,15 @@ module router_west_psum #(
 	input west_enable_i,
 	input east_enable_i,
 
-	output  west_enable_o,
-	output reg south_enable_o,
-
 	input [DATA_BITWIDTH*X_dim-1:0] north_data_i,
 	input [DATA_BITWIDTH*X_dim-1:0] west_data_i,
 	input [DATA_BITWIDTH*X_dim-1:0] east_data_i,
 
+	output  west_enable_o,
+	output reg south_enable_o,
+
 	output reg [DATA_BITWIDTH*X_dim-1:0] south_data_o,
 	output reg [DATA_BITWIDTH*X_dim-1:0] east_data_o,
-
 	output [DATA_BITWIDTH-1:0] west_data_o,
 	
 	// output reg east_enable_o,
@@ -61,7 +60,7 @@ module router_west_psum #(
 		else if(west_enable_i)
 			data_out = west_data_i;
 		else begin
-			data_out ={(DATA_BITWIDTH*X_dim){1'b0}}; //Default value for verification
+			data_out = {(DATA_BITWIDTH*X_dim){1'b0}}; //Default value for verification
 		end
 	end
 
@@ -82,15 +81,18 @@ module router_west_psum #(
 		.clk(clk),
 		.reset(reset),
 
-		.r_data_spad_psum(west_data_i),
+		.r_data_spad_psum(east_data_i),
 		
 		.w_addr_glb_psum(w_addr_glb_psum),
 		.w_data_glb_psum(west_data_o),
 
 		.write_en_glb_psum(west_enable_o),
-		.write_psum_ctrl(west_enable_i)
+		.write_psum_ctrl(east_enable_i)
 	);
 
+
+	//south : transmit data to south direction
+	//east : transmit data to my PE cluster
 	always@(*) begin : routing_reg
 		case(router_mode)
 		SOUTH:

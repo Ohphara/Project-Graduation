@@ -2,12 +2,10 @@
 
 module HMNOC_1cluster_wpsum
 	#(
-	// parameter DATA_BITWIDTH = 16,
-	// parameter ADDR_BITWIDTH = 9,
 	parameter ADDR_BITWIDTH_GLB = 10,
 	parameter ADDR_BITWIDTH_SPAD = 9,
 	parameter DATA_BITWIDTH = 16,
-	parameter ADDR_BITWIDTH = 10,
+
 	parameter A_READ_ADDR = 100,
 	parameter A_LOAD_ADDR = 100,
 	parameter W_READ_ADDR = 0,
@@ -41,11 +39,11 @@ module HMNOC_1cluster_wpsum
 	input signed [DATA_BITWIDTH-1:0] w_data_iact,
 	input signed [DATA_BITWIDTH-1:0] w_data_wght,
 
-	input [ADDR_BITWIDTH-1:0] w_addr_iact,
-	input [ADDR_BITWIDTH-1:0] w_addr_wght,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_iact,
+	input [ADDR_BITWIDTH_GLB-1:0] w_addr_wght,
 
-	input [ADDR_BITWIDTH-1:0] r_addr_psum,
-	input [ADDR_BITWIDTH-1:0] r_addr_psum_inter,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum,
+	input [ADDR_BITWIDTH_GLB-1:0] r_addr_psum_inter,
 
 	input west_0_req_read_psum,
 	input west_0_req_read_psum_inter,
@@ -117,7 +115,7 @@ module HMNOC_1cluster_wpsum
 
 	wire [ADDR_BITWIDTH_GLB-1:0] west_0_addr_read_wght;
 	wire [ADDR_BITWIDTH_GLB-1:0] west_0_addr_read_iact;
-	wire [ADDR_BITWIDTH-1:0] west_addr_o_west_0_psum;
+	wire [ADDR_BITWIDTH_GLB-1:0] west_addr_o_west_0_psum;
 
 	wire west_0_req_read_wght;
 	wire west_0_req_read_iact;
@@ -154,7 +152,6 @@ module HMNOC_1cluster_wpsum
 	router_cluster_wpsum
 	#(
 		.DATA_BITWIDTH(DATA_BITWIDTH),
-		.ADDR_BITWIDTH(ADDR_BITWIDTH),
 		.ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 		.ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
 		.A_READ_ADDR(A_READ_ADDR),
@@ -242,7 +239,7 @@ module HMNOC_1cluster_wpsum
 
 	GLB_cluster_wpsum 
 			#(	.DATA_BITWIDTH(DATA_BITWIDTH),
-				.ADDR_BITWIDTH(ADDR_BITWIDTH),
+				.ADDR_BITWIDTH(ADDR_BITWIDTH_GLB),
 				.X_dim(X_dim),
 				.Y_dim(Y_dim),
 				.NUM_GLB_IACT(NUM_GLB_IACT),
@@ -297,7 +294,7 @@ module HMNOC_1cluster_wpsum
 	// PE CLUSTER WEST 0	
 	PE_cluster_new #(
 					.DATA_BITWIDTH(DATA_BITWIDTH),
-					.ADDR_BITWIDTH(ADDR_BITWIDTH),
+					.ADDR_BITWIDTH(ADDR_BITWIDTH_SPAD),
 					
 					.kernel_size(kernel_size),
 					.act_size(act_size),
@@ -328,6 +325,4 @@ module HMNOC_1cluster_wpsum
 					.compute_done(east_enable_i_west_0_psum),
 					.load_done(load_done)
     			);
-	
-
     endmodule

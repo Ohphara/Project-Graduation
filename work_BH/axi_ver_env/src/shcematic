@@ -1,0 +1,4 @@
+xvlog --sv -L xilinx_vip -f ./design_list.f -f ./testbench_list.f  
+xelab matbi_dma_ip_tb -L xilinx_vip  -debug all -s  matbi_dma_ip_tb
+#xsim matbi_dma_ip_tb -R  # do not check waveform
+xsim matbi_dma_ip_tb -gui -wdb simulate_xsim_matbi_dma_ip_tb.wdb -tclbatch matbi_sim.tcl -log simulate.log -protoinst ./protoinst_files/matbi_sim.protoinst  &

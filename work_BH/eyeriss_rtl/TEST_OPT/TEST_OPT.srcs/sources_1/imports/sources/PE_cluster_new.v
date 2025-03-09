@@ -62,6 +62,8 @@ module PE_cluster_new #(parameter DATA_BITWIDTH = 16,
 								.clk(clk),
 								.reset(reset),
 								.act_in(act_in),
+		
+		/
 								.filt_in(filt_in),
 								// .filt_count_n(filt_count_n),
 //								.load_en(load_en),

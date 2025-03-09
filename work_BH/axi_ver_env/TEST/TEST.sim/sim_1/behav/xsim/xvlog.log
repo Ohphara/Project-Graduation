@@ -1,0 +1,19 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/axi_vip_axi4pc.sv" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/xil_common_vip_pkg.sv" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/axi_vip_pkg.sv" into library xil_defaultlib
+WARNING: [VRFC 10-3609] overwriting previous definition of package 'axi_vip_pkg' [C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/axi_vip_pkg.sv:51]
+WARNING: [VRFC 10-3669] re-analyze package 'slv_m00_axi_vip_pkg' since package 'axi_vip_pkg' is overwritten or removed [C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/slv_m00_axi_vip_pkg.sv:5]
+WARNING: [VRFC 10-3669] re-analyze package '$unit_axi_vip_axi4pc_sv_485239109' since package 'slv_m00_axi_vip_pkg' is overwritten or removed [C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/axi_vip_axi4pc.sv:1]
+WARNING: [VRFC 10-3669] re-analyze interface 'axi_vip_if' since interface '$unit_axi_vip_axi4pc_sv_485239109' is overwritten or removed [C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/axi_vip_if.sv:118]
+WARNING: [VRFC 10-3669] re-analyze package 'control_matbi_dma_ip_vip_pkg' since package 'axi_vip_pkg' is overwritten or removed [C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/control_matbi_dma_ip_vip_pkg.sv:5]
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/axi_vip_if.sv" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/axi_vip_v1_1/hdl/axi_vip_v1_1_vl_rfs.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module axi_vip_v1_1_11_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/control_matbi_dma_ip_vip.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module control_matbi_dma_ip_vip
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/control_matbi_dma_ip_vip_pkg.sv" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/slv_m00_axi_vip_pkg.sv" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/slv_m00_axi_vip.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module slv_m00_axi_vip
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/matbi_dma_ip_tb.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module matbi_dma_ip_tb

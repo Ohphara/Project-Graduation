@@ -1,0 +1,18 @@
+Time resolution is 1 ps
+XilinxAXIVIP: Found at Path: matbi_dma_ip_tb.inst_control_matbi_dma_ip_vip.inst
+XilinxAXIVIP: Found at Path: matbi_dma_ip_tb.inst_slv_m00_axi_vip.inst
+================================================
+==Matbi TestBench for verification AMBA System==
+================================================
+///////////////////////////////////////////////////////////////////////////
+Control Master: ctrl
+///////////////////////////////////////////////////////////////////////////
+Starting Memory slave: m00_axi
+MATBI Ideal Case. for checking best performance :)
+data written in ADDR_RDMA_TRANSFER_BYTE_DATA_0 :         13
+================================================
+==============Finish Simulation!!===============
+================================================
+Executing Axi4 End Of Simulation checks
+Executing Axi4 End Of Simulation checks
+$finish called at time : 675 us : File "C:/LAB/Project_Graduation/Project-Graduation/work_BH/axi_ver_env/TEST/TEST.srcs/sim_1/imports/testbench/matbi_dma_ip_tb.sv" Line 510

@@ -550,6 +550,6 @@ module mytb();
 			r_req_psum_inter_west_0 = 0;
 		end
 		*/
-		$stop;
+MM		$stop;
 	end
 endmodule

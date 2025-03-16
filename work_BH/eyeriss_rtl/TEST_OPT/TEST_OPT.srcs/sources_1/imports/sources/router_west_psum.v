@@ -6,8 +6,8 @@ module router_west_psum #(
 	parameter ADDR_BITWIDTH_GLB = 10,
 	parameter ADDR_BITWIDTH_SPAD = 9,
 	
-	parameter X_dim = 5,
-	parameter Y_dim = 3,
+	parameter PE_ROW = 3,
+	parameter PE_COL = 5,
 	parameter kernel_size = 3,
 	parameter act_size = 5,
 	parameter PSUM_READ_ADDR = 0,
@@ -15,7 +15,7 @@ module router_west_psum #(
 
 )(
 	input clk,
-	input reset,
+	input rst,
 
 	input [3:0] router_mode,
 	
@@ -23,22 +23,22 @@ module router_west_psum #(
 	input west_enable_i,
 	input east_enable_i,
 
-	input [DATA_BITWIDTH*X_dim-1:0] north_data_i,
-	input [DATA_BITWIDTH*X_dim-1:0] west_data_i,
-	input [DATA_BITWIDTH*X_dim-1:0] east_data_i,
+	input [DATA_BITWIDTH*PE_COL-1:0] north_data_i,
+	input [DATA_BITWIDTH*PE_COL-1:0] west_data_i,
+	input [DATA_BITWIDTH*PE_COL-1:0] east_data_i,
 
 	output  west_enable_o,
 	output reg south_enable_o,
 
-	output reg [DATA_BITWIDTH*X_dim-1:0] south_data_o,
-	output reg [DATA_BITWIDTH*X_dim-1:0] east_data_o,
+	output reg [DATA_BITWIDTH*PE_COL-1:0] south_data_o,
+	output reg [DATA_BITWIDTH*PE_COL-1:0] east_data_o,
 	output [DATA_BITWIDTH-1:0] west_data_o,
 	
 	// output reg east_enable_o,
 	output [ADDR_BITWIDTH_GLB-1 : 0] w_addr_glb_psum
 );
 
-	reg [DATA_BITWIDTH*X_dim-1:0] data_out;
+	reg [DATA_BITWIDTH*PE_COL-1:0] data_out;
 		
 	localparam ALL=0;
 	localparam NORTH=1;
@@ -60,7 +60,7 @@ module router_west_psum #(
 		else if(west_enable_i)
 			data_out = west_data_i;
 		else begin
-			data_out = {(DATA_BITWIDTH*X_dim){1'b0}}; //Default value for verification
+			data_out = {(DATA_BITWIDTH*PE_COL){1'b0}}; //Default value for verification
 		end
 	end
 
@@ -69,8 +69,8 @@ module router_west_psum #(
 		.DATA_BITWIDTH(DATA_BITWIDTH),
 		.ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 		.ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
-		.X_dim(X_dim),
-	    .Y_dim(Y_dim),
+		.PE_COL(PE_COL),
+	    .PE_ROW(PE_ROW),
 	    .kernel_size(kernel_size),
 	    .act_size(act_size),
 		.PSUM_READ_ADDR(PSUM_READ_ADDR),
@@ -79,7 +79,7 @@ module router_west_psum #(
 	router_psum_0
 	(
 		.clk(clk),
-		.reset(reset),
+		.rst(rst),
 
 		.r_data_spad_psum(east_data_i),
 		
@@ -99,11 +99,11 @@ module router_west_psum #(
 		begin
 			south_data_o = data_out;
 			south_enable_o = 1;
-			east_data_o = {(DATA_BITWIDTH*X_dim){1'b0}};
+			east_data_o = {(DATA_BITWIDTH*PE_COL){1'b0}};
 		end
 		EAST:
 		begin
-			south_data_o = {(DATA_BITWIDTH*X_dim){1'b0}};
+			south_data_o = {(DATA_BITWIDTH*PE_COL){1'b0}};
 			south_enable_o = 0;
 			east_data_o = data_out;
 		end
@@ -115,15 +115,15 @@ module router_west_psum #(
 		end
 		CLOSED:
 		begin
-			south_data_o={(DATA_BITWIDTH*X_dim){1'b0}};
+			south_data_o={(DATA_BITWIDTH*PE_COL){1'b0}};
 			south_enable_o=0;
-			east_data_o = {(DATA_BITWIDTH*X_dim){1'b0}};
+			east_data_o = {(DATA_BITWIDTH*PE_COL){1'b0}};
 		end
 		default:
 		begin
-			south_data_o={(DATA_BITWIDTH*X_dim){1'b0}};
+			south_data_o={(DATA_BITWIDTH*PE_COL){1'b0}};
 			south_enable_o=0;
-			east_data_o = {(DATA_BITWIDTH*X_dim){1'b0}};
+			east_data_o = {(DATA_BITWIDTH*PE_COL){1'b0}};
 		end
 		endcase
 	end

@@ -1,39 +1,6 @@
 Time resolution is 1 ps
-
-
-Loading Begins: Weights.....
-
-
-
-
-Loading Begins: Iacts.....
-
-
-
-
-row           1
-col           1: -104
-
-col           2:   16
-
-col           3:  116
-
-
-
-row           2
-col           1:  120
-
-col           2:   20
-
-col           3:  -72
-
-
-
-row           3
-col           1:  -20
-
-col           2:   84
-
-col           3:  120
-
-$stop called at time : 1595 ns : File "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/mytb.v" Line 553
+=== Loading Weights ===
+=== Loading Activations ===
+=== Starting Computation ===
+=== Test Completed ===
+$finish called at time : 425 ns : File "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/tb_PE_new.v" Line 86

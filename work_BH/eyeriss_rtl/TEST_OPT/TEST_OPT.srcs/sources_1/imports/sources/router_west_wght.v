@@ -4,8 +4,8 @@ module router_west_wght	#(
 	parameter DATA_BITWIDTH = 16,
 	parameter ADDR_BITWIDTH_GLB = 10,
 	parameter ADDR_BITWIDTH_SPAD = 9,
-	parameter X_dim = 5,
-	parameter Y_dim = 3,
+	parameter PE_ROW = 3,
+	parameter PE_COL = 5,
 	parameter kernel_size = 3,
 	parameter act_size = 5,
 	
@@ -13,7 +13,7 @@ module router_west_wght	#(
 	parameter W_LOAD_ADDR = 0
 ) (
 	input clk,
-	input reset,
+	input rst,
 
 	input [3:0] router_mode,
 
@@ -61,7 +61,7 @@ module router_west_wght	#(
 	//generate pulse signal of load_spad_ctrl
 	assign load_spad_ctrl = load_spad_ctrl_0 & (~load_spad_ctrl_1);	
 	always @(posedge clk) begin
-		if (reset) begin 
+		if (rst) begin 
 			load_spad_ctrl_0<=0;
 			load_spad_ctrl_1<=0;
 		end
@@ -101,8 +101,8 @@ module router_west_wght	#(
 		.ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 		.ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
 		
-		.X_dim(X_dim),
-	    .Y_dim(Y_dim),
+		.PE_COL(PE_COL),
+	    .PE_ROW(PE_ROW),
 	    .kernel_size(kernel_size),
 	    .act_size(act_size),
 		
@@ -112,7 +112,7 @@ module router_west_wght	#(
 
 	router_wght_0
 	(	.clk(clk),
-		.reset(reset),
+		.rst(rst),
 		.r_data_glb_wght(data_out),
 		.r_addr_glb_wght(west_addr_read),
 		.read_req_glb_wght(west_req_read),

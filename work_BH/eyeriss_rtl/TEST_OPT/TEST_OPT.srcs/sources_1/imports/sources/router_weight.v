@@ -5,8 +5,8 @@ module router_weight #(
 	parameter ADDR_BITWIDTH_GLB = 10,
 	parameter ADDR_BITWIDTH_SPAD = 9,
 	
-	parameter X_dim = 5,
-	parameter Y_dim = 3,
+	parameter PE_ROW = 3,
+	parameter PE_COL = 5,
 	parameter kernel_size = 3,
 	parameter act_size = 5,
 	
@@ -15,7 +15,7 @@ module router_weight #(
 	parameter W_LOAD_ADDR = 0
 )(
 	input clk,
-	input reset,
+	input rst,
 	
 	//for reading glb
 	input signed [DATA_BITWIDTH-1 : 0] r_data_glb_wght,
@@ -39,7 +39,7 @@ module router_weight #(
 	reg [4:0] filt_count;
 	
 	always@(posedge clk) begin
-		if(reset) begin
+		if(rst) begin
 			read_req_glb_wght <= 0;
 			r_addr_glb_wght <= 0;
 			load_en_spad <= 0;

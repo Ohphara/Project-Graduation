@@ -1,0 +1,57 @@
+19:18:56 **** Build of configuration Debug for project mem_copy_app ****
+make all 
+make --no-print-directory pre-build
+a9-linaro-pre-build-step
+' '
+make --no-print-directory main-build
+'Building file: ../src/matbi_mem_copy_test.c'
+'Invoking: ARM v7 gcc compiler'
+arm-none-eabi-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/matbi_mem_copy_test.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/LAB/Project_Graduation/Project-Graduation/work_BH/mem_copy_vitis/design_1_wrapper/export/design_1_wrapper/sw/design_1_wrapper/standalone_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/matbi_mem_copy_test.d" -MT"src/matbi_mem_copy_test.o" -o "src/matbi_mem_copy_test.o" "../src/matbi_mem_copy_test.c"
+../src/matbi_mem_copy_test.c: In function 'main':
+../src/matbi_mem_copy_test.c:78:25: warning: format '%u' expects argument of type 'unsigned int *', but argument 2 has type 'u32 *' {aka 'long unsigned int *'} [-Wformat=]
+   78 |                 scanf("%u",&transfer_cnt);
+      |                        ~^  ~~~~~~~~~~~~~
+      |                         |  |
+      |                         |  u32 * {aka long unsigned int *}
+      |                         unsigned int *
+      |                        %lu
+../src/matbi_mem_copy_test.c:82:25: warning: format '%u' expects argument of type 'unsigned int *', but argument 2 has type 'u32 *' {aka 'long unsigned int *'} [-Wformat=]
+   82 |                 scanf("%u",&add_val);
+      |                        ~^  ~~~~~~~~
+      |                         |  |
+      |                         |  u32 * {aka long unsigned int *}
+      |                         unsigned int *
+      |                        %lu
+../src/matbi_mem_copy_test.c:93:9: warning: implicit declaration of function 'Xil_DCacheDisable' [-Wimplicit-function-declaration]
+   93 |         Xil_DCacheDisable(); // flush to external mem.
+      |         ^~~~~~~~~~~~~~~~~
+../src/matbi_mem_copy_test.c:95:36: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'u8 *' {aka 'unsigned char *'} [-Wformat=]
+   95 |         printf("rdma_baseaddr : 0x%x\n", rdma_baseaddr);
+      |                                   ~^     ~~~~~~~~~~~~~
+      |                                    |     |
+      |                                    |     u8 * {aka unsigned char *}
+      |                                    unsigned int
+      |                                   %hhn
+../src/matbi_mem_copy_test.c:96:36: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'u8 *' {aka 'unsigned char *'} [-Wformat=]
+   96 |         printf("wdma_baseaddr : 0x%x\n", wdma_baseaddr);
+      |                                   ~^     ~~~~~~~~~~~~~
+      |                                    |     |
+      |                                    |     u8 * {aka unsigned char *}
+      |                                    unsigned int
+      |                                   %hhn
+'Finished building: ../src/matbi_mem_copy_test.c'
+' '
+'Building target: mem_copy_app.elf'
+'Invoking: ARM v7 gcc linker'
+arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -LC:/LAB/Project_Graduation/Project-Graduation/work_BH/mem_copy_vitis/design_1_wrapper/export/design_1_wrapper/sw/design_1_wrapper/standalone_ps7_cortexa9_0/bsplib/lib -o "mem_copy_app.elf"  ./src/matbi_mem_copy_test.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: mem_copy_app.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size mem_copy_app.elf  |tee "mem_copy_app.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  80914	   2550	  22640	 106104	  19e78	mem_copy_app.elf
+'Finished building: mem_copy_app.elf.size'
+' '
+
+19:18:57 Build Finished (took 899ms)
+

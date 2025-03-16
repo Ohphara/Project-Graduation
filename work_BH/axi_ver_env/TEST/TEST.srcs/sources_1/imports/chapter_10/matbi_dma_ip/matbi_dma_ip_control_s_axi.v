@@ -43,6 +43,7 @@ module matbi_dma_ip_control_s_axi
     output wire [1:0]                    RRESP,
     output wire                          RVALID,
     input  wire                          RREADY,
+    
     output wire                          interrupt,
     output wire [31:0]                   rdma_transfer_byte,
     output wire [31:0]                   rdma_mem_ptr,

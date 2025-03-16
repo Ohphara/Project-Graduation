@@ -300,7 +300,7 @@ matbi_axis_adder #(
 inst_adder  (
   .s_axis_aclk   ( ap_clk                   		) ,
   .s_axis_areset ( areset                   		) ,
-  .ctrl_constant ( value_to_add[C_ADDER_BIT_WIDTH-1:0]) ,
+  .ctrl_constant ( value_to_add[C_ADDER_BIT_WIDTH-1:0]), //from controller
   .s_axis_tvalid ( out_r_write              		) ,
   .s_axis_tready ( out_r_full_n             		) ,
   .s_axis_tdata  ( out_r_din                		) ,

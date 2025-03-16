@@ -1,0 +1,11 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  \
+"../../../../TEST_systolic.srcs/sources_1/imports/systolic_array/processing_element.sv" \
+"../../../../TEST_systolic.srcs/sources_1/imports/systolic_array/systolic_array.sv" \
+"../../../../TEST_systolic.srcs/sim_1/imports/systolic_array/systolic_array_tb.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

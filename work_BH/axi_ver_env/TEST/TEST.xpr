@@ -58,7 +58,7 @@
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSABoardId" Val="zybo-z7-20"/>
-    <Option Name="WTXSimLaunchSim" Val="15"/>
+    <Option Name="WTXSimLaunchSim" Val="24"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -210,6 +210,186 @@
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../../../../../Matbi_Verilog_S2/231208_Matbi_VerilogHDL_Season2/Matbi_VerilogHDL_Season2/Lecture_chapter/chapter_10/matbi_dma_ip/matbi_dma_ip_top.v"/>
           <Attr Name="ImportTime" Val="1677605890"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/mux2.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/mux2.v"/>
+          <Attr Name="ImportTime" Val="1740963585"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/PE_cluster_new.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_cluster_new.v"/>
+          <Attr Name="ImportTime" Val="1741316338"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/HMNOC_1cluster_wpsum.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/HMNOC_1cluster_wpsum.v"/>
+          <Attr Name="ImportTime" Val="1740981267"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/HMNOC_4cluster_wpsum.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/HMNOC_4cluster_wpsum.v"/>
+          <Attr Name="ImportTime" Val="1740979943"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/router_psum.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_psum.v"/>
+          <Attr Name="ImportTime" Val="1741073183"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/MAC.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/MAC.v"/>
+          <Attr Name="ImportTime" Val="1740963585"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/SPad.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/SPad.v"/>
+          <Attr Name="ImportTime" Val="1741073187"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/router_weight.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_weight.v"/>
+          <Attr Name="ImportTime" Val="1740963585"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/GLB_cluster_wpsum.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/GLB_cluster_wpsum.v"/>
+          <Attr Name="ImportTime" Val="1740963585"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/glb_psum.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/glb_psum.v"/>
+          <Attr Name="ImportTime" Val="1740963585"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/router_west_iact.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_west_iact.v"/>
+          <Attr Name="ImportTime" Val="1740963585"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/glb_weight.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/glb_weight.v"/>
+          <Attr Name="ImportTime" Val="1741067459"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/router_cluster_wpsum.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_cluster_wpsum.v"/>
+          <Attr Name="ImportTime" Val="1740978240"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/glb_iact.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/glb_iact.v"/>
+          <Attr Name="ImportTime" Val="1740980552"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/router_west_psum.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_west_psum.v"/>
+          <Attr Name="ImportTime" Val="1740982606"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/router_iact.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_iact.v"/>
+          <Attr Name="ImportTime" Val="1740963585"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/PE_new.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_new.v"/>
+          <Attr Name="ImportTime" Val="1740979203"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources/router_west_wght.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_west_wght.v"/>
+          <Attr Name="ImportTime" Val="1740977507"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>

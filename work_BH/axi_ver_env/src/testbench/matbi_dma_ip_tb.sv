@@ -456,10 +456,6 @@ initial begin : STIMULUS
   start_vips();
 
 
-  blocking_write_register(ADDR_AP_CTRL, 32'd13); // baseaddr is 0.
-  read_register(ADDR_AP_CTRL, lite_rddata); // addr / data
-  $display("data written in ADDR_AP_CTRL : %d",lite_rddata);
-/*
 
   for (longint unsigned slot = 0; slot < USER_TRANSFER_LEN; slot = slot+1) begin
     ret_wr_value = slot;
@@ -506,7 +502,7 @@ initial begin : STIMULUS
     end
   end
 
-*/
+
 
   $display( "================================================");
   $display( "==============Finish Simulation!!===============");

@@ -13,8 +13,8 @@ module HMNOC_1cluster_wpsum
 	parameter PSUM_READ_ADDR = 0,
 	parameter PSUM_LOAD_ADDR = 0,
 	parameter PSUM_ADDR= 500,
-	parameter X_dim = 3,
-	parameter Y_dim = 3,
+	parameter PE_ROW = 3,
+	parameter PE_COL = 3,
 	parameter kernel_size = 3,
 	parameter act_size = 5,
 	parameter NUM_GLB_IACT = 1,
@@ -25,7 +25,7 @@ module HMNOC_1cluster_wpsum
 	
 	
 	// PE interports
-	input clk, reset,
+	input clk, rst,
 	input start,
 
 	output compute_done,
@@ -104,9 +104,9 @@ module HMNOC_1cluster_wpsum
 
 ////////////  ROUTER PSUM //////////////////////
 	input [3:0] router_mode_west_0_psum,
-	input [DATA_BITWIDTH*X_dim-1:0] north_data_i_psum,
+	input [DATA_BITWIDTH*PE_COL-1:0] north_data_i_psum,
 	input north_enable_i_psum,
-	output [DATA_BITWIDTH*X_dim-1:0] south_data_o_psum,
+	output [DATA_BITWIDTH*PE_COL-1:0] south_data_o_psum,
 	output south_enable_o_psum
 
 
@@ -130,15 +130,15 @@ module HMNOC_1cluster_wpsum
 	wire signed [DATA_BITWIDTH-1:0] west_data_o_west_0_wght;
 	
 
-	wire [DATA_BITWIDTH*X_dim-1:0] west_data_i_west_0_psum;
+	wire [DATA_BITWIDTH*PE_COL-1:0] west_data_i_west_0_psum;
 	wire west_enable_i_west_0_psum;
 	wire [DATA_BITWIDTH-1:0] west_data_o_west_0_psum;
 	wire west_enable_o_west_0_psum;
 
 	
-	wire [DATA_BITWIDTH*X_dim-1:0] east_data_i_west_0_psum;
+	wire [DATA_BITWIDTH*PE_COL-1:0] east_data_i_west_0_psum;
 	wire east_enable_i_west_0_psum;
-	wire [DATA_BITWIDTH*X_dim-1:0] east_data_o_west_0_psum;
+	wire [DATA_BITWIDTH*PE_COL-1:0] east_data_o_west_0_psum;
 	// reg east_enable_o_west_0_psum;
 
 
@@ -156,8 +156,8 @@ module HMNOC_1cluster_wpsum
 		.ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
 		.A_READ_ADDR(A_READ_ADDR),
 		.A_LOAD_ADDR(A_LOAD_ADDR),
-		.X_dim(X_dim),
-	    .Y_dim(Y_dim),
+		.PE_COL(PE_COL),
+	    .PE_ROW(PE_ROW),
 	    .kernel_size(kernel_size),
 	    .act_size(act_size),
 		.PSUM_READ_ADDR(PSUM_READ_ADDR),
@@ -169,7 +169,7 @@ module HMNOC_1cluster_wpsum
 	router_cluster_0
 	(
 		.clk(clk),
-		.reset(reset),
+		.rst(rst),
 
 		.west_0_addr_read_iact(west_0_addr_read_iact),
 		.west_0_req_read_iact(west_0_req_read_iact),
@@ -240,8 +240,8 @@ module HMNOC_1cluster_wpsum
 	GLB_cluster_wpsum 
 			#(	.DATA_BITWIDTH(DATA_BITWIDTH),
 				.ADDR_BITWIDTH(ADDR_BITWIDTH_GLB),
-				.X_dim(X_dim),
-				.Y_dim(Y_dim),
+				.PE_COL(PE_COL),
+				.PE_ROW(PE_ROW),
 				.NUM_GLB_IACT(NUM_GLB_IACT),
 				.NUM_GLB_PSUM(NUM_GLB_PSUM),
 				.NUM_GLB_WGHT(NUM_GLB_WGHT)
@@ -249,7 +249,7 @@ module HMNOC_1cluster_wpsum
 	GLB_cluster_west_0
 			(
 				.clk(clk),   //TestBench/Controller
-				.reset(reset),  //TestBench/Controller
+				.rst(rst),  //TestBench/Controller
 				
 				//Signals for reading from GLB
 				.read_req_iact(west_0_req_read_iact),
@@ -299,8 +299,8 @@ module HMNOC_1cluster_wpsum
 					.kernel_size(kernel_size),
 					.act_size(act_size),
 					
-					.X_dim(X_dim),
-					.Y_dim(Y_dim),
+					.PE_COL(PE_COL),
+					.PE_ROW(PE_ROW),
 					.W_READ_ADDR(W_READ_ADDR),
 					.W_LOAD_ADDR(W_LOAD_ADDR),
 					.A_READ_ADDR(A_READ_ADDR),
@@ -311,7 +311,7 @@ module HMNOC_1cluster_wpsum
 	pe_cluster_west_0
     			(
 					.clk(clk),
-				    .reset(reset),
+				    .rst(rst),
 					
 				    .act_in(west_data_o_west_0_iact),
 				    .filt_in(west_data_o_west_0_wght),

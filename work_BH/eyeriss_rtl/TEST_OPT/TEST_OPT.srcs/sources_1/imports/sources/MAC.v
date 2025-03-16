@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 
+(*use_dsp = "yes"*)
 module MAC #( parameter IN_BITWIDTH = 16,
 			  parameter OUT_BITWIDTH = 32 )
 			( input signed [IN_BITWIDTH-1 : 0] a_in,
@@ -9,12 +10,12 @@ module MAC #( parameter IN_BITWIDTH = 16,
 			  output reg signed [OUT_BITWIDTH-1 : 0] out
 			);
 	
-	reg signed [OUT_BITWIDTH-1:0] mult_out;
+	wire signed [OUT_BITWIDTH-1:0] mul_tmp;
+	assign mul_tmp = a_in * w_in;
 	
 	always@(posedge clk) begin
 		if(en) begin
-			mult_out = a_in * w_in;
-			out <= mult_out + sum_in;
+			out <= mul_tmp + sum_in;
 		end
 	end
 	

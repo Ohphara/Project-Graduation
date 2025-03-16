@@ -436,8 +436,7 @@ endtask
 // Main Function
 /////////////////////////////////////////////////////////////////////////////////////////////////
 initial begin : STIMULUS
-  bit [31:0] lite_rddata;
-  bit [31:0] mask_data;
+  bit [31:0] lite_rddata; //axi lite register read data
   bit [31:0] adding_value; // TODO Added
   byte unsigned ret_rd_value;
   byte unsigned ret_wr_value;
@@ -455,23 +454,31 @@ initial begin : STIMULUS
   $display( "================================================");
   start_vips();
   
-  blocking_write_register(ADDR_RDMA_TRANSFER_BYTE_DATA_0, 32'd13); // baseaddr is 0.
-  read_register(ADDR_RDMA_TRANSFER_BYTE_DATA_0, lite_rddata); // addr / data
-  $display("data written in ADDR_RDMA_TRANSFER_BYTE_DATA_0 : %d",lite_rddata);
-/*
+
+  //write data in certain memory address
   for (longint unsigned slot = 0; slot < USER_TRANSFER_LEN; slot = slot+1) begin
     ret_wr_value = slot;
     backdoor_memory_write_byte(USER_RDMA_ADDR + slot, ret_wr_value);
   end
 
-  blocking_write_register(ADDR_AXI00_PTR0_DATA_0, 32'd0); // baseaddr is 0.
+///////////////// set control register/////////////////
+
+  //set DMA datasize in RDMA
   blocking_write_register(ADDR_RDMA_TRANSFER_BYTE_DATA_0, USER_TRANSFER_LEN);
+
+  //from which address to read memory
   blocking_write_register(ADDR_RDMA_MEM_PTR_DATA_0, USER_RDMA_ADDR);
 
+  //set DMA datasize in WDMA
   blocking_write_register(ADDR_WDMA_TRANSFER_BYTE_DATA_0, USER_TRANSFER_LEN);
+
+  //from which address to write memory
   blocking_write_register(ADDR_WDMA_MEM_PTR_DATA_0, USER_RDMA_ADDR + USER_TRANSFER_LEN);
 
+  //Core parameter - adding constant to data
   blocking_write_register(ADDR_VALUE_TO_ADD, adding_value); // adding value
+
+/////////////////////////////////////////////////////////
 
   // start. polling
   // 1. check idle 
@@ -500,10 +507,10 @@ initial begin : STIMULUS
         error_counter++;
     end
     else begin // Match. If you want to check read data from external memory.
-//        $display("Memory Match: m00_axi : @0x%x : Expected 0x%x -> Got 0x%x ", USER_RDMA_ADDR + USER_TRANSFER_LEN + slot, slot/4, ret_rd_value);
+        $display("Memory Match: m00_axi : @0x%x : Expected 0x%x -> Got 0x%x ", USER_RDMA_ADDR + USER_TRANSFER_LEN + slot, slot/4, ret_rd_value);
     end
   end
-*/
+
   $display( "================================================");
   $display( "==============Finish Simulation!!===============");
   $display( "================================================");

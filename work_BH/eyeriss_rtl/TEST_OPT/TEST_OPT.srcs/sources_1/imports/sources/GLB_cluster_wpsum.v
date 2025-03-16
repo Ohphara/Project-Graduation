@@ -3,14 +3,14 @@
 module GLB_cluster_wpsum #( 
 	parameter DATA_BITWIDTH = 16,
 	parameter ADDR_BITWIDTH = 10,
-	parameter X_dim = 3,
-	parameter Y_dim = 3,
+	parameter PE_ROW = 3,
+	parameter PE_COL = 3,
 	parameter NUM_GLB_IACT = 1,
 	parameter NUM_GLB_PSUM = 1,
 	parameter NUM_GLB_WGHT = 1
 )( 
 	input clk,
-	input reset,
+	input rst,
 	
 	input read_req_iact, 
 	input read_req_psum,
@@ -37,7 +37,7 @@ module GLB_cluster_wpsum #(
 	output  [DATA_BITWIDTH-1 : 0] r_data_iact,
 	output  [DATA_BITWIDTH-1 : 0] r_data_psum,
 	output  [DATA_BITWIDTH-1 : 0] r_data_wght,
-	output  [DATA_BITWIDTH*X_dim-1 : 0] r_data_psum_inter,
+	output  [DATA_BITWIDTH*PE_COL-1 : 0] r_data_psum_inter,
 	output  read_en_psum_inter
 );
 			
@@ -50,7 +50,7 @@ module GLB_cluster_wpsum #(
 							.DATA_BITWIDTH(DATA_BITWIDTH)
 						)
 			glb_iact_inst ( .clk(clk), 
-							.reset(reset),
+							.rst(rst),
 							.read_req(read_req_iact),
 							.write_en(write_en_iact), 
 							.r_addr(r_addr_iact), 
@@ -69,11 +69,11 @@ module GLB_cluster_wpsum #(
 		begin:glb_psum_gen
 			glb_psum #( .ADDR_BITWIDTH(ADDR_BITWIDTH),
 					.DATA_BITWIDTH(DATA_BITWIDTH),
-					.X_dim(X_dim),
-					.Y_dim(Y_dim)
+					.PE_COL(PE_COL),
+					.PE_ROW(PE_ROW)
 					) 
 			glb_psum_inst ( .clk(clk), 
-							.reset(reset), 
+							.rst(rst), 
 							.read_req(read_req_psum),
 							.write_en(write_en_psum), 
 							.r_addr(r_addr_psum), 
@@ -97,7 +97,7 @@ module GLB_cluster_wpsum #(
 					.DATA_BITWIDTH(DATA_BITWIDTH)
 					) 
 			glb_weight_inst ( .clk(clk), 
-							.reset(reset), 
+							.rst(rst), 
 							.read_req(read_req_wght),
 							.write_en(write_en_wght), 
 							.r_addr(r_addr_wght), 

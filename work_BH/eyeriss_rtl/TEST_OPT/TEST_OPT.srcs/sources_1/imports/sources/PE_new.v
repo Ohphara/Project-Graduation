@@ -1,13 +1,13 @@
 `timescale 1ns / 1ps
 
-module PE_new #( 
+module PE_new #(
 	parameter DATA_BITWIDTH = 16,
 	parameter ADDR_BITWIDTH = 9,
 	
 	parameter W_READ_ADDR = 0,     //Weights READ address
-	parameter A_READ_ADDR = 100,   //Activations READ address
-	
 	parameter W_LOAD_ADDR = 0,     //Weights LOAD address
+
+	parameter A_READ_ADDR = 100,   //Activations READ address
 	parameter A_LOAD_ADDR = 100,   //Activations LOAD address
 	
 	parameter PSUM_ADDR = 500,
@@ -15,20 +15,22 @@ module PE_new #(
 	parameter kernel_size = 3,
 	parameter act_size = 5 
 ) (
-	input clk, reset,
+	input clk, rst,
+
 	input signed [DATA_BITWIDTH-1:0] act_in,
 	input signed [DATA_BITWIDTH-1:0] filt_in,
-	// output [7:0] filt_count_n,
-//			 input load_en,
-	input load_en_wght, load_en_act,
-	// input [DATA_BITWIDTH-1:0] pe_before,
+
 	input start,
+	input load_en_wght, load_en_act,
+	
 	output signed [DATA_BITWIDTH-1:0] pe_out,
+
 	output reg compute_done,
 	output reg load_done
 );
 
 	reg [2:0] state;
+
 	localparam IDLE=3'b000;
 	localparam READ_W=3'b001;
 	localparam READ_A=3'b010;
@@ -36,8 +38,9 @@ module PE_new #(
 	localparam WRITE=3'b100;
 	localparam LOAD_W=3'b101;
 	localparam LOAD_A=3'b110;
-// ScratchPad Instantiation
-	reg read_en, write_en;
+
+	// ScratchPad Instantiation
+	reg re, we;
 	reg [ADDR_BITWIDTH-1:0] w_addr, r_addr;
 	reg signed [DATA_BITWIDTH-1:0]  w_data;
 	wire signed [DATA_BITWIDTH-1:0] r_data;
@@ -48,16 +51,16 @@ module PE_new #(
 	)
 	spad_pe0 ( 
 		.clk(clk), 
-		.reset(reset), 
-		.read_req(read_en),
-		.write_en(write_en), 
+		.rst(rst), 
+		.re(re),
+		.we(we), 
 		.r_addr(r_addr), 
 		.w_addr(w_addr),
 		.w_data(w_data),
 		.r_data(r_data)
 	);
-					
-
+	
+	//MAC Instantiation
 	wire signed [DATA_BITWIDTH-1:0] psum_reg;
 	wire signed [DATA_BITWIDTH-1:0] sum_in;
 	reg sum_in_mux_sel;
@@ -66,8 +69,6 @@ module PE_new #(
 	reg signed [DATA_BITWIDTH-1:0] filt_in_reg;
 	
 	reg mac_en;
-	//MAC Instantiation
-	
 	MAC 
 	#( 
 		.IN_BITWIDTH(DATA_BITWIDTH),
@@ -99,21 +100,23 @@ module PE_new #(
 	// FSM for PE
 	always@(posedge clk) begin
 //		$display("State: %s", state.name());
-		if(reset) begin
+		if(rst) begin
 			//Initialize registers
 			filt_count <= 0;
-			sum_in_mux_sel = 0;
+			iter <= 0;
+			mac_en <= 0;
+			sum_in_mux_sel <= 0;
 			
 			//Initialize scratchpad inputs
 			w_addr <= W_READ_ADDR;
 			r_addr <= W_READ_ADDR;
 			w_data <= 0;
-			write_en <= 0;
-			read_en <= 0;
+			re <= 0;
+			we <= 0;
+
 			compute_done <= 0;
-			mac_en <= 0;
-			iter <= 0;
 			load_done <= 0;
+			
 			state <= IDLE;
 		end
 		else begin
@@ -126,20 +129,21 @@ module PE_new #(
 						end else begin
 							r_addr <= A_READ_ADDR + iter*act_size;
 							filt_count <= 0;
-							sum_in_mux_sel = 0;
-							read_en <= 1;
+							sum_in_mux_sel <= 0;
+							re <= 1;
 							state <= READ_W;
 						end
 					end else begin
 						if(load_en_wght) begin
 							w_addr <= W_LOAD_ADDR;  //***Loading of weights starts at index 0***
 							w_data <= filt_in;
-							write_en <= 1;
+							we <= 1;
 							filt_count <= 0;
 							load_done <= 0;
 							state <= LOAD_W;
-						end else if(load_en_act) begin
-							write_en <= 1;
+						end 
+						else if(load_en_act) begin
+							we <= 1;
 							w_addr <= A_LOAD_ADDR; // *** Loading of activations starts at 100 ***
 							w_data <= act_in;
 							load_done <= 0;
@@ -147,7 +151,7 @@ module PE_new #(
 
 						end else begin
 							load_done <= 0;
-							write_en <= 0;
+							we <= 0;
 							compute_done <= 0;
 							state <= IDLE;
 						end
@@ -155,37 +159,35 @@ module PE_new #(
 				end
 				
 				READ_W:begin
+					re <= 1;
 					filt_in_reg <= r_data;
-					read_en <= 1;
 					filt_count <= filt_count + 1;
-					// $display("Weight read: %d from address: %d", r_data, r_addr);
-					// $display("Read Enable: %d", read_en);
+
 					state <= READ_A;
 				end
 				
 				READ_A:begin
 					// $display("Act read: %d from address: %d", r_data, r_addr);
-					// $display("Read Enable: %d", read_en);
+					// $display("Read Enable: %d", re);
+					re <= 1;
 					act_in_reg <= r_data;
-					read_en <= 1;
 					r_addr <= W_READ_ADDR + filt_count;
-					mac_en <= 1;
+
 					state <= COMPUTE;
+					mac_en <= 1;
 				end
 					
 				COMPUTE:begin
-				// $display("Weight in reg: %d  |  Act in reg: %d", filt_in_reg, act_in_reg);
-				// $display("MAC out: %d", psum_reg);
 					mac_en <= 0;
 					if(filt_count == kernel_size) begin
-						act_in_reg <= r_data;
-						read_en <= 0;
+						re <= 0;
+						we <= 1;
 						w_addr <= PSUM_ADDR + iter;
-						write_en <= 1;
 						state <= WRITE;
-					end else begin
+					end 
+					else begin
 						if(filt_count == 0) begin
-							sum_in_mux_sel = 0;
+							sum_in_mux_sel <= 0;
 						end else begin
 							sum_in_mux_sel = 1;	
 						end
@@ -197,23 +199,14 @@ module PE_new #(
 				WRITE:begin
 					w_data <= psum_reg;
 					r_addr <= W_READ_ADDR;
-					read_en <= 1;
+					re <= 1;
 					iter <= iter + 1;
 					compute_done <= 1;
 					state <= IDLE;
 				end
 				
 				LOAD_W:begin
-//				$display("Weight write: %d to address: %d", filt_in, w_addr);
-//				$display("Write Enable: %d", write_en);					
-/* 					if(filt_count == (kernel_size**2-1)) begin
-						
-						w_addr <= A_LOAD_ADDR; // *** Loading of activations starts at 100 ***
-						
-						w_data <= act_in;
-						filt_count <= 0;
-						state <= LOAD_A; */
-					if(filt_count == (kernel_size**2)) begin
+					if(filt_count == kernel_size) begin
 						filt_count <= 0;
 						load_done <= 1;
 						state <= IDLE;
@@ -226,11 +219,9 @@ module PE_new #(
 				end
 				
 				LOAD_A:begin
-//				$display("Act write: %d to address: %d", act_in,  w_addr);
-//				$display("Write Enable: %d", write_en);			
-					if(filt_count == (act_size**2)) begin
-						write_en <= 0;
-						read_en <= 1;
+					if(filt_count == act_size) begin
+						we <= 0;
+						re <= 1;
 						r_addr <= W_READ_ADDR;
 						load_done <= 1;
 						state <= IDLE;

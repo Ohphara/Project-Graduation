@@ -91,7 +91,6 @@ module matbi_dma_wrapper #(
   input  [32-1:0]                     		rdma_mem_ptr      ,
   input  [32-1:0]                     		wdma_transfer_byte,
   input  [32-1:0]                     		wdma_mem_ptr      ,
-  input  [32-1:0]                     		axi00_ptr0        ,
 
 // Stream from RDMA
   output  [64-1:0] 					   		out_r_din		 ,
@@ -216,6 +215,7 @@ matbi_hls_rdma u_matbi_hls_rdma(
 	.m_axi_gmem_BRESP			('b0				),
 	.m_axi_gmem_BID				('b0				),
 	.m_axi_gmem_BUSER			('b0				),
+	
 	.tranfer_byte				(rdma_transfer_byte	),
 	.mem						(rdma_mem_ptr		),
 	.out_r_din					(out_r_din			),

@@ -11,8 +11,8 @@ module mytb();
 	parameter PSUM_READ_ADDR = 0;
 	parameter PSUM_LOAD_ADDR = 0;
 	parameter PSUM_ADDR =110;
-    parameter X_dim = 3;
-    parameter Y_dim = 3;
+	parameter PE_ROW = 3;
+    parameter PE_COL = 3;
     
     parameter kernel_size = 3;
     parameter act_size = 5;
@@ -21,7 +21,7 @@ module mytb();
     parameter NUM_GLB_WGHT = 1;
 
 
-    reg clk, reset;
+    reg clk, rst;
 
 //  PE interfaces                     //
 	reg start;
@@ -140,8 +140,8 @@ module mytb();
 		.W_LOAD_ADDR(W_LOAD_ADDR),
 		.W_READ_ADDR(W_READ_ADDR),
 		.PSUM_ADDR(PSUM_ADDR),
-		.X_dim(X_dim),
-		.Y_dim(Y_dim),
+		.PE_COL(PE_COL),
+		.PE_ROW(PE_ROW),
 
 		.kernel_size(kernel_size),
 		.act_size(act_size),
@@ -152,7 +152,7 @@ module mytb();
 	HMNOC_4cluster_0
 		(
 		.clk(clk), 
-		.reset(reset),
+		.rst(rst),
 		.start(start),	  
 		.compute_done(compute_done),
 		.load_done(load_done),
@@ -276,8 +276,8 @@ module mytb();
 	localparam CLOSED=11;
 
 	initial begin
-		reset = 1; #30;
-		reset = 0;
+		rst = 1; #30;
+		rst = 0;
 		start = 0;
 		west_enable_i_west_0_wght = 0;
 		west_enable_i_west_1_wght = 0;
@@ -506,7 +506,7 @@ module mytb();
 		#(clk_prd);
 		#(clk_prd);
 
-		for(i=0; i<X_dim; i=i+1) begin
+		for(i=0; i<PE_COL; i=i+1) begin
 			start = 1; #25; 
 			start = 0;
 			wait (compute_done == 1);
@@ -520,12 +520,12 @@ module mytb();
 			r_req_psum_east_0 = 1;
 			r_req_psum_east_1 = 1;
 
-			for(j=0;j<X_dim;j=j+1)
+			for(j=0;j<PE_COL;j=j+1)
 			begin
-				r_addr_psum_west_0 = PSUM_LOAD_ADDR + (i * X_dim) + j;
-				r_addr_psum_west_1 = PSUM_LOAD_ADDR + (i * X_dim) + j;
-				r_addr_psum_east_0 = PSUM_LOAD_ADDR + (i * X_dim) + j;
-				r_addr_psum_east_1 = PSUM_LOAD_ADDR + (i * X_dim) + j;
+				r_addr_psum_west_0 = PSUM_LOAD_ADDR + (i * PE_COL) + j;
+				r_addr_psum_west_1 = PSUM_LOAD_ADDR + (i * PE_COL) + j;
+				r_addr_psum_east_0 = PSUM_LOAD_ADDR + (i * PE_COL) + j;
+				r_addr_psum_east_1 = PSUM_LOAD_ADDR + (i * PE_COL) + j;
 
 				#(clk_prd);
 
@@ -543,13 +543,13 @@ module mytb();
 			
 		end
 		/*
-		for(i=0; i<X_dim; i=i+1) begin
+		for(i=0; i<PE_COL; i=i+1) begin
 			r_req_psum_inter_west_0 = 1;
 			r_addr_psum_inter_west_0 = PSUM_LOAD_ADDR;
 			#(clk_prd);
 			r_req_psum_inter_west_0 = 0;
 		end
 		*/
-MM		$stop;
+		$stop;
 	end
 endmodule

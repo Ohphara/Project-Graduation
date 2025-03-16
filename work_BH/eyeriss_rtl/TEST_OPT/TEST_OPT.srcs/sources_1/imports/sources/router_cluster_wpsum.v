@@ -12,8 +12,8 @@ module router_cluster_wpsum #(
 	parameter W_READ_ADDR = 0, 
 	parameter W_LOAD_ADDR = 0,
 
-	parameter X_dim = 5,
-	parameter Y_dim = 3,
+	parameter PE_ROW = 3,
+	parameter PE_COL = 5,
 	parameter kernel_size = 3,
 	parameter act_size = 5,
 
@@ -21,7 +21,7 @@ module router_cluster_wpsum #(
 	parameter PSUM_LOAD_ADDR = 0
 ) (
 	input clk,
-	input reset,
+	input rst,
 
 
 /////////////  IACT interports with other directions   ////////////
@@ -61,8 +61,8 @@ module router_cluster_wpsum #(
 
 
 /////////////  PSUM interports with other directions   ////////////
-	input [DATA_BITWIDTH*X_dim-1:0] north_data_i_psum,
-	output [DATA_BITWIDTH*X_dim-1:0] south_data_o_psum,
+	input [DATA_BITWIDTH*PE_COL-1:0] north_data_i_psum,
+	output [DATA_BITWIDTH*PE_COL-1:0] south_data_o_psum,
 
 	input north_enable_i_psum,
 	output south_enable_o_psum,
@@ -100,15 +100,15 @@ module router_cluster_wpsum #(
 
 	output [ADDR_BITWIDTH_GLB-1:0] west_addr_o_west_0_psum,
 
-	input [DATA_BITWIDTH*X_dim-1:0] west_data_i_west_0_psum,
+	input [DATA_BITWIDTH*PE_COL-1:0] west_data_i_west_0_psum,
 	output [DATA_BITWIDTH-1:0] west_data_o_west_0_psum,
 
 	input west_enable_i_west_0_psum,
 	output west_enable_o_west_0_psum,
 
-	input [DATA_BITWIDTH*X_dim-1:0] east_data_i_west_0_psum,
+	input [DATA_BITWIDTH*PE_COL-1:0] east_data_i_west_0_psum,
 	
-	output [DATA_BITWIDTH*X_dim-1:0] east_data_o_west_0_psum,
+	output [DATA_BITWIDTH*PE_COL-1:0] east_data_o_west_0_psum,
 
 	input east_enable_i_west_0_psum
 );
@@ -120,8 +120,8 @@ module router_cluster_wpsum #(
 			.ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 			.ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
 			
-			.X_dim(X_dim),
-		    .Y_dim(Y_dim),
+			.PE_COL(PE_COL),
+		    .PE_ROW(PE_ROW),
 		    .kernel_size(kernel_size),
 		    .act_size(act_size),
 			
@@ -131,7 +131,7 @@ module router_cluster_wpsum #(
 	router_west_0_iact
 		(
 			.clk(clk),
-			.reset(reset),
+			.rst(rst),
 			.west_req_read(west_0_req_read_iact),
 			.west_addr_read(west_0_addr_read_iact),
 			.router_mode(router_mode_west_0_iact),
@@ -181,8 +181,8 @@ module router_cluster_wpsum #(
 			.ADDR_BITWIDTH_GLB(ADDR_BITWIDTH_GLB),
 			.ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
 			
-			.X_dim(X_dim),
-		    .Y_dim(Y_dim),
+			.PE_COL(PE_COL),
+		    .PE_ROW(PE_ROW),
 		    .kernel_size(kernel_size),
 		    .act_size(act_size),
 			
@@ -191,7 +191,7 @@ module router_cluster_wpsum #(
 		)
 	router_west_0_wght(
 		.clk(clk),
-		.reset(reset),
+		.rst(rst),
 		.west_req_read(west_0_req_read_wght),
 		.west_addr_read(west_0_addr_read_wght),
 		.router_mode(router_mode_west_0_wght),
@@ -242,14 +242,14 @@ module router_cluster_wpsum #(
 		.ADDR_BITWIDTH_SPAD(ADDR_BITWIDTH_SPAD),
 		.PSUM_READ_ADDR(PSUM_READ_ADDR),
 		.PSUM_LOAD_ADDR(PSUM_LOAD_ADDR),
-		.X_dim(X_dim),
-	    .Y_dim(Y_dim),
+		.PE_COL(PE_COL),
+	    .PE_ROW(PE_ROW),
 	    .kernel_size(kernel_size),
 	    .act_size(act_size)
 		)
 	router_west_0_psum(
 		.clk(clk),
-		.reset(reset),
+		.rst(rst),
 		.router_mode(router_mode_west_0_psum),
 		.north_data_i(north_data_i_psum),
 		.north_enable_i(north_enable_i_psum),

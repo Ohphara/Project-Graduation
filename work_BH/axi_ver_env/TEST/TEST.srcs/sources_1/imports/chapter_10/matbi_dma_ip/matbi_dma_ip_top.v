@@ -254,7 +254,6 @@ u_matbi_dma_wrapper (
   .rdma_mem_ptr       ( rdma_mem_ptr          ),
   .wdma_transfer_byte ( wdma_transfer_byte    ),
   .wdma_mem_ptr       ( wdma_mem_ptr          ),
-  .axi00_ptr0         ( axi00_ptr0            ),
 // stream I/F
   .out_r_din          ( out_r_din             ),
   .out_r_full_n       ( out_r_full_n          ),

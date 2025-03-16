@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module mux2 #( parameter WIDTH = 16)
+module mux2 #(parameter WIDTH = 16)
 	(
     input [WIDTH-1:0] a_in,
     input [WIDTH-1:0] b_in,

@@ -1,38 +1,10 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/GLB_cluster_wpsum.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module GLB_cluster_wpsum
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/HMNOC_1cluster_wpsum.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module HMNOC_1cluster_wpsum
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/HMNOC_4cluster_wpsum.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module HMNOC_4cluster_wpsum
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/MAC.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/MAC.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module MAC
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_cluster_new.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module PE_cluster_new
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_new.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_new.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module PE_new
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/SPad.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/SPad.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module SPad
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/glb_iact.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module glb_iact
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/glb_psum.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module glb_psum
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/glb_weight.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module glb_weight
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/mux2.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/mux2.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mux2
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_cluster_wpsum.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module router_cluster_wpsum
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_iact.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module router_iact
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_psum.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module router_psum
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_weight.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module router_weight
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_west_iact.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module router_west_iact
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_west_psum.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module router_west_psum
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/router_west_wght.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module router_west_wght
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/mytb.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module mytb
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/tb_PE_new.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_PE_new

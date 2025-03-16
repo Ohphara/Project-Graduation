@@ -13,8 +13,8 @@ module HMNOC_4cluster_wpsum
 	parameter PSUM_READ_ADDR = 0,
 	parameter PSUM_LOAD_ADDR = 0,
 	parameter PSUM_ADDR= 500,
-    parameter X_dim = 3,
-    parameter Y_dim = 3,
+	parameter PE_ROW = 3,
+    parameter PE_COL = 3,
     parameter kernel_size = 3,
     parameter act_size = 5,
     parameter NUM_GLB_IACT = 1,
@@ -24,7 +24,7 @@ module HMNOC_4cluster_wpsum
 (
 	
 	
-	input clk, reset,
+	input clk, rst,
 
 //  PE interfaces                     //
 	input start,
@@ -179,7 +179,7 @@ module HMNOC_4cluster_wpsum
 	wire signed [DATA_BITWIDTH-1:0] east_data_o_iact_west_0;
 	wire  east_enable_o_iact_west_0;
 
-	wire [DATA_BITWIDTH*X_dim-1:0] south_data_o_psum_west_0;
+	wire [DATA_BITWIDTH*PE_COL-1:0] south_data_o_psum_west_0;
 	wire south_enable_o_psum_west_0;
 
 
@@ -208,7 +208,7 @@ module HMNOC_4cluster_wpsum
 	wire signed [DATA_BITWIDTH-1:0] east_data_o_iact_east_1;
 	wire  east_enable_o_iact_east_1;
 
-	wire signed [DATA_BITWIDTH*X_dim-1:0] north_data_i_psum_east_1;
+	wire signed [DATA_BITWIDTH*PE_COL-1:0] north_data_i_psum_east_1;
 	wire north_enable_i_psum_east_1;
 
 
@@ -225,8 +225,8 @@ HMNOC_1cluster_wpsum
 		 .W_LOAD_ADDR(W_LOAD_ADDR),
 		 .W_READ_ADDR(W_READ_ADDR),
 		 .PSUM_ADDR(PSUM_ADDR),
-		 .X_dim(X_dim),
-		 .Y_dim(Y_dim),
+		 .PE_COL(PE_COL),
+		 .PE_ROW(PE_ROW),
 
 		 .kernel_size(kernel_size),
 		 .act_size(act_size),
@@ -238,7 +238,7 @@ HMNOC_1cluster_wpsum
 		(	
 		//PE Interports
 		.clk(clk), 
-		.reset(reset),
+		.rst(rst),
 		.start(start),
 	  
 		.compute_done(compute_done),
@@ -315,8 +315,8 @@ HMNOC_1cluster_wpsum
 		 .W_LOAD_ADDR(W_LOAD_ADDR),
 		 .W_READ_ADDR(W_READ_ADDR),
 		 .PSUM_ADDR(PSUM_ADDR),
-		 .X_dim(X_dim),
-		 .Y_dim(Y_dim),
+		 .PE_COL(PE_COL),
+		 .PE_ROW(PE_ROW),
 
 		 .kernel_size(kernel_size),
 		 .act_size(act_size),
@@ -327,7 +327,7 @@ HMNOC_1cluster_wpsum
 		HMNOC_1cluster_west_1
 		(	
 		.clk(clk), 
-		.reset(reset),
+		.rst(rst),
 		.start(start),
 	  
 		.compute_done(),
@@ -407,8 +407,8 @@ HMNOC_1cluster_wpsum
 		 .W_LOAD_ADDR(W_LOAD_ADDR),
 		 .W_READ_ADDR(W_READ_ADDR),
 		 .PSUM_ADDR(PSUM_ADDR),
-		 .X_dim(X_dim),
-		 .Y_dim(Y_dim),
+		 .PE_COL(PE_COL),
+		 .PE_ROW(PE_ROW),
 
 		 .kernel_size(kernel_size),
 		 .act_size(act_size),
@@ -419,7 +419,7 @@ HMNOC_1cluster_wpsum
 		HMNOC_1cluster_east_0
 		(	
 		.clk(clk), 
-		.reset(reset),
+		.rst(rst),
 		.start(start),
 	  
 		.compute_done(),
@@ -497,8 +497,8 @@ HMNOC_1cluster_wpsum
 		 .W_LOAD_ADDR(W_LOAD_ADDR),
 		 .W_READ_ADDR(W_READ_ADDR),
 		 .PSUM_ADDR(PSUM_ADDR),
-		 .X_dim(X_dim),
-		 .Y_dim(Y_dim),
+		 .PE_COL(PE_COL),
+		 .PE_ROW(PE_ROW),
 
 		 .kernel_size(kernel_size),
 		 .act_size(act_size),
@@ -509,7 +509,7 @@ HMNOC_1cluster_wpsum
 		HMNOC_1cluster_east_1
 		(	
 		.clk(clk), 
-		.reset(reset),
+		.rst(rst),
 		.start(start),
 	  
 		.compute_done(),

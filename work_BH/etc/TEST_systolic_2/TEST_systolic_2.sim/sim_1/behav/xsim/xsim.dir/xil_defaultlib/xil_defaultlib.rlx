@@ -1,0 +1,8 @@
+0.7
+2020.2
+Apr 18 2022
+16:05:34
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/etc/TEST_systolic_2/TEST_systolic_2.sim/sim_1/behav/xsim/glbl.v,1649976174,verilog,,,,glbl,,uvm,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/etc/TEST_systolic_2/TEST_systolic_2.srcs/sim_1/new/tb_MAC_Array.sv,1742025970,systemVerilog,,,,tb_MAC_Array,,uvm,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/etc/TEST_systolic_2/TEST_systolic_2.srcs/sources_1/new/MAC.sv,1741948565,systemVerilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/etc/TEST_systolic_2/TEST_systolic_2.srcs/sources_1/new/MAC_Array.sv,,MAC,,uvm,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/etc/TEST_systolic_2/TEST_systolic_2.srcs/sources_1/new/MAC_Array.sv,1741950529,systemVerilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/etc/TEST_systolic_2/TEST_systolic_2.srcs/sim_1/new/tb_MAC_Array.sv,,MAC_Array,,uvm,,,,,,

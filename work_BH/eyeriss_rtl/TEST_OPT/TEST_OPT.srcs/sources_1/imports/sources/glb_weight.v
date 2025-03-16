@@ -6,7 +6,7 @@ module glb_weight #(
 	parameter ADDR_BITWIDTH = 10 
 ) ( 
 	input clk,
-	input reset,
+	input rst,
 	input read_req,
 	input write_en,
 	input [ADDR_BITWIDTH-1 : 0] r_addr,
@@ -20,7 +20,7 @@ module glb_weight #(
 	reg signed [DATA_BITWIDTH-1 : 0] data;
 	
 	always@(posedge clk) begin : READ
-		if(reset) begin
+		if(rst) begin
 			data <= 0;
 		end else begin
 			if(read_req) begin
@@ -35,7 +35,7 @@ module glb_weight #(
 	assign r_data = data;
 	
 	always@(posedge clk) begin : WRITE	
-		if(write_en && !reset) begin
+		if(write_en && !rst) begin
 			mem[w_addr] <= w_data;
 		end
 	end

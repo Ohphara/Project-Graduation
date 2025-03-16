@@ -11,6 +11,7 @@ module tb_PE_new();
 
 	reg signed [DATA_BITWIDTH-1:0] act_in;
 	reg signed [DATA_BITWIDTH-1:0] filt_in;
+    reg signed [DATA_BITWIDTH-1:0] psum_in;
 
 	reg start;
 	reg load_en_wght, load_en_act;
@@ -25,6 +26,7 @@ module tb_PE_new();
         .rst(rst),
         .act_in(act_in),
         .filt_in(filt_in),
+        .psum_in(psum_in),
         .start(start),
         .load_en_wght(load_en_wght),
         .load_en_act(load_en_act),
@@ -40,6 +42,7 @@ module tb_PE_new();
         rst = 1;
         act_in = 0;
         filt_in = 0;
+        psum_in = 0;
         start = 0;
         load_en_wght = 0;
         load_en_act = 0;

@@ -3,8 +3,8 @@
 Apr 18 2022
 16:05:34
 C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.sim/sim_1/behav/xsim/glbl.v,1649976174,verilog,,,,glbl,,,,,,,,
-C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/tb_PE_new.v,1742125795,verilog,,,,tb_PE_new,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/tb_PE_new.v,1742137262,verilog,,,,tb_PE_new,,,,,,,,
 C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/MAC.v,1742125206,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_new.v,,MAC,,,,,,,,
-C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_new.v,1742132702,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/SPad.v,,PE_new,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_new.v,1742137085,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/SPad.v,,PE_new,,,,,,,,
 C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/SPad.v,1742125206,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/mux2.v,,SPad,,,,,,,,
 C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/mux2.v,1742125206,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/tb_PE_new.v,,mux2,,,,,,,,

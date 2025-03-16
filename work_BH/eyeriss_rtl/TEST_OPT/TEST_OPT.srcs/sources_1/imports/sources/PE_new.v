@@ -19,6 +19,7 @@ module PE_new #(
 
 	input signed [DATA_BITWIDTH-1:0] act_in,
 	input signed [DATA_BITWIDTH-1:0] filt_in,
+	input signed [DATA_BITWIDTH-1:0] psum_in,
 
 	input start,
 	input load_en_wght, load_en_act,
@@ -239,6 +240,6 @@ module PE_new #(
 		end
 	end
 						
-	assign pe_out = psum_reg;
+	assign pe_out = psum_reg + psum_in;
 
 endmodule

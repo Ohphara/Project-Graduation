@@ -127,13 +127,16 @@ module PE_new #(
 							iter <= 0;
 							state <= IDLE;
 						end else begin
-							r_addr <= A_READ_ADDR + iter*act_size;
+							re <= 1;
+							r_addr <= W_READ_ADDR;
+
 							filt_count <= 0;
 							sum_in_mux_sel <= 0;
-							re <= 1;
+							
 							state <= READ_W;
 						end
-					end else begin
+					end 
+					else begin
 						if(load_en_wght) begin
 							w_addr <= W_LOAD_ADDR;  //***Loading of weights starts at index 0***
 							w_data <= filt_in;
@@ -141,15 +144,15 @@ module PE_new #(
 							filt_count <= 0;
 							load_done <= 0;
 							state <= LOAD_W;
-						end 
+						end
 						else if(load_en_act) begin
 							we <= 1;
 							w_addr <= A_LOAD_ADDR; // *** Loading of activations starts at 100 ***
 							w_data <= act_in;
 							load_done <= 0;
 							state <= LOAD_A;
-
-						end else begin
+						end 
+						else begin
 							load_done <= 0;
 							we <= 0;
 							compute_done <= 0;
@@ -159,47 +162,46 @@ module PE_new #(
 				end
 				
 				READ_W:begin
+					mac_en <= 0;
 					re <= 1;
-					filt_in_reg <= r_data;
+					r_addr <= A_READ_ADDR + filt_count + iter;
 					filt_count <= filt_count + 1;
-
 					state <= READ_A;
 				end
 				
 				READ_A:begin
-					// $display("Act read: %d from address: %d", r_data, r_addr);
-					// $display("Read Enable: %d", re);
-					re <= 1;
-					act_in_reg <= r_data;
-					r_addr <= W_READ_ADDR + filt_count;
-
+					filt_in_reg <= r_data;
+					
+					re <= 0;
 					state <= COMPUTE;
-					mac_en <= 1;
 				end
 					
 				COMPUTE:begin
-					mac_en <= 0;
+					act_in_reg <= r_data;
+					mac_en <= 1;
 					if(filt_count == kernel_size) begin
-						re <= 0;
+						filt_count <= 0;
 						we <= 1;
 						w_addr <= PSUM_ADDR + iter;
+						w_data <= psum_reg;
 						state <= WRITE;
 					end 
 					else begin
-						if(filt_count == 0) begin
+						if(filt_count == 0 | filt_count == 1) begin
 							sum_in_mux_sel <= 0;
 						end else begin
-							sum_in_mux_sel = 1;	
+							sum_in_mux_sel <= 1;
 						end
-						r_addr <= A_READ_ADDR + filt_count + iter*act_size;
+						re <= 1;
+						r_addr <= W_READ_ADDR + filt_count;
 						state <= READ_W;
 					end
 				end
 				
 				WRITE:begin
-					w_data <= psum_reg;
-					r_addr <= W_READ_ADDR;
+					mac_en <= 0;
 					re <= 1;
+					r_addr <= W_READ_ADDR;
 					iter <= iter + 1;
 					compute_done <= 1;
 					state <= IDLE;
@@ -220,6 +222,7 @@ module PE_new #(
 				
 				LOAD_A:begin
 					if(filt_count == act_size) begin
+						filt_count <= 0;
 						we <= 0;
 						re <= 1;
 						r_addr <= W_READ_ADDR;

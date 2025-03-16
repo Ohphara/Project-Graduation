@@ -72,7 +72,25 @@ module tb_PE_new();
         // Step 3: Start Computation
         wait (load_done == 1);
         #50;
-        $display("=== Starting Computation ===");
+        $display("=== Starting Computation, iter1 ===");
+        start = 1;
+        #10;
+        start = 0;
+
+        // Wait for computation to complete
+        wait (compute_done == 1);
+
+        #50;
+        $display("=== Starting Computation, iter1 ===");
+        start = 1;
+        #10;
+        start = 0;
+
+        // Wait for computation to complete
+        wait (compute_done == 1);
+
+        #50;
+        $display("=== Starting Computation, iter1 ===");
         start = 1;
         #10;
         start = 0;

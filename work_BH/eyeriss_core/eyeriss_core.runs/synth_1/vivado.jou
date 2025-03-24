@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:48:16 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Mon Mar 24 23:07:30 2025
+# Process ID: 7164
+# Current directory: C:/LAB/Project-Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.runs/synth_1
+# Command line: vivado.exe -log SPad_DP.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source SPad_DP.tcl
+# Log file: C:/LAB/Project-Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.runs/synth_1/SPad_DP.vds
+# Journal file: C:/LAB/Project-Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.runs/synth_1\vivado.jou
+# Running On: DESKTOP-IUO63LB, OS: Windows, CPU Frequency: 4192 MHz, CPU Physical cores: 16, Host memory: 33513 MB
+#-----------------------------------------------------------
+source SPad_DP.tcl -notrace

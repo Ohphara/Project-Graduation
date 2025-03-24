@@ -63,8 +63,9 @@ module tb_PE_new();
 
         // Step 2: Load Activations
         wait (load_done == 1);
-        #30
+        
         $display("=== Loading Activations ===");
+        @ (negedge clk);
         load_en_act = 1;
         for(i=0; i<act_size; i=i+1) begin
             act_in = i+1;

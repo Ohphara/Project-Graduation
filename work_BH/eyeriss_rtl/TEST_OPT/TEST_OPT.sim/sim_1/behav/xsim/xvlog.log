@@ -1,10 +1,10 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/MAC.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/MAC.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module MAC
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_new.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/PE_new.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module PE_new
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/SPad.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/SPad.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module SPad
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/mux2.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sources_1/imports/sources/mux2.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mux2
-INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/tb_PE_new.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/tb_PE_new.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module tb_PE_new

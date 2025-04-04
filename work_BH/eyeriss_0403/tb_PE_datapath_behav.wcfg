@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_PE_datapath_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_PE_datapath" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="290.001 ns"></ZoomEndTime>
+      <Cursor1Time time="154.350 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="288"></NameColumnWidth>
+      <ValueColumnWidth column_width="138"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="45" />
+   <wvobject fp_name="/tb_PE_datapath/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/ctrl_acc_sel" type="logic">
+      <obj_property name="ElementShortName">ctrl_acc_sel</obj_property>
+      <obj_property name="ObjectShortName">ctrl_acc_sel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/ctrl_rst_psum" type="logic">
+      <obj_property name="ElementShortName">ctrl_rst_psum</obj_property>
+      <obj_property name="ObjectShortName">ctrl_rst_psum</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/ifmap_ra" type="array">
+      <obj_property name="ElementShortName">ifmap_ra[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_ra[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/wght_ra" type="array">
+      <obj_property name="ElementShortName">wght_ra[7:0]</obj_property>
+      <obj_property name="ObjectShortName">wght_ra[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/psum_ra" type="array">
+      <obj_property name="ElementShortName">psum_ra[1:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_ra[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/ifmap_wa" type="array">
+      <obj_property name="ElementShortName">ifmap_wa[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_wa[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/wght_wa" type="array">
+      <obj_property name="ElementShortName">wght_wa[7:0]</obj_property>
+      <obj_property name="ObjectShortName">wght_wa[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/psum_wa" type="array">
+      <obj_property name="ElementShortName">psum_wa[1:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_wa[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/ifmap_we" type="logic">
+      <obj_property name="ElementShortName">ifmap_we</obj_property>
+      <obj_property name="ObjectShortName">ifmap_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/wght_we" type="logic">
+      <obj_property name="ElementShortName">wght_we</obj_property>
+      <obj_property name="ObjectShortName">wght_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/psum_we" type="logic">
+      <obj_property name="ElementShortName">psum_we</obj_property>
+      <obj_property name="ObjectShortName">psum_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/ifmap_in" type="array">
+      <obj_property name="ElementShortName">ifmap_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_in[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/wght_in" type="array">
+      <obj_property name="ElementShortName">wght_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wght_in[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/psum_in" type="array">
+      <obj_property name="ElementShortName">psum_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_in[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/psum_out" type="array">
+      <obj_property name="ElementShortName">psum_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_out[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider259">
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ctrl_acc_sel" type="logic">
+      <obj_property name="ElementShortName">ctrl_acc_sel</obj_property>
+      <obj_property name="ObjectShortName">ctrl_acc_sel</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ctrl_rst_psum" type="logic">
+      <obj_property name="ElementShortName">ctrl_rst_psum</obj_property>
+      <obj_property name="ObjectShortName">ctrl_rst_psum</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ifmap_ra" type="array">
+      <obj_property name="ElementShortName">ifmap_ra[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_ra[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/wght_ra" type="array">
+      <obj_property name="ElementShortName">wght_ra[7:0]</obj_property>
+      <obj_property name="ObjectShortName">wght_ra[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/psum_ra" type="array">
+      <obj_property name="ElementShortName">psum_ra[1:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_ra[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ifmap_wa" type="array">
+      <obj_property name="ElementShortName">ifmap_wa[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_wa[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/wght_wa" type="array">
+      <obj_property name="ElementShortName">wght_wa[7:0]</obj_property>
+      <obj_property name="ObjectShortName">wght_wa[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/psum_wa" type="array">
+      <obj_property name="ElementShortName">psum_wa[1:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_wa[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ifmap_we" type="logic">
+      <obj_property name="ElementShortName">ifmap_we</obj_property>
+      <obj_property name="ObjectShortName">ifmap_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/wght_we" type="logic">
+      <obj_property name="ElementShortName">wght_we</obj_property>
+      <obj_property name="ObjectShortName">wght_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/psum_we" type="logic">
+      <obj_property name="ElementShortName">psum_we</obj_property>
+      <obj_property name="ObjectShortName">psum_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ifmap_in" type="array">
+      <obj_property name="ElementShortName">ifmap_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_in[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/wght_in" type="array">
+      <obj_property name="ElementShortName">wght_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wght_in[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/psum_in" type="array">
+      <obj_property name="ElementShortName">psum_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_in[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/psum_out" type="array">
+      <obj_property name="ElementShortName">psum_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_out[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/psum_reg" type="array">
+      <obj_property name="ElementShortName">psum_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_reg[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ctrl_rst_psum_reg" type="logic">
+      <obj_property name="ElementShortName">ctrl_rst_psum_reg</obj_property>
+      <obj_property name="ObjectShortName">ctrl_rst_psum_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ctrl_acc_sel_reg" type="logic">
+      <obj_property name="ElementShortName">ctrl_acc_sel_reg</obj_property>
+      <obj_property name="ObjectShortName">ctrl_acc_sel_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/mul_reg" type="array">
+      <obj_property name="ElementShortName">mul_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mul_reg[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ifmap_rd" type="array">
+      <obj_property name="ElementShortName">ifmap_rd[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_rd[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/wght_rd" type="array">
+      <obj_property name="ElementShortName">wght_rd[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wght_rd[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/psum_rd" type="array">
+      <obj_property name="ElementShortName">psum_rd[31:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_rd[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/ifmap_reg" type="array">
+      <obj_property name="ElementShortName">ifmap_reg[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_reg[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_datapath/uut/wght_reg" type="array">
+      <obj_property name="ElementShortName">wght_reg[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wght_reg[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>

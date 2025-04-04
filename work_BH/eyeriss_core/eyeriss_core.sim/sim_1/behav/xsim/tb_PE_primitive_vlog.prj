@@ -1,0 +1,10 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../eyeriss_core.srcs/sources_1/new/PE_primitive.v" \
+"../../../../eyeriss_core.srcs/sim_1/imports/eyeriss_core.srcs/tb_PE_primitive.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

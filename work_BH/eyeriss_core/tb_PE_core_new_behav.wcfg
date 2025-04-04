@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_PE_core_new_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_PE_core_new" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="180.001 ns"></ZoomEndTime>
+      <Cursor1Time time="45.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="294"></NameColumnWidth>
+      <ValueColumnWidth column_width="90"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="27" />
+   <wvobject fp_name="/tb_PE_core_new/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/ifmap_data" type="array">
+      <obj_property name="ElementShortName">ifmap_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/weight_data" type="array">
+      <obj_property name="ElementShortName">weight_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/mac_en" type="logic">
+      <obj_property name="ElementShortName">mac_en</obj_property>
+      <obj_property name="ObjectShortName">mac_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/psum_out" type="array">
+      <obj_property name="ElementShortName">psum_out[19:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_out[19:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/psum_valid" type="logic">
+      <obj_property name="ElementShortName">psum_valid</obj_property>
+      <obj_property name="ObjectShortName">psum_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/ifmap_stream" type="array">
+      <obj_property name="ElementShortName">ifmap_stream[0:5][7:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_stream[0:5][7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/weight_stream" type="array">
+      <obj_property name="ElementShortName">weight_stream[0:2][7:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_stream[0:2][7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/DATA_BITWIDTH" type="array">
+      <obj_property name="ElementShortName">DATA_BITWIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_BITWIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/PSUM_BITWIDTH" type="array">
+      <obj_property name="ElementShortName">PSUM_BITWIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PSUM_BITWIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider13">
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/mac_en" type="logic">
+      <obj_property name="ElementShortName">mac_en</obj_property>
+      <obj_property name="ObjectShortName">mac_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/psum_out" type="array">
+      <obj_property name="ElementShortName">psum_out[19:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_out[19:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/psum_valid" type="logic">
+      <obj_property name="ElementShortName">psum_valid</obj_property>
+      <obj_property name="ObjectShortName">psum_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/mac_res" type="array">
+      <obj_property name="ElementShortName">mac_res[19:0]</obj_property>
+      <obj_property name="ObjectShortName">mac_res[19:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/mux_out" type="array">
+      <obj_property name="ElementShortName">mux_out[19:0]</obj_property>
+      <obj_property name="ObjectShortName">mux_out[19:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/ifmap_reg" type="array">
+      <obj_property name="ElementShortName">ifmap_reg[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ifmap_reg[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/weight_reg" type="array">
+      <obj_property name="ElementShortName">weight_reg[7:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_reg[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/mac_en_reg" type="logic">
+      <obj_property name="ElementShortName">mac_en_reg</obj_property>
+      <obj_property name="ObjectShortName">mac_en_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/mac_en_reg_d" type="logic">
+      <obj_property name="ElementShortName">mac_en_reg_d</obj_property>
+      <obj_property name="ObjectShortName">mac_en_reg_d</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/psum_reg" type="array">
+      <obj_property name="ElementShortName">psum_reg[19:0]</obj_property>
+      <obj_property name="ObjectShortName">psum_reg[19:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/DATA_BITWIDTH" type="array">
+      <obj_property name="ElementShortName">DATA_BITWIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_BITWIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_PE_core_new/dut/PSUM_BITWIDTH" type="array">
+      <obj_property name="ElementShortName">PSUM_BITWIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PSUM_BITWIDTH[31:0]</obj_property>
+   </wvobject>
+</wave_config>

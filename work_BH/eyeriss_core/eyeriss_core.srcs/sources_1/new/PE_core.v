@@ -1,67 +1,61 @@
-module PE_core #(
-    parameter DATA_BITWIDTH = 8,
-    parameter PSUM_BITWIDTH = 20,
-    parameter PSUM_SPAD_DEPTH = 512,
-    parameter PSUM_SPAD_ADDR = 9
-)(
-    input clk, rst,
+`timescale 1ns / 1ps
 
+module PE_core #(
+    parameter DATA_BITWIDTH  = 8,
+    parameter PSUM_BITWIDTH  = 20
+)(
+    input clk,
+    input reset,
+
+    // 데이터 입력
     input [DATA_BITWIDTH-1:0] ifmap_data,
     input [DATA_BITWIDTH-1:0] weight_data,
+    input mac_en,
 
-    input [PSUM_SPAD_ADDR-1:0] psum_spad_ra,
-    input [PSUM_SPAD_ADDR-1:0] psum_spad_wa,
+    // 연산 횟수 (출력할 psum 개수)
+    input [15:0] output_feature_size,
 
-    input [PSUM_BITWIDTH-1:0] psum_in,
-
-    input mux_sel,
-
-    input status,
-
+    // 출력
     output [PSUM_BITWIDTH-1:0] psum_out,
-    output o_done
+    output psum_valid,
+    output reg done
 );
 
+    // 내부용 feature counter
+    reg [15:0] ofmap_cnt;
 
-    reg [2*DATA_BITWIDTH-1:0] mul_reg;
-    always @(posedge clk)
-    begin
-        if(rst)
-        begin
-            mul_reg <= 0;
-        end
-        else
-        begin
-            mul_reg <= ifmap_data * weight_data;
-        end 
-    end
+    wire [PSUM_BITWIDTH-1:0] internal_psum;
+    wire internal_valid;
 
-    reg [PSUM_BITWIDTH-1:0] mux_out;
-    always @(*)
-    begin
-        if(mux_sel)
-            mux_out = psum_in;
-        else
-            mux_out = mul_reg;
-    end
-
-    wire [PSUM_BITWIDTH-1:0] spad_psum_rd;
-    assign psum_out = spad_psum_rd + mux_out;
-
-    SPad_DP #(
-        .RAM_WIDTH(PSUM_BITWIDTH),                       // Specify RAM data width
-        .RAM_DEPTH(PSUM_SPAD_DEPTH)                     // Specify RAM depth (number of entries)
-    ) psum_spad (
+    // PE primitive instantiation
+    PE_primitive #(
+        .DATA_BITWIDTH(DATA_BITWIDTH),
+        .PSUM_BITWIDTH(PSUM_BITWIDTH)
+    ) u_primitive (
         .clk(clk),
-
-        .addra(psum_ra),   // Port A address bus, width determined from RAM_DEPTH
-        .addrb(psum_wa),   // Port B address bus, width determined from RAM_DEPTH
-
-        .douta(spad_psum_rd),   // Port A RAM output data, width determined from RAM_WIDTH
-
-        .dinb(psum_acc),     // Port B RAM input data, width determined from RAM_WIDTH
-        .web(psum_we)       // Port B write enable
+        .reset(reset),
+        .ifmap_data(ifmap_data),
+        .weight_data(weight_data),
+        .mac_en(mac_en),
+        .psum_out(internal_psum),
+        .psum_valid(internal_valid)
     );
 
+    assign psum_out   = internal_psum;
+    assign psum_valid = internal_valid;
+
+    // feature count + done 신호 처리
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            ofmap_cnt <= 0;
+            done <= 0;
+        end else if (internal_valid) begin
+            if (ofmap_cnt == output_feature_size - 1) begin
+                done <= 1;
+            end else begin
+                ofmap_cnt <= ofmap_cnt + 1;
+            end
+        end
+    end
 
 endmodule

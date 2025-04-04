@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenRun Id="synth_1" LaunchPart="xc7z020clg400-1" LaunchTime="1742825248">
   <File Type="PA-TCL" Name="SPad_DP.tcl"/>
-  <File Type="RDS-PROPCONSTRS" Name="SPad_DP_drc_synth.rpt"/>
   <File Type="REPORTS-TCL" Name="SPad_DP_reports.tcl"/>
   <File Type="RDS-RDS" Name="SPad_DP.vds"/>
-  <File Type="RDS-UTIL" Name="SPad_DP_utilization_synth.rpt"/>
-  <File Type="RDS-UTIL-PB" Name="SPad_DP_utilization_synth.pb"/>
   <File Type="RDS-DCP" Name="SPad_DP.dcp"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="SPad_DP_timing_summary_synth.rpt"/>
-  <File Type="VDS-TIMING-PB" Name="SPad_DP_timing_summary_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/new/Spad_DP.v">
@@ -37,9 +32,7 @@
     </Config>
   </FileSet>
   <Strategy Version="1" Minor="2">
-    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-      <Desc>Vivado Synthesis Defaults</Desc>
-    </StratHandle>
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
     <Step Id="synth_design"/>
   </Strategy>
 </GenRun>

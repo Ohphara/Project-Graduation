@@ -61,7 +61,7 @@ module PE_control #(
             state <= 0;
         end
         else begin
-            n_state <= state;
+            state <= n_state;
         end
     end
 
@@ -134,8 +134,23 @@ module PE_control #(
     assign load_done = ifmap_load_done && wght_load_done;
 
 
+
+    
     //FSM : output logic - CONV state
-    reg [5:0] iter_cnt;
+    /*
+    reg conv_start;
+    always @(posedge clk) begin
+        if (rst) begin
+            conv_start <= 0;
+        end else if (state == LOAD && n_state == CONV) begin
+            conv_start <= 1;
+        end else begin
+            conv_start <= 0;
+        end
+    end
+    */
+
+    integer iter_cnt;
     always @(posedge clk) begin
         if(rst) begin
             ifmap_ra <= 0;
@@ -162,11 +177,11 @@ module PE_control #(
             end
             else begin
                 ifmap_ra <= iter_cnt / P;
-                wght_ra <= (iter_cnt * Q * S) + (iter_cnt / P);
+                wght_ra <= ((iter_cnt * Q * S) % (P * Q * S)) + (iter_cnt / P);
                 psum_ra <= iter_cnt % P;
                 psum_wa <= iter_cnt % P;
                 psum_we <= 1;
-                ctrl_acc_sel <= (iter_cnt == P * S - 1);
+                //ctrl_acc_sel <= (iter_cnt == (P - 1) * Q * S);
                 ctrl_rst_psum <= 0;
 
                 iter_cnt <= (ctrl_acc_sel) ? iter_cnt : iter_cnt + 1;

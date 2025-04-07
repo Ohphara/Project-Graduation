@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 module fifo 
 # (
-	parameter   FIFO_CMD_LENGTH = 32,
+	parameter   DATA_BITWIDTH = 32,
 	parameter   FIFO_DEPTH      = 4     //power of two(recommended)
 )
 (
@@ -10,11 +10,11 @@ module fifo
 
 	input           				s_valid,
 	output         				 	s_ready,
-	input   [FIFO_CMD_LENGTH-1:0] 	s_data,
+	input   [DATA_BITWIDTH-1:0] 	s_data,
 
 	output          				m_valid,
 	input           				m_ready,
-	output  [FIFO_CMD_LENGTH-1:0] 	m_data
+	output  [DATA_BITWIDTH-1:0] 	m_data
 );
 
 localparam FIFO_LOG2_DEPTH = $clog2(FIFO_DEPTH);
@@ -25,12 +25,11 @@ wire o_full;
 wire i_hs = s_valid & s_ready;
 wire o_hs = m_valid & m_ready;
 
-/// Wire / Reg 
 reg     [FIFO_LOG2_DEPTH-1:0] 	wptr, wptr_nxt;
 reg             				wptr_round, wptr_round_nxt;
 reg     [FIFO_LOG2_DEPTH-1:0] 	rptr, rptr_nxt;
 reg             				rptr_round, rptr_round_nxt;
-reg     [FIFO_CMD_LENGTH-1:0] 	cmd_fifo[FIFO_DEPTH-1:0];
+reg     [DATA_BITWIDTH-1:0] 	cmd_fifo[FIFO_DEPTH-1:0];
 
 /// Body
 integer i;
@@ -39,7 +38,7 @@ always @(posedge clk ) begin
 		wptr <= 0;
 		wptr_round <= 0;
 		for (i=0; i<FIFO_DEPTH; i=i+1)
-			cmd_fifo[i] <= {(FIFO_CMD_LENGTH){1'b0}};
+			cmd_fifo[i] <= {(DATA_BITWIDTH){1'b0}};
 	end else if (i_hs) begin
 		cmd_fifo[wptr] <= s_data;
 		{wptr_round,wptr}<= {wptr_round_nxt,wptr_nxt};

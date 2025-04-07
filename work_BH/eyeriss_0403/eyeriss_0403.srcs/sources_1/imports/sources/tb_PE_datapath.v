@@ -15,15 +15,15 @@ module tb_PE_datapath;
 	reg ctrl_acc_sel;
 	reg ctrl_rst_psum;
 
-	reg [IFMAP_ADDR_BITWIDTH-1:0] ifmap_ra;
-	reg [WGHT_ADDR_BITWIDTH-1:0] wght_ra;
-	reg [PSUM_ADDR_BITWIDTH-1:0] psum_ra;
+	reg [IFMAP_ADDR_BITWIDTH-1:0] ctrl_ifmap_ra;
+	reg [WGHT_ADDR_BITWIDTH-1:0] ctrl_wght_ra;
+	reg [PSUM_ADDR_BITWIDTH-1:0] ctrl_psum_ra;
 
-	reg [IFMAP_ADDR_BITWIDTH-1:0] ifmap_wa;
-	reg [WGHT_ADDR_BITWIDTH-1:0]  wght_wa;
-	reg [PSUM_ADDR_BITWIDTH-1:0] psum_wa;
+	reg [IFMAP_ADDR_BITWIDTH-1:0] ctrl_ifmap_wa;
+	reg [WGHT_ADDR_BITWIDTH-1:0]  ctrl_wght_wa;
+	reg [PSUM_ADDR_BITWIDTH-1:0] ctrl_psum_wa;
 
-	reg ifmap_we, wght_we, psum_we;
+	reg ctrl_ifmap_we, ctrl_wght_we, ctrl_psum_we;
 
 	reg signed [DATA_BITWIDTH-1:0] ifmap_in;
 	reg signed [DATA_BITWIDTH-1:0] wght_in;
@@ -42,15 +42,15 @@ module tb_PE_datapath;
 		.rst(rst),
 		.ctrl_acc_sel(ctrl_acc_sel),
 		.ctrl_rst_psum(ctrl_rst_psum),
-		.ifmap_ra(ifmap_ra),
-		.wght_ra(wght_ra),
-		.psum_ra(psum_ra),
-		.ifmap_wa(ifmap_wa),
-		.wght_wa(wght_wa),
-		.psum_wa(psum_wa),
-		.ifmap_we(ifmap_we),
-		.wght_we(wght_we),
-		.psum_we(psum_we),
+		.ctrl_ifmap_ra(ctrl_ifmap_ra),
+		.ctrl_wght_ra(ctrl_wght_ra),
+		.ctrl_psum_ra(ctrl_psum_ra),
+		.ctrl_ifmap_wa(ctrl_ifmap_wa),
+		.ctrl_wght_wa(ctrl_wght_wa),
+		.ctrl_psum_wa(ctrl_psum_wa),
+		.ctrl_ifmap_we(ctrl_ifmap_we),
+		.ctrl_wght_we(ctrl_wght_we),
+		.ctrl_psum_we(ctrl_psum_we),
 		.ifmap_in(ifmap_in),
 		.wght_in(wght_in),
 		.psum_in(psum_in),
@@ -67,9 +67,9 @@ module tb_PE_datapath;
 		rst = 1;
 		ctrl_acc_sel = 0;
 		ctrl_rst_psum = 0;
-		ifmap_we = 0;
-		wght_we = 0;
-		psum_we = 0;
+		ctrl_ifmap_we = 0;
+		ctrl_wght_we = 0;
+		ctrl_psum_we = 0;
 		ifmap_in = 0;
 		wght_in = 0;
 		psum_in = 0;
@@ -78,52 +78,52 @@ module tb_PE_datapath;
 
 		// Load ifmap: [1,2,3,4,5]
 		for (i = 0; i < 5; i = i + 1) begin
-			ifmap_wa = i;
+			ctrl_ifmap_wa = i;
 			ifmap_in = i + 1;
-			ifmap_we = 1;
+			ctrl_ifmap_we = 1;
 			#10;
 		end
-		ifmap_we = 0;
+		ctrl_ifmap_we = 0;
 
 		// Load weight: [1, 2, 3]
 		for (i = 0; i < 3; i = i + 1) begin
-			wght_wa = i;
+			ctrl_wght_wa = i;
 			wght_in = (i == 0) ? 1 : (i == 1) ? 2 : 3;
-			wght_we = 1;
+			ctrl_wght_we = 1;
 			#10;
 		end
-		wght_we = 0;
+		ctrl_wght_we = 0;
 
 		#10;
 		ctrl_acc_sel = 0;
-		psum_ra = 0;
-		psum_wa = 0;
-		psum_we = 0;
+		ctrl_psum_ra = 0;
+		ctrl_psum_wa = 0;
+		ctrl_psum_we = 0;
 		#10;
 		// Convolution (3 cycles)
 		for (i = 0; i < 3; i = i + 1) begin
 			ctrl_rst_psum = 0;
 			ctrl_acc_sel = (i==0) ? 0 : 1;
-			ifmap_ra = i;
-			wght_ra = 0;
-			psum_we = (i==0) ? 0 : 1;
+			ctrl_ifmap_ra = i;
+			ctrl_wght_ra = 0;
+			ctrl_psum_we = (i==0) ? 0 : 1;
 			#10;
 			ctrl_rst_psum = 1;
 			ctrl_acc_sel = 0;
-			ifmap_ra = i + 1;
-			wght_ra = 1;
-			psum_we = 1;
+			ctrl_ifmap_ra = i + 1;
+			ctrl_wght_ra = 1;
+			ctrl_psum_we = 1;
 			#10;
 			ctrl_rst_psum = 0;
 			ctrl_acc_sel = 0;
-			ifmap_ra = i + 2;
-			wght_ra = 2;
-			psum_we = 1;
+			ctrl_ifmap_ra = i + 2;
+			ctrl_wght_ra = 2;
+			ctrl_psum_we = 1;
 			#10;
 			ctrl_rst_psum = 0;
 			ctrl_acc_sel = 0;
 			psum_in = i+10;
-			psum_we = 1;
+			ctrl_psum_we = 1;
 			#10;
 		end
 

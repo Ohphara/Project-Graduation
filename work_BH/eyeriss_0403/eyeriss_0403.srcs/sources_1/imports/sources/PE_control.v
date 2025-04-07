@@ -1,5 +1,9 @@
 `timescale 1ns / 1ps
 
+//TODO : fifo implementation
+//TODO : double buffering(load-conv pipeline)
+//TODO : stride implementation
+
 module PE_control #(
 	parameter DATA_BITWIDTH = 16,
 	parameter PSUM_BITWIDTH = 32,
@@ -16,7 +20,7 @@ module PE_control #(
     input clk,
     input rst,
 
-    input run,
+    input start,
 
     output o_idle,
     output o_load,
@@ -36,8 +40,8 @@ module PE_control #(
 	output reg wght_we,
 	output reg psum_we,
 
-    output reg ctrl_acc_sel,
-    output reg ctrl_rst_psum
+    output reg acc_sel,
+    output reg rst_psum
 );
 
     localparam  IDLE             = 2'h0;
@@ -69,7 +73,7 @@ module PE_control #(
     always @(*) begin
         case(state)
             IDLE: begin
-                if(run)
+                if(start)
                     n_state = LOAD;
                 else
                     n_state = IDLE;
@@ -137,19 +141,6 @@ module PE_control #(
 
     
     //FSM : output logic - CONV state
-    /*
-    reg conv_start;
-    always @(posedge clk) begin
-        if (rst) begin
-            conv_start <= 0;
-        end else if (state == LOAD && n_state == CONV) begin
-            conv_start <= 1;
-        end else begin
-            conv_start <= 0;
-        end
-    end
-    */
-
     integer iter_cnt;
     always @(posedge clk) begin
         if(rst) begin
@@ -158,8 +149,8 @@ module PE_control #(
             psum_ra <= 0;
             psum_wa <= 0;
             psum_we <= 0;
-            ctrl_acc_sel <= 0;
-            ctrl_rst_psum <= 0;
+            acc_sel <= 0;
+            rst_psum <= 0;
 
             iter_cnt <= 0;
         end
@@ -170,8 +161,8 @@ module PE_control #(
                 psum_ra <= 0;
                 psum_wa <= 0;
                 psum_we <= 0;
-                ctrl_acc_sel <= 0;
-                ctrl_rst_psum <= 0;
+                acc_sel <= 0;
+                rst_psum <= 0;
 
                 iter_cnt <= 0;
             end
@@ -181,10 +172,10 @@ module PE_control #(
                 psum_ra <= iter_cnt % P;
                 psum_wa <= iter_cnt % P;
                 psum_we <= 1;
-                //ctrl_acc_sel <= (iter_cnt == (P - 1) * Q * S);
-                ctrl_rst_psum <= 0;
+                acc_sel <= (iter_cnt >= (P * (Q * S - 1)));
+                rst_psum <= 0;
 
-                iter_cnt <= (ctrl_acc_sel) ? iter_cnt : iter_cnt + 1;
+                iter_cnt <= iter_cnt + 1;
             end
         end
     end

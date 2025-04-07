@@ -13,17 +13,17 @@ module PE_datapath #(
 	input ctrl_acc_sel,
 	input ctrl_rst_psum,
 
-	input [IFMAP_ADDR_BITWIDTH-1:0] ifmap_ra,
-	input [WGHT_ADDR_BITWIDTH-1:0] wght_ra,
-	input [PSUM_ADDR_BITWIDTH-1:0] psum_ra,
+	input [IFMAP_ADDR_BITWIDTH-1:0] ctrl_ifmap_ra,
+	input [WGHT_ADDR_BITWIDTH-1:0] ctrl_wght_ra,
+	input [PSUM_ADDR_BITWIDTH-1:0] ctrl_psum_ra,
 	
-	input [IFMAP_ADDR_BITWIDTH-1:0] ifmap_wa,
-	input [WGHT_ADDR_BITWIDTH-1:0]  wght_wa,
-	input [PSUM_ADDR_BITWIDTH-1:0] psum_wa,
+	input [IFMAP_ADDR_BITWIDTH-1:0] ctrl_ifmap_wa,
+	input [WGHT_ADDR_BITWIDTH-1:0]  ctrl_wght_wa,
+	input [PSUM_ADDR_BITWIDTH-1:0] ctrl_psum_wa,
 
-	input ifmap_we,
-	input wght_we,
-	input psum_we,
+	input ctrl_ifmap_we,
+	input ctrl_wght_we,
+	input ctrl_psum_we,
 
 	input signed [DATA_BITWIDTH-1:0] ifmap_in,
 	input signed [DATA_BITWIDTH-1:0] wght_in,
@@ -42,10 +42,10 @@ module PE_datapath #(
 	) ifmap_RF (
 		.clk(clk),
 		.rst(rst),
-		.ra(ifmap_ra),
+		.ra(ctrl_ifmap_ra),
 		.rd(ifmap_rd),
-		.we(ifmap_we),
-		.wa(ifmap_wa),
+		.we(ctrl_ifmap_we),
+		.wa(ctrl_ifmap_wa),
 		.wd(ifmap_in)
 	);
 
@@ -56,10 +56,10 @@ module PE_datapath #(
 		.clk(clk), 
 		.rst(rst), 
 		.re(1'b1),
-		.ra(wght_ra),
+		.ra(ctrl_wght_ra),
 		.rd(wght_rd),
-		.we(wght_we),
-		.wa(wght_wa),
+		.we(ctrl_wght_we),
+		.wa(ctrl_wght_wa),
 		.wd(wght_in)
 	);
 
@@ -69,10 +69,10 @@ module PE_datapath #(
 	) psum_RF (
 		.clk(clk),
 		.rst(rst),
-		.ra(psum_ra),
+		.ra(ctrl_psum_ra),
 		.rd(psum_rd),
-		.we(psum_we),
-		.wa(psum_wa),
+		.we(ctrl_psum_we),
+		.wa(ctrl_psum_wa),
 		.wd(psum_out)
 	);
 

@@ -1,8 +1,0 @@
-Time resolution is 1 ps
-=== Loading Weights ===
-=== Loading Activations ===
-=== Starting Computation, iter1 ===
-=== Starting Computation, iter1 ===
-=== Starting Computation, iter1 ===
-=== Test Completed ===
-$finish called at time : 705 ns : File "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_rtl/TEST_OPT/TEST_OPT.srcs/sim_1/imports/sim/tb_PE_new.v" Line 108

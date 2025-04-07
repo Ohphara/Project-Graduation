@@ -16,7 +16,7 @@ module tb_PE_control;
     parameter S = 3;
 
     // DUT I/Os
-    reg clk, rst, run;
+    reg clk, rst, start;
     wire o_idle, o_load, o_conv, o_done;
 
     wire [IFMAP_ADDR_BITWIDTH-1:0] ifmap_ra;
@@ -26,7 +26,7 @@ module tb_PE_control;
     wire [WGHT_ADDR_BITWIDTH-1:0] wght_wa;
     wire [PSUM_ADDR_BITWIDTH-1:0] psum_wa;
     wire ifmap_we, wght_we, psum_we;
-    wire ctrl_acc_sel, ctrl_rst_psum;
+    wire acc_sel, rst_psum;
 
     // Clock generation
     initial clk = 0;
@@ -45,7 +45,7 @@ module tb_PE_control;
     ) dut (
         .clk(clk),
         .rst(rst),
-        .run(run),
+        .start(start),
         .o_idle(o_idle),
         .o_load(o_load),
         .o_conv(o_conv),
@@ -59,8 +59,8 @@ module tb_PE_control;
         .ifmap_we(ifmap_we),
         .wght_we(wght_we),
         .psum_we(psum_we),
-        .ctrl_acc_sel(ctrl_acc_sel),
-        .ctrl_rst_psum(ctrl_rst_psum)
+        .acc_sel(acc_sel),
+        .rst_psum(rst_psum)
     );
 
     // Monitoring and counters
@@ -77,16 +77,16 @@ module tb_PE_control;
     initial begin
         // Initial state
         rst = 1;
-        run = 0;
+        start = 0;
 
         #20;
         rst = 0;
         #10;
 
-        // Trigger run
-        run = 1;
+        // Trigger start
+        start = 1;
         #10;
-        run = 0;
+        start = 0;
 
         // Wait for DONE signal
         wait (o_done);

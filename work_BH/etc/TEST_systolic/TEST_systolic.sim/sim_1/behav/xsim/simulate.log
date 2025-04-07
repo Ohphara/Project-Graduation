@@ -1,6 +1,0 @@
-Time resolution is 1 ps
-Matrix multiplication results:
-Row 0:      0      0      0 
-Row 1:      0      0      0 
-Row 2:      0      0      0 
-$finish called at time : 265 ns : File "C:/LAB/Project_Graduation/Project-Graduation/work_BH/etc/TEST_systolic/TEST_systolic.srcs/sim_1/imports/systolic_array/systolic_array_tb.sv" Line 85

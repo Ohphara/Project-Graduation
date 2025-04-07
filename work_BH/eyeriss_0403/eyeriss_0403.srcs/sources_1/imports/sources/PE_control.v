@@ -117,7 +117,7 @@ module PE_control #(
                     ifmap_we <= 0;
                 end
                 else begin
-                    ifmap_wa <= ifmap_wa + 1;
+                    ifmap_wa <= (ifmap_we == 0) ? ifmap_wa : ifmap_wa + 1;
                     ifmap_we <= 1;
                 end
 
@@ -126,15 +126,15 @@ module PE_control #(
                     wght_we <= 0;
                 end
                 else begin
-                    wght_wa <= wght_wa + 1;
+                    wght_wa <= (wght_we == 0) ? wght_wa : wght_wa + 1;
                     wght_we <= 1;
                 end
             end
         end
     end
 
-    assign ifmap_load_done = (ifmap_wa == Q * S);
-    assign wght_load_done = (wght_wa == P * Q * S);
+    assign ifmap_load_done = (ifmap_wa == (Q * S) - 1);
+    assign wght_load_done = (wght_wa == (P * Q * S) - 1);
     assign load_done = ifmap_load_done && wght_load_done;
 
 

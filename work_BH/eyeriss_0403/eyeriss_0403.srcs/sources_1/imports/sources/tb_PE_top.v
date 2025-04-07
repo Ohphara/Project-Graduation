@@ -57,6 +57,8 @@ module tb_PE_top;
     rst = 0;
     #10;
     start = 1;
+    #10;
+    start = 0;
 
     // Initialize ifmap and weight (자동 생성된 값)
     for (i = 0; i < IFMAP_SIZE; i = i + 1)
@@ -84,7 +86,7 @@ module tb_PE_top;
       #10;
     end
 
-    start = 0;
+    
 
     // Apply psum_in = 0 when done is high
     wait (o_done);

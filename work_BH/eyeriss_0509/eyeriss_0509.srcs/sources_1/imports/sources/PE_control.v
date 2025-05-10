@@ -8,7 +8,7 @@ module PE_control #(
 	parameter DATA_BITWIDTH = 16,
 	parameter PSUM_BITWIDTH = 32,
 
-	parameter IFMAP_ADDR_BITWIDTH = 4,
+	parameter IFMAP_ADDR_BITWIDTH = 5,
 	parameter WGHT_ADDR_BITWIDTH = 8,
 	parameter PSUM_ADDR_BITWIDTH = 5,
 
@@ -51,6 +51,7 @@ module PE_control #(
 
     reg [1:0] state;
     reg [1:0] n_state;
+    reg [9:0] cnt;
     
     reg [IFMAP_ADDR_BITWIDTH-1:0] ifmap_load_cnt;
     reg [WGHT_ADDR_BITWIDTH-1:0] wght_load_cnt;
@@ -58,6 +59,35 @@ module PE_control #(
     wire load_done, conv_done;
 
 
+    //counter logic
+    always @(posedge clk) begin
+        if(rst) begin
+            cnt <= 0;
+        end
+        else begin
+            case(state)
+                IDLE:   cnt <= 0;
+                LOAD: begin
+                    if(n_state == CONV)
+                        cnt <= 0;
+                    else
+                        cnt <= cnt + 1;
+                end   
+                CONV: begin
+                    if(n_state == DONE)
+                        cnt <= 0;
+                    else
+                        cnt <= cnt + 1;
+                end   
+                DONE: begin
+                    if(n_state == IDLE)
+                        cnt <= 0;
+                    else
+                        cnt <= cnt + 1;
+                end  
+            endcase
+        end
+    end
 
     //FSM : state register update
     always @(posedge clk) begin
@@ -69,7 +99,7 @@ module PE_control #(
         end
     end
 
-    //FSM : next state logic
+    //FSM : next state, output logic
     always @(*) begin
         case(state)
             IDLE: begin
@@ -83,6 +113,9 @@ module PE_control #(
                     n_state = CONV;
                 else
                     n_state = LOAD;
+
+                ifmap_wa = 
+                wght
             end
             CONV: begin
                 if(conv_done)
@@ -96,43 +129,10 @@ module PE_control #(
         endcase
     end
 
-    //FSM : output logic - LOAD state 
-    always @(posedge clk) begin
-        if(rst) begin
             ifmap_wa <= 0;
             wght_wa <= 0;
             ifmap_we <= 0;
             wght_we <= 0;
-        end
-        else if(state == LOAD) begin
-            if(load_done) begin
-                ifmap_wa <= 0;
-                wght_wa <= 0;
-                ifmap_we <= 0;
-                wght_we <= 0;
-            end
-            else begin
-                if(ifmap_load_done) begin
-                    ifmap_wa <= ifmap_wa;
-                    ifmap_we <= 0;
-                end
-                else begin
-                    ifmap_wa <= (ifmap_we == 0) ? ifmap_wa : ifmap_wa + 1;
-                    ifmap_we <= 1;
-                end
-
-                if(wght_load_done) begin
-                    wght_wa <= wght_wa;
-                    wght_we <= 0;
-                end
-                else begin
-                    wght_wa <= (wght_we == 0) ? wght_wa : wght_wa + 1;
-                    wght_we <= 1;
-                end
-            end
-        end
-    end
-
     assign ifmap_load_done = (ifmap_wa == (Q * S) - 1);
     assign wght_load_done = (wght_wa == (P * Q * S) - 1);
     assign load_done = ifmap_load_done && wght_load_done;

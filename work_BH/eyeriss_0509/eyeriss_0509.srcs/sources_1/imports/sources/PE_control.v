@@ -1,18 +1,17 @@
 `timescale 1ns / 1ps
 
 //TODO : fifo implementation
-//TODO : double buffering(load-conv pipeline)
 //TODO : stride implementation
 
 module PE_control #(
 	parameter DATA_BITWIDTH = 16,
 	parameter PSUM_BITWIDTH = 32,
 
-	parameter IFMAP_ADDR_BITWIDTH = 5,
+	parameter IFMAP_ADDR_BITWIDTH = 4,
 	parameter WGHT_ADDR_BITWIDTH = 8,
 	parameter PSUM_ADDR_BITWIDTH = 5,
 
-    parameter P = 24,   // # of different filters that one PE simultaneously process
+    parameter P = 6,   // # of different filters that one PE simultaneously process
     parameter Q = 4,     // # of different channels that one PE simultaneously process
     parameter S = 3,    // filter width
     parameter U = 1     // stride
@@ -44,50 +43,29 @@ module PE_control #(
     output reg rst_psum
 );
 
-    localparam  IDLE             = 2'h0;
-    localparam  LOAD             = 2'h1;
-    localparam  CONV             = 2'h2;
-    localparam  DONE             = 2'h3;
+    localparam  IDLE             = 3'h0;
+    localparam  LOAD             = 3'h1;
+    localparam  CONV             = 3'h2;
+    localparam  ACC              = 3'h3;
+    localparam  DONE             = 3'h4;
 
-    reg [1:0] state;
-    reg [1:0] n_state;
-    reg [9:0] cnt;
+    reg [2:0] state;
+    reg [2:0] n_state;
     
     reg [IFMAP_ADDR_BITWIDTH-1:0] ifmap_load_cnt;
     reg [WGHT_ADDR_BITWIDTH-1:0] wght_load_cnt;
     wire ifmap_load_done, wght_load_done;
     wire load_done, conv_done;
 
-
-    //counter logic
-    always @(posedge clk) begin
-        if(rst) begin
-            cnt <= 0;
+    
+    function integer clog2(input integer value);
+        integer i;
+        begin
+            clog2 = 0;
+            for (i = value - 1; i > 0; i = i >> 1)
+                clog2 = clog2 + 1;
         end
-        else begin
-            case(state)
-                IDLE:   cnt <= 0;
-                LOAD: begin
-                    if(n_state == CONV)
-                        cnt <= 0;
-                    else
-                        cnt <= cnt + 1;
-                end   
-                CONV: begin
-                    if(n_state == DONE)
-                        cnt <= 0;
-                    else
-                        cnt <= cnt + 1;
-                end   
-                DONE: begin
-                    if(n_state == IDLE)
-                        cnt <= 0;
-                    else
-                        cnt <= cnt + 1;
-                end  
-            endcase
-        end
-    end
+    endfunction
 
     //FSM : state register update
     always @(posedge clk) begin
@@ -99,7 +77,7 @@ module PE_control #(
         end
     end
 
-    //FSM : next state, output logic
+    //FSM : next state logic
     always @(*) begin
         case(state)
             IDLE: begin
@@ -113,9 +91,6 @@ module PE_control #(
                     n_state = CONV;
                 else
                     n_state = LOAD;
-
-                ifmap_wa = 
-                wght
             end
             CONV: begin
                 if(conv_done)
@@ -129,59 +104,135 @@ module PE_control #(
         endcase
     end
 
-            ifmap_wa <= 0;
-            wght_wa <= 0;
-            ifmap_we <= 0;
-            wght_we <= 0;
-    assign ifmap_load_done = (ifmap_wa == (Q * S) - 1);
-    assign wght_load_done = (wght_wa == (P * Q * S) - 1);
-    assign load_done = ifmap_load_done && wght_load_done;
-
-
-
+    //counter logic
+    reg [clog2(P)-1:0] cnt_P, cnt_P_d1, cnt_P_d2, cnt_P_d3;
+    reg [clog2(Q)-1:0] cnt_Q;
+    reg [clog2(S)-1:0] cnt_S;
     
-    //FSM : output logic - CONV state
-    integer iter_cnt;
+    wire [clog2(P * Q * S)-1:0] cnt_sum = cnt_P + (P * cnt_S) + (P * S * cnt_Q);
+    
     always @(posedge clk) begin
         if(rst) begin
-            ifmap_ra <= 0;
-            wght_ra <= 0;
-            psum_ra <= 0;
-            psum_wa <= 0;
-            psum_we <= 0;
-            acc_sel <= 0;
-            rst_psum <= 0;
+            cnt_P <= 0; 
+            cnt_Q <= 0; 
+            cnt_S <= 0; 
 
-            iter_cnt <= 0;
+            cnt_P_d1 <= 0;
+            cnt_P_d2 <= 0;
+            cnt_P_d3 <= 0;
         end
-        else if(state == CONV) begin
-            if(conv_done) begin
-                ifmap_ra <= 0;
-                wght_ra <= 0;
-                psum_ra <= 0;
-                psum_wa <= 0;
-                psum_we <= 0;
-                acc_sel <= 0;
-                rst_psum <= 0;
+        else begin
+            if(n_state != state) begin
+                cnt_P <= 0; 
+                cnt_S <= 0; 
+                cnt_Q <= 0;
 
-                iter_cnt <= 0;
+                cnt_P_d1 <= 0;
+                cnt_P_d2 <= 0;
+                cnt_P_d3 <= 0;
             end
             else begin
-                ifmap_ra <= iter_cnt / P;
-                wght_ra <= ((iter_cnt * Q * S) % (P * Q * S)) + (iter_cnt / P);
-                psum_ra <= iter_cnt % P;
-                psum_wa <= iter_cnt % P;
-                psum_we <= 1;
-                acc_sel <= (iter_cnt >= (P * (Q * S - 1)));
-                rst_psum <= 0;
+                cnt_P <= (cnt_P == P - 1) ? 0 : cnt_P + 1; 
+                cnt_S <= (cnt_P == P - 1) ? ((cnt_S == S - 1) ? 0 : cnt_S + 1) : cnt_S;
+                cnt_Q <= (cnt_P == P - 1) ? ((cnt_S == S - 1) ? ((cnt_Q == Q - 1) ? 0 : cnt_Q + 1) : cnt_Q) : cnt_Q;
 
-                iter_cnt <= iter_cnt + 1;
+                cnt_P_d1 <= cnt_P;
+                cnt_P_d2 <= cnt_P_d1;
+                cnt_P_d3 <= cnt_P_d2;
             end
         end
     end
-    assign conv_done = (iter_cnt == P * Q * S);
 
-    //FSM : output logic - state
+
+    always @(posedge clk) begin
+        if(rst) begin
+            ifmap_wa <= 0;
+            wght_wa <= 0;
+
+            ifmap_we <= 0;
+            wght_we <= 0;
+
+            psum_ra <= 0;
+            psum_wa <= 0;
+            psum_we <= 0;
+
+            acc_sel <= 0;
+            rst_psum <= 0;
+        end
+        case(state)
+            LOAD: begin
+                if(load_done) begin
+                    ifmap_wa <= 0;
+                    wght_wa <= 0;
+
+                    ifmap_we <= 0;
+                    wght_we <= 0;
+                end
+                else begin
+                    if(ifmap_load_done) begin
+                        ifmap_wa <= 0;
+                        ifmap_we <= 0;
+                    end
+                    else begin
+                        ifmap_wa <= cnt_S + (S * cnt_Q);
+                        ifmap_we <= 1;
+                    end
+
+                    if(wght_load_done) begin
+                        wght_wa <= 0;
+                        wght_we <= 0;
+                    end
+                    else begin
+                        wght_wa <= cnt_P + (P * cnt_S) + (P * S * cnt_Q);
+                        wght_we <= 1;
+                    end
+                end
+            end
+
+            CONV: begin
+                if(conv_done) begin
+                    ifmap_ra <= 0;
+                    wght_ra <= 0;
+
+                    psum_ra <= 0;
+                    psum_wa <= 0;
+                    psum_we <= 0;
+
+                    rst_psum <= 0;
+                end
+                else begin
+                    ifmap_ra <= cnt_S + (S * cnt_Q);
+                    wght_ra <= cnt_P + (P * cnt_S) + (P * S * cnt_Q);
+
+                    psum_ra <= cnt_P;
+                    psum_wa <= cnt_P_d3;
+                    psum_we <= (cnt_P_d3 + cnt_S + cnt_Q != 0);
+
+                    rst_psum <= (cnt_S == 0) && (cnt_Q == 0);
+                end
+            end
+
+            ACC: begin
+                if(acc_done) begin
+                    psum_ra <= 0;
+                    acc_sel <= 0;
+                end
+                else begin
+                    psum_ra <= cnt_P;
+                    acc_sel <= (cnt_P_d1 != 0);
+                end
+            end
+        endcase
+    end
+
+    assign ifmap_load_done = (cnt_sum >= (Q * S) - 1);
+    assign wght_load_done = (cnt_sum >= (P * Q * S) - 1);
+
+    assign load_done = ifmap_load_done && wght_load_done;
+    assign conv_done = (cnt_sum == (P * Q * S) - 1 + 3); // due to 3 cycle delay of psum wr
+    assign acc_done = (cnt_sum == P - 1 + 1); // due to 1 cycle delay or psum rd
+    assign rst_done = (cnt_sum == (P - 1 + 3)); // due to 3 cycle delay of psum wr
+
     assign o_idle = (state == IDLE);
     assign o_load = (state == LOAD);
     assign o_conv = (state == CONV);

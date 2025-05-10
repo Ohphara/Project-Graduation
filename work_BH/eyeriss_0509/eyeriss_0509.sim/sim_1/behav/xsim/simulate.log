@@ -1,0 +1,4 @@
+Time resolution is 1 ps
+Start Testbench
+Finish Simulation
+$finish called at time : 2380 ns : File "C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_PE_datapath.v" Line 209

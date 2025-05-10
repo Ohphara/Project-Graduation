@@ -7,7 +7,7 @@ module tb_PE_datapath;
 
 	parameter IFMAP_ADDR_BITWIDTH = 4;
 	parameter WGHT_ADDR_BITWIDTH = 8;
-	parameter PSUM_ADDR_BITWIDTH = 2;
+	parameter PSUM_ADDR_BITWIDTH = 5;
 
 	reg clk = 0;
 	reg rst;
@@ -59,11 +59,11 @@ module tb_PE_datapath;
 
 	always #5 clk = ~clk; // 10ns clock period
 
-    integer i;
+	integer i,j,k;
 	initial begin
 		$display("Start Testbench");
 
-		// Reset
+		// 초기화
 		rst = 1;
 		ctrl_acc_sel = 0;
 		ctrl_rst_psum = 0;
@@ -73,61 +73,60 @@ module tb_PE_datapath;
 		ifmap_in = 0;
 		wght_in = 0;
 		psum_in = 0;
-		#20;
+		ctrl_ifmap_ra = 0;
+		ctrl_wght_ra = 0;
+		ctrl_psum_ra = 0;
+		ctrl_ifmap_wa = 0;
+		ctrl_wght_wa = 0;
+		ctrl_psum_wa = 0;
+
+		repeat (2) @(posedge clk);
 		rst = 0;
 
-		// Load ifmap: [1,2,3,4,5]
-		for (i = 0; i < 5; i = i + 1) begin
-			ctrl_ifmap_wa = i;
-			ifmap_in = i + 1;
-			ctrl_ifmap_we = 1;
-			#10;
+		// Load ifmap: [1,2,3,1,2,3,1,2,3,1,2,3]
+		for (i = 0; i < 4; i = i + 1) begin
+			for (j = 0; j < 3; j = j + 1) begin
+				@(posedge clk);
+				ctrl_ifmap_wa <= 4*i + j;
+				ifmap_in <= j + 1;
+				ctrl_ifmap_we <= 1;
+			end
 		end
-		ctrl_ifmap_we = 0;
+		@(posedge clk);
+		ctrl_ifmap_we <= 0;
 
-		// Load weight: [1, 2, 3]
-		for (i = 0; i < 3; i = i + 1) begin
-			ctrl_wght_wa = i;
-			wght_in = (i == 0) ? 1 : (i == 1) ? 2 : 3;
-			ctrl_wght_we = 1;
-			#10;
+		// Load weight:
+		// [1,2,3,1,2,3,1,2,3,1,2,3
+		//	1,2,3,1,2,3,1,2,3,1,2,3
+		//	1,2,3,1,2,3,1,2,3,1,2,3
+		//	1,2,3,1,2,3,1,2,3,1,2,3
+		//	1,2,3,1,2,3,1,2,3,1,2,3
+		//	1,2,3,1,2,3,1,2,3,1,2,3]
+		for (i = 0; i < 6; i = i + 1) begin         // 6 rows
+			for (j = 0; j < 12; j = j + 1) begin     // 12 columns
+				@(posedge clk);
+				ctrl_wght_wa <= i * 12 + j;
+				wght_in <= (j % 3) + 1;  // 반복되는 1,2,3
+				ctrl_wght_we <= 1;
+			end
 		end
-		ctrl_wght_we = 0;
+		@(posedge clk);
+		ctrl_ifmap_we <= 0;
 
-		#10;
-		ctrl_acc_sel = 0;
-		ctrl_psum_ra = 0;
-		ctrl_psum_wa = 0;
-		ctrl_psum_we = 0;
-		#10;
+
+		@(posedge clk);
+		ctrl_acc_sel <= 0;
+		ctrl_psum_ra <= 0;
+		ctrl_psum_wa <= 0;
+		ctrl_psum_we <= 0;
+
 		// Convolution (3 cycles)
-		for (i = 0; i < 3; i = i + 1) begin
-			ctrl_rst_psum = 0;
-			ctrl_acc_sel = (i==0) ? 0 : 1;
-			ctrl_ifmap_ra = i;
-			ctrl_wght_ra = 0;
-			ctrl_psum_we = (i==0) ? 0 : 1;
-			#10;
-			ctrl_rst_psum = 1;
-			ctrl_acc_sel = 0;
-			ctrl_ifmap_ra = i + 1;
-			ctrl_wght_ra = 1;
-			ctrl_psum_we = 1;
-			#10;
-			ctrl_rst_psum = 0;
-			ctrl_acc_sel = 0;
-			ctrl_ifmap_ra = i + 2;
-			ctrl_wght_ra = 2;
-			ctrl_psum_we = 1;
-			#10;
-			ctrl_rst_psum = 0;
-			ctrl_acc_sel = 0;
-			psum_in = i+10;
-			ctrl_psum_we = 1;
-			#10;
+		for(i = 0; i < 6; i = i + 1) begin
+			for(j = 0; j < 12; j = j + 1) begin
+			end
 		end
 
-		#50;
+		repeat (5) @(posedge clk);
 		$display("Finish Simulation");
 		$finish;
 	end

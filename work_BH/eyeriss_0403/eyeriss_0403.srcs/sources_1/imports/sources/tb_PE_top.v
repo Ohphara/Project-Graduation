@@ -53,56 +53,53 @@ module tb_PE_top;
     psum_in = 0;
 
     // Wait for reset
-    #20;
-    rst = 0;
-    #10;
-    start = 1;
-    #10;
-    start = 0;
+    repeat (2) @(posedge clk);
+    rst <= 0;
+    @(posedge clk);
+    start <= 1;
+    @(posedge clk);
+    start <= 0;
+    @(posedge clk);
 
-    // Initialize ifmap and weight (자동 생성된 값)
+    // Initialize ifmap and weight
     for (i = 0; i < IFMAP_SIZE; i = i + 1)
       ifmap_mem[i] = i + 1; // 1~12
 
     for (i = 0; i < WEIGHT_SIZE; i = i + 1)
-      weight_mem[i] = i % 3 + 1; // 반복되는 값 1~3
+      weight_mem[i] = i % 3 + 1; // 1~3 반복
 
     // Golden output 계산
     for (p = 0; p < P; p = p + 1) begin
-        golden_psum[p] = 0;
-        for (q = 0; q < Q; q = q + 1) begin
-            for (s = 0; s < S; s = s + 1) begin
-                idx = q*S + s;
-                widx = p*Q*S + q*S + s;
-                golden_psum[p] = golden_psum[p] + ifmap_mem[idx] * weight_mem[widx];
-            end
+      golden_psum[p] = 0;
+      for (q = 0; q < Q; q = q + 1)
+        for (s = 0; s < S; s = s + 1) begin
+          idx = q*S + s;
+          widx = p*Q*S + q*S + s;
+          golden_psum[p] = golden_psum[p] + ifmap_mem[idx] * weight_mem[widx];
         end
     end
 
     // Feed ifmap and weight to DUT
     for (i = 0; i < WEIGHT_SIZE; i = i + 1) begin
-      ifmap_in = ifmap_mem[i % IFMAP_SIZE];
-      wght_in = weight_mem[i];
-      #10;
+      ifmap_in <= ifmap_mem[i % IFMAP_SIZE];
+      wght_in  <= weight_mem[i];
+      @(posedge clk);
     end
 
-    
-
-    // Apply psum_in = 0 when done is high
+    // Wait until done
     wait (o_done);
-    psum_in = 0;
-    #10;
+    @(posedge clk);
+    psum_in <= 0;
 
     // Check outputs
     for (p = 0; p < P; p = p + 1) begin
-      #10;
+      @(posedge clk);
       if (psum_out !== golden_psum[p]) begin
         $display("[ERROR] Mismatch at psum[%0d]: got %0d, expected %0d", p, psum_out, golden_psum[p]);
       end else begin
         $display("[PASS] psum[%0d] = %0d", p, psum_out);
       end
     end
-    $finish;
 
     $display("\nAll tests passed.");
     $finish;

@@ -78,8 +78,10 @@ module tb_PE_datapath;
 		wght_in = 0;
 		psum_in = 0;
 
-		repeat (2) @(posedge clk);
+		repeat (10) @(negedge clk);
 		rst = 0;
+
+//////////////////////////////////////////////////////////
 
 		// Load ifmap
 		// [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
@@ -88,7 +90,7 @@ module tb_PE_datapath;
 				ctrl_ifmap_wa = (i * S) + j;
 				ifmap_in = j + 1;
 				ctrl_ifmap_we = 1;
-				@(posedge clk);
+				@(negedge clk);
 			end
 		end
 		ctrl_ifmap_we = 0;
@@ -106,39 +108,103 @@ module tb_PE_datapath;
 					ctrl_wght_wa = (i * S) + j + (k * Q * S);
 					wght_in = j + 1;
 					ctrl_wght_we = 1;
-					@(posedge clk);
+					@(negedge clk);
 				end
 			end
 		end
 		ctrl_wght_we = 0;
 
-		repeat (5) @(posedge clk);
-		ctrl_ifmap_ra = 0;
-		ctrl_wght_ra = 0;
-		ctrl_psum_ra = 0;
-		ctrl_psum_wa = 0;
-		ctrl_psum_we = 0;
-		ctrl_rst_psum = 0;
-		ctrl_acc_sel = 0;
-		@(posedge clk);
+//////////////////////////////////////////////////////////
+
+		repeat (10) @(negedge clk);
 
 		// Convolution
 		for (i = 0; i < Q; i = i + 1) begin
 			for (j = 0; j < S; j = j + 1) begin
 				for (k = 0; k < P; k = k + 1) begin
+					@(negedge clk);
 					ctrl_ifmap_ra = (i * S) + j;
 					ctrl_wght_ra = (i * S) + j + (k * Q * S);
 					ctrl_psum_ra = k;
-					ctrl_psum_wa = k;
-					ctrl_psum_we = 1;
+					ctrl_psum_wa = (i==0 && j==0 && k<3) ? 0 : (k>=3) ? k-3 : k+3; // 3 cycle delay for valid psum_out
+					ctrl_psum_we = (i==0 && j==0 && k<3) ? 0 : 1; // 3 cycle delay for valid psum_out
 					ctrl_rst_psum = 0;
 					ctrl_acc_sel = 0;
-					@(posedge clk);
 				end
 			end
 		end
+		for (i = 0; i < 3; i = i + 1) begin
+			@(negedge clk);
+			ctrl_psum_wa = i + 3;
+			ctrl_psum_we = 1;
+		end
+		@(negedge clk);
+		ctrl_psum_we = 0;
 
-		repeat (5) @(posedge clk);
+//////////////////////////////////////////////////////////
+
+		// Psum Accumulation
+		for (i = 0; i < 6; i = i + 1) begin
+			@(negedge clk);
+			ctrl_psum_ra = i;
+			ctrl_acc_sel = (i==0) ? 0 : 1; // 1 cycle delay
+			psum_in = 10;
+		end
+		@(negedge clk);
+		ctrl_acc_sel = 1;
+		@(negedge clk);
+		ctrl_acc_sel = 0;
+		
+
+//////////////////////////////////////////////////////////
+
+		repeat (10) @(negedge clk);
+
+		// Reset Accumulation without psum_in
+		for (i = 0; i < 3; i = i + 1) begin
+			@(negedge clk);
+			psum_in = 0;
+			ctrl_acc_sel = 1;
+			ctrl_rst_psum = 1;
+		end
+		for (i = 0; i < 6; i = i + 1) begin
+			@(negedge clk);
+			ctrl_psum_wa = i;
+			ctrl_psum_we = 1;
+		end
+
+		@(negedge clk);
+		ctrl_rst_psum = 0;
+		ctrl_acc_sel = 0;
+		ctrl_psum_we = 0;
+
+
+//////////////////////////////////////////////////////////
+
+		repeat (10) @(negedge clk);
+
+		// Reset Accumulation with psum_in
+		for (i = 0; i < 3; i = i + 1) begin
+			@(negedge clk);
+			psum_in = 10;
+			ctrl_acc_sel = 1;
+			ctrl_rst_psum = 1;
+		end
+		for (i = 0; i < 6; i = i + 1) begin
+			@(negedge clk);
+			ctrl_psum_wa = i;
+			ctrl_psum_we = 1;
+		end
+
+		@(negedge clk);
+		ctrl_rst_psum = 0;
+		ctrl_acc_sel = 0;
+		ctrl_psum_we = 0;
+
+//////////////////////////////////////////////////////////
+
+		repeat (10) @(negedge clk);
+
 		$display("Finish Simulation");
 		$finish;
 	end

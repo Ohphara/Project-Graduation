@@ -51,7 +51,7 @@ module PE_datapath #(
 
 	SPad #(
 		.DATA_BITWIDTH(DATA_BITWIDTH),
-		.ADDR_BITWIDTH(PSUM_ADDR_BITWIDTH)
+		.ADDR_BITWIDTH(WGHT_ADDR_BITWIDTH)
 	) spad_weight ( 
 		.clk(clk), 
 		.rst(rst), 
@@ -77,29 +77,32 @@ module PE_datapath #(
 	);
 
 	reg [DATA_BITWIDTH-1:0] ifmap_reg, ifmap_reg_d;
-	reg [PSUM_BITWIDTH-1:0] psum_reg, psum_reg_d, psum_reg_d2;
+	reg [PSUM_BITWIDTH-1:0] psum_reg, psum_reg_d, psum_reg_d2 ;
 	reg [DATA_BITWIDTH-1:0] wght_reg;
+
+	reg ctrl_acc_sel_reg;
+	reg ctrl_rst_psum_reg;
 
 	always @(posedge clk) begin
 		if(rst) begin
 			ifmap_reg <= 0;
-			ifmap_reg_d <= 0;
-
 			wght_reg <= 0;
-
 			psum_reg <= 0;
 			psum_reg_d <= 0;
 			psum_reg_d2 <= 0;
+			ctrl_acc_sel_reg <= 0;
 		end
 		else begin
 			ifmap_reg <= ifmap_rd;
 			ifmap_reg_d <= ifmap_reg;
-
 			wght_reg <= wght_rd;
 
 			psum_reg <= psum_rd;
-			psum_reg_d <= (ctrl_rst_psum) ? 0 : psum_reg;
+			psum_reg_d <= (ctrl_rst_psum_reg) ? 0 : psum_reg;
 			psum_reg_d2 <= psum_reg_d;
+
+			ctrl_acc_sel_reg <= ctrl_acc_sel;
+			ctrl_rst_psum_reg <= ctrl_rst_psum;
 		end
 	end
 
@@ -114,16 +117,6 @@ module PE_datapath #(
 		end
 	end
 
-	reg [PSUM_BITWIDTH-1:0] mul_reg_d;
-	always @(posedge clk) begin
-		if(rst) begin
-			mul_reg_d <= 0;
-		end
-		else begin
-			mul_reg_d <= mul_reg;
-		end
-	end
-
-	assign psum_out = psum_reg_d2 + ((ctrl_acc_sel) ? psum_in : mul_reg);
+	assign psum_out = psum_reg_d2 + ((ctrl_acc_sel_reg) ? psum_in : mul_reg);
 
 endmodule

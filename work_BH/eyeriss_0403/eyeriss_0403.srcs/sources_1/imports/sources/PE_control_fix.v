@@ -4,7 +4,7 @@
 //TODO : double buffering(load-conv pipeline)
 //TODO : stride implementation
 
-module PE_control #(
+module PE_control_fix #(
 	parameter DATA_BITWIDTH = 16,
 	parameter PSUM_BITWIDTH = 32,
 
@@ -12,7 +12,7 @@ module PE_control #(
 	parameter WGHT_ADDR_BITWIDTH = 8,
 	parameter PSUM_ADDR_BITWIDTH = 5,
 
-    parameter P = 24,   // # of different filters that one PE simultaneously process
+    parameter P = 6,   // # of different filters that one PE simultaneously process
     parameter Q = 4,     // # of different channels that one PE simultaneously process
     parameter S = 3,    // filter width
     parameter U = 1     // stride
@@ -49,23 +49,22 @@ module PE_control #(
     localparam  CONV             = 2'h2;
     localparam  DONE             = 2'h3;
 
-    reg [1:0] state;
-    reg [1:0] n_state;
-    
-    reg [IFMAP_ADDR_BITWIDTH-1:0] ifmap_load_cnt;
-    reg [WGHT_ADDR_BITWIDTH-1:0] wght_load_cnt;
+    reg [1:0] state, n_state;
+    reg [9:0] count;
+
     wire ifmap_load_done, wght_load_done;
     wire load_done, conv_done;
-
 
 
     //FSM : state register update
     always @(posedge clk) begin
         if(rst) begin
             state <= 0;
+            count <= 0;
         end
         else begin
             state <= n_state;
+            
         end
     end
 
@@ -97,24 +96,9 @@ module PE_control #(
     end
 
     //FSM : output logic - LOAD state 
-    always @(posedge clk) begin
-        if(rst) begin
-            ifmap_wa <= 0;
-            wght_wa <= 0;
-            ifmap_we <= 0;
-            wght_we <= 0;
-            rst_psum <= 0;
-            
-        end
-        else if(state == LOAD) begin
-            if(load_done) begin
-                ifmap_wa <= 0;
-                wght_wa <= 0;
-                ifmap_we <= 0;
-                wght_we <= 0;
-                rst_psum <= 0;
-            end
-            else begin
+    always @(*) begin
+        case(state)
+            LOAD: begin                
                 if(ifmap_load_done) begin
                     ifmap_wa <= ifmap_wa;
                     ifmap_we <= 0;
@@ -135,18 +119,16 @@ module PE_control #(
                     rst_psum <= 1;
                 end
             end
-        end
+        endcase
     end
 
-    assign ifmap_load_done = (ifmap_wa == (Q * S) - 1);
-    assign wght_load_done = (wght_wa == (P * Q * S) - 1);
+    assign ifmap_load_done = (count == (Q * S) - 1);
+    assign wght_load_done = (count == (P * Q * S) - 1);
     assign load_done = ifmap_load_done && wght_load_done;
-
-
 
     
     //FSM : output logic - CONV state
-    reg [9:0] iter_cnt;
+    integer iter_cnt;
     always @(posedge clk) begin
         if(rst) begin
             ifmap_ra <= 0;

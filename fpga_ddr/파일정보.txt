@@ -1,0 +1,40 @@
+1) arty35t_ddr3.zip
+	- verilog source code
+	- vivado 2018.3
+	- ch3 ~ ch7
+
+2) arty35t_ddr3_ch8.zip
+	- verilog source code
+	- vivado 2018.3
+	- ch8
+
+3)  ShowRaw.zip
+	- visual studio 2010
+	- raw 파일을 화면에 보여줌
+	- bmp 파일을 raw 파일로 변환
+	- 아래 "ShowRaw Manual" 참조
+
+4) ddr3_32bits_ch9.zip
+	- ch9, for ver2.5
+
+
+*** ShowRaw Manual ***
+
+1) 개발환경
+	- visual studio 2010
+
+2)  실행파일
+	- ShowRaw\Release\ShowRaw.exe
+
+3) 사용법
+	3-1) .raw 파일 화면에 보여주기
+		- Show Raw 버튼을 클릭해서 ".raw" 파일을 열기 함
+	3-2) bmp 파일을 raw 파일롤 변환
+		- 프레임 버퍼 테스트 이미지 생성
+		- bmp 파일만 지원
+		- bmp -> raw 버튼을 클릭해서 ".bmp" 파일을 열기 함
+		- 파일의 확장자가 raw 로 변경되어서 저장됨.
+	3-3) 이미지 크기 변경하기 (다른 크기의 이미지 데이터 사용하기)
+		- ShowRawDlg.cpp 파일의 48, 49 라인 수정
+		- #define  IMAGE_W   640
+		- #define  IMAGE_H   360

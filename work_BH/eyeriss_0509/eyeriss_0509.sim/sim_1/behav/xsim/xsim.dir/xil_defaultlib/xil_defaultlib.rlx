@@ -2,8 +2,10 @@
 2020.2
 Apr 18 2022
 16:05:34
-C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.sim/sim_1/behav/xsim/glbl.v,1746855672,verilog,,,,glbl,,,,,,,,
-C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_PE_datapath.v,1746866275,verilog,,,,tb_PE_datapath,,,,,,,,
-C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/PE_datapath.v,1746865228,verilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/RF.v,,PE_datapath,,,,,,,,
-C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/RF.v,1746855673,verilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/SPad.v,,RF,,,,,,,,
-C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/SPad.v,1746855673,verilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_PE_datapath.v,,SPad,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.sim/sim_1/behav/xsim/glbl.v,1748093966,verilog,,,,glbl,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_MC.v,1748099283,verilog,,,,tb_MC,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_PE_datapath.v,1748094296,verilog,,,,tb_PE_datapath,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/MC.v,1748098936,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_MC.v,,MC,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/PE_datapath.v,1748094872,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/RF.v,,PE_datapath,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/RF.v,1748093966,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/SPad.v,,RF,,,,,,,,
+C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sources_1/imports/sources/SPad.v,1748093966,verilog,,C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_PE_datapath.v,,SPad,,,,,,,,

@@ -4,26 +4,26 @@ module SPad #(
 	parameter DATA_BITWIDTH = 16,
 	parameter ADDR_BITWIDTH = 9 
 )( 
-	input clk,
-	input rst,
-	input re,
-	input we,
-	input [ADDR_BITWIDTH-1 : 0] ra,
-	input [ADDR_BITWIDTH-1 : 0] wa,
-	input signed [DATA_BITWIDTH-1 : 0] wd,
-	output signed [DATA_BITWIDTH-1 : 0] rd
+	input i_clk,
+	input i_rst,
+	input i_re,
+	input i_we,
+	input [ADDR_BITWIDTH-1 : 0] i_ra,
+	input [ADDR_BITWIDTH-1 : 0] i_wa,
+	input signed [DATA_BITWIDTH-1 : 0] i_wd,
+	output signed [DATA_BITWIDTH-1 : 0] o_rd
 );
 	
 	reg [DATA_BITWIDTH-1 : 0] mem [0 : (1 << ADDR_BITWIDTH) - 1]; 
 	reg [DATA_BITWIDTH-1 : 0] data;
 	
-	always@(posedge clk) begin : READ
-		if(rst)
+	always@(posedge i_clk) begin : READ
+		if(i_rst)
 			data <= 0;
 		else
 		begin
-			if(re) begin
-				data <= mem[ra];
+			if(i_re) begin
+				data <= mem[i_ra];
 			end
 			else begin
 				data <= 10101;
@@ -31,12 +31,12 @@ module SPad #(
 		end
 	end
 
-	assign rd = data;
+	assign o_rd = data;
 	
 
-	always@(posedge clk) begin : WRITE
-		if(we && !rst) begin
-			mem[wa] <= wd;
+	always@(posedge i_clk) begin : WRITE
+		if(i_we && !i_rst) begin
+			mem[i_wa] <= i_wd;
 		end
 	end
 	

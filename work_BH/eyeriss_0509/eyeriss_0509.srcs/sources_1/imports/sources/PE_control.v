@@ -1,8 +1,5 @@
 `timescale 1ns / 1ps
 
-//TODO : fifo implementation
-//TODO : stride implementation
-
 module PE_control #(
 	parameter DATA_BITWIDTH = 16,
 	parameter PSUM_BITWIDTH = 32,
@@ -10,21 +7,32 @@ module PE_control #(
 	parameter IFMAP_ADDR_BITWIDTH = 4,
 	parameter WGHT_ADDR_BITWIDTH = 8,
 	parameter PSUM_ADDR_BITWIDTH = 5,
-
-    parameter P = 6,   // # of different filters that one PE simultaneously process
-    parameter Q = 4,     // # of different channels that one PE simultaneously process
-    parameter S = 3,    // filter width
-    parameter U = 1     // stride
 )(
     input i_clk,
     input i_rst,
 
     input i_start,
-
+    input [8:0] i_conv_info, // p[2:0], q[2:0], s[2:0]
+    
     output o_idle,
-    output o_load,
+    output o_load_wght,
+    output o_load_ifmap,
     output o_conv,
     output o_done,
+
+/*
+    //// Interface to IFMAP FIFO ////
+    input i_valid_fifo_ifmap,
+    output o_ready_fifo_ifmap,
+
+    //// Interface to WGHT FIFO ////
+    input i_valid_fifo_ifmap,
+    output o_ready_fifo_ifmap,
+
+    //// Interface to PSUM FIFO ////
+    input i_valid_fifo_ifmap,
+    output o_ready_fifo_ifmap,
+*/
 
     //// Interface to PE_datapath.v ////
 	output reg [IFMAP_ADDR_BITWIDTH-1:0] o_ifmap_ra,
@@ -43,14 +51,31 @@ module PE_control #(
     output reg o_rst_psum
 );
 
-    localparam  IDLE             = 3'h0;
-    localparam  LOAD             = 3'h1;
-    localparam  CONV             = 3'h2;
-    localparam  ACC              = 3'h3;
-    localparam  DONE             = 3'h4;
+    //ISA on FPGA side
+    localparam CMD_NOP          = 3'b000;
+    localparam CMD_WMINJ        = 3'b001; // weight matrix inject from GLB to PE
+    localparam CMD_IMINJ        = 3'b010; // input matrix inject
+                                          // push input matrix from SRAM_A to input data setup queue
+    localparam CMD_CONV          = 3'b011; // start mac operation
+    localparam CMD_MACACC       = 3'b100; // start mac operation and accumulate on already stored in output data setup.
+    localparam CMD_OMPOP        = 3'b101; // output matrix pop.
+                                             // push matmul result from output data setup queue to SRAM_B
 
+    //States
+    localparam  IDLE             = 3'h0;
+    localparam  SET              = 3'h1; //scan configuration bit and adjust setting
+    localparam  LOAD_IFMAP       = 3'h2;
+    localparam  LOAD_WGHT        = 3'h3;
+    localparam  CONV             = 3'h4;
+    localparam  ACC              = 3'h5;
+    localparam  DONE             = 3'h6;
+
+    reg [8:0] conv_info_reg;
     reg [2:0] state;
     reg [2:0] n_state;
+    
+    wire [2:0] P, Q, S;
+    assign {P, Q, S} = conv_info_reg;
     
     reg [IFMAP_ADDR_BITWIDTH-1:0] ifmap_load_cnt;
     reg [WGHT_ADDR_BITWIDTH-1:0] wght_load_cnt;
@@ -66,6 +91,15 @@ module PE_control #(
                 clog2 = clog2 + 1;
         end
     endfunction
+
+
+    always @(posedge i_clk) begin
+        if(i_rst)
+            conv_info_reg <= 0;
+        else if(i_start)
+            conv_info_reg <= i_conv_info;
+        end
+    end
 
     //FSM : state register update
     always @(posedge i_clk) begin

@@ -2,7 +2,6 @@
 
 module PE_datapath #(
 	parameter DATA_BITWIDTH = 16,
-	parameter PSUM_BITWIDTH = 32,
 
 	parameter IFMAP_ADDR_BITWIDTH = 4,
 	parameter WGHT_ADDR_BITWIDTH = 8,
@@ -13,8 +12,8 @@ module PE_datapath #(
 	//input, output data
 	input signed [DATA_BITWIDTH-1:0] i_ifmap,
 	input signed [DATA_BITWIDTH-1:0] i_wght,
-	input signed [PSUM_BITWIDTH-1:0] i_psum,
-	output signed [PSUM_BITWIDTH-1:0] o_psum,
+	input signed [DATA_BITWIDTH-1:0] i_psum,
+	output signed [DATA_BITWIDTH-1:0] o_psum,
 
 	//controller interface
 	input i_acc_sel,
@@ -35,10 +34,10 @@ module PE_datapath #(
 
 	wire signed [DATA_BITWIDTH-1:0] ifmap_rd;
 	wire signed [DATA_BITWIDTH-1:0] wght_rd;
-	wire signed [PSUM_BITWIDTH-1:0] psum_rd;
+	wire signed [DATA_BITWIDTH-1:0] psum_rd;
 
 	reg [DATA_BITWIDTH-1:0] ifmap_reg, ifmap_reg_d;
-	reg [PSUM_BITWIDTH-1:0] psum_reg, psum_reg_d, psum_reg_d2 ;
+	reg [DATA_BITWIDTH-1:0] psum_reg, psum_reg_d, psum_reg_d2 ;
 	reg [DATA_BITWIDTH-1:0] wght_reg;
 
 	reg i_acc_sel_reg;
@@ -50,11 +49,11 @@ module PE_datapath #(
 	) ifmap_RF (
 		.i_clk(i_clk),
 		.i_rst(i_rst),
-		.ra(i_ifmap_ra),
-		.rd(ifmap_rd),
-		.we(i_ifmap_we),
-		.wa(i_ifmap_wa),
-		.wd(i_ifmap)
+		.i_ra(i_ifmap_ra),
+		.o_rd(ifmap_rd),
+		.i_we(i_ifmap_we),
+		.i_wa(i_ifmap_wa),
+		.i_wd(i_ifmap)
 	);
 
 	SPad #(
@@ -63,25 +62,25 @@ module PE_datapath #(
 	) spad_weight ( 
 		.i_clk(i_clk), 
 		.i_rst(i_rst), 
-		.re(1'b1),
-		.ra(i_wght_ra),
-		.rd(wght_rd),
-		.we(i_wght_we),
-		.wa(i_wght_wa),
-		.wd(i_wght)
+		.i_re(1'b1),
+		.i_ra(i_wght_ra),
+		.o_rd(wght_rd),
+		.i_we(i_wght_we),
+		.i_wa(i_wght_wa),
+		.i_wd(i_wght)
 	);
 
 	RF #(
-		.DATA_BITWIDTH(PSUM_BITWIDTH),
+		.DATA_BITWIDTH(DATA_BITWIDTH),
 		.ADDR_BITWIDTH(PSUM_ADDR_BITWIDTH)
 	) psum_RF (
 		.i_clk(i_clk),
 		.i_rst(i_rst),
-		.ra(i_psum_ra),
-		.rd(psum_rd),
-		.we(i_psum_we),
-		.wa(i_psum_wa),
-		.wd(o_psum)
+		.i_ra(i_psum_ra),
+		.o_rd(psum_rd),
+		.i_we(i_psum_we),
+		.i_wa(i_psum_wa),
+		.i_wd(o_psum)
 	);
 
 	always @(posedge i_clk) begin
@@ -108,7 +107,7 @@ module PE_datapath #(
 	end
 
 
-	reg [PSUM_BITWIDTH-1:0] mul_reg;
+	reg [DATA_BITWIDTH-1:0] mul_reg;
 	always @(posedge i_clk) begin
 		if(i_rst) begin
 			mul_reg <= 0;

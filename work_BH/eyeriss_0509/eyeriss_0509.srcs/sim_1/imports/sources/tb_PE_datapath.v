@@ -17,7 +17,7 @@ module tb_PE_datapath;
 	reg i_rst;
 
 	reg i_acc_sel;
-	reg i_i_rst_psum;
+	reg i_rst_psum;
 
 	reg [IFMAP_ADDR_BITWIDTH-1:0] i_ifmap_ra;
 	reg [WGHT_ADDR_BITWIDTH-1:0] i_wght_ra;
@@ -29,9 +29,9 @@ module tb_PE_datapath;
 
 	reg i_ifmap_we, i_wght_we, i_psum_we;
 
-	reg [DATA_BITWIDTH-1:0] ifmap_in;
-	reg [DATA_BITWIDTH-1:0] wght_in;
-	reg [PSUM_BITWIDTH-1:0] psum_in;
+	reg [DATA_BITWIDTH-1:0] i_ifmap;
+	reg [DATA_BITWIDTH-1:0] i_wght;
+	reg [PSUM_BITWIDTH-1:0] i_psum;
 
 	wire [PSUM_BITWIDTH-1:0] psum_out;
 
@@ -45,7 +45,7 @@ module tb_PE_datapath;
 		.i_clk(i_clk),
 		.i_rst(i_rst),
 		.i_acc_sel(i_acc_sel),
-		.i_i_rst_psum(i_i_rst_psum),
+		.i_rst_psum(i_rst_psum),
 		.i_ifmap_ra(i_ifmap_ra),
 		.i_wght_ra(i_wght_ra),
 		.i_psum_ra(i_psum_ra),
@@ -55,10 +55,10 @@ module tb_PE_datapath;
 		.i_ifmap_we(i_ifmap_we),
 		.i_wght_we(i_wght_we),
 		.i_psum_we(i_psum_we),
-		.ifmap_in(ifmap_in),
-		.wght_in(wght_in),
-		.psum_in(psum_in),
-		.psum_out(psum_out)
+		.i_ifmap(i_ifmap),
+		.i_wght(i_wght),
+		.i_psum(i_psum),
+		.o_psum(o_psum)
 	);
 
 	always #5 i_clk = ~i_clk; // 10ns clock period
@@ -70,13 +70,13 @@ module tb_PE_datapath;
 		// Reset
 		i_rst = 1;
 		i_acc_sel = 0;
-		i_i_rst_psum = 0;
+		i_rst_psum = 0;
 		i_ifmap_we = 0;
 		i_wght_we = 0;
 		i_psum_we = 0;
-		ifmap_in = 0;
-		wght_in = 0;
-		psum_in = 0;
+		i_ifmap = 0;
+		i_wght = 0;
+		i_psum = 0;
 
 		repeat (10) @(negedge i_clk);
 		i_rst = 0;
@@ -88,7 +88,7 @@ module tb_PE_datapath;
 		for (i = 0; i < Q; i = i + 1) begin
 			for (j = 0; j < S; j = j + 1) begin
 				i_ifmap_wa = (i * S) + j;
-				ifmap_in = j + 1;
+				i_ifmap = j + 1;
 				i_ifmap_we = 1;
 				@(negedge i_clk);
 			end
@@ -106,7 +106,7 @@ module tb_PE_datapath;
 			for(j = 0; j < S; j = j + 1) begin
 				for (k = 0; k < P; k = k + 1) begin
 					i_wght_wa = (i * S) + j + (k * Q * S);
-					wght_in = j + 1;
+					i_wght = j + 1;
 					i_wght_we = 1;
 					@(negedge i_clk);
 				end
@@ -128,7 +128,7 @@ module tb_PE_datapath;
 					i_psum_ra = k;
 					i_psum_wa = (i==0 && j==0 && k<3) ? 0 : (k>=3) ? k-3 : k+3; // 3 cycle delay for valid psum_out
 					i_psum_we = (i==0 && j==0 && k<3) ? 0 : 1; // 3 cycle delay for valid psum_out
-					i_i_rst_psum = 0;
+					i_rst_psum = 0;
 					i_acc_sel = 0;
 				end
 			end
@@ -148,7 +148,7 @@ module tb_PE_datapath;
 			@(negedge i_clk);
 			i_psum_ra = i;
 			i_acc_sel = (i==0) ? 0 : 1; // 1 cycle delay
-			psum_in = 10;
+			i_psum = 10;
 		end
 		@(negedge i_clk);
 		i_acc_sel = 1;
@@ -160,12 +160,12 @@ module tb_PE_datapath;
 
 		repeat (10) @(negedge i_clk);
 
-		// Reset Accumulation without psum_in
+		// Reset Accumulation without i_psum
 		for (i = 0; i < 3; i = i + 1) begin
 			@(negedge i_clk);
-			psum_in = 0;
+			i_psum = 0;
 			i_acc_sel = 1;
-			i_i_rst_psum = 1;
+			i_rst_psum = 1;
 		end
 		for (i = 0; i < 6; i = i + 1) begin
 			@(negedge i_clk);
@@ -174,7 +174,7 @@ module tb_PE_datapath;
 		end
 
 		@(negedge i_clk);
-		i_i_rst_psum = 0;
+		i_rst_psum = 0;
 		i_acc_sel = 0;
 		i_psum_we = 0;
 
@@ -183,12 +183,12 @@ module tb_PE_datapath;
 
 		repeat (10) @(negedge i_clk);
 
-		// Reset Accumulation with psum_in
+		// Reset Accumulation with i_psum
 		for (i = 0; i < 3; i = i + 1) begin
 			@(negedge i_clk);
-			psum_in = 10;
+			i_psum = 10;
 			i_acc_sel = 1;
-			i_i_rst_psum = 1;
+			i_rst_psum = 1;
 		end
 		for (i = 0; i < 6; i = i + 1) begin
 			@(negedge i_clk);
@@ -197,7 +197,7 @@ module tb_PE_datapath;
 		end
 
 		@(negedge i_clk);
-		i_i_rst_psum = 0;
+		i_rst_psum = 0;
 		i_acc_sel = 0;
 		i_psum_we = 0;
 

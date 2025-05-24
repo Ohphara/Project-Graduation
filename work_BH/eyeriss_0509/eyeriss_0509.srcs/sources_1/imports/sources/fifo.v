@@ -1,85 +1,84 @@
-`timescale 1ns / 1ps
-module fifo 
-# (
-	parameter   DATA_BITWIDTH = 32,
-	parameter   FIFO_DEPTH      = 4     //power of two(recommended)
-)
-(
-	input           				clk,
-	input           				reset,
+module fifo#(
+    parameter QUEUE_PTR_BANDWIDTH = 3,
+    parameter QUEUE_SIZE          = (1<<QUEUE_PTR_BANDWIDTH),
+    parameter ELE_BANDWIDTH       = 8
+)(
+    input i_clk,
+    input i_rst,
 
-	input           				s_valid,
-	output         				 	s_ready,
-	input   [DATA_BITWIDTH-1:0] 	s_data,
+    //FIFO interface as rx
+    input [ELE_BANDWIDTH-1:0] i_push_data,
+    input i_valid,
+    output o_ready,
 
-	output          				m_valid,
-	input           				m_ready,
-	output  [DATA_BITWIDTH-1:0] 	m_data
+    //FIFO interface as tx
+    input i_ready,         
+    output o_valid,
+    output [ELE_BANDWIDTH-1:0] o_pop_data
 );
 
-localparam FIFO_LOG2_DEPTH = $clog2(FIFO_DEPTH);
+    reg [ELE_BANDWIDTH-1:0] queue_mem [QUEUE_SIZE-1:0];
+    reg [QUEUE_PTR_BANDWIDTH:0] head;
+    reg [QUEUE_PTR_BANDWIDTH:0] tail;
 
-wire o_empty;
-wire o_full;
+    wire full, empty;
+    wire head_MSB, tail_MSB;
+    wire [QUEUE_PTR_BANDWIDTH-1:0] head_fifo_ptr, tail_fifo_ptr;
 
-wire i_hs = s_valid & s_ready;
-wire o_hs = m_valid & m_ready;
+    assign {head_MSB, head_fifo_ptr} = head;
+    assign {tail_MSB, tail_fifo_ptr} = tail;
 
-reg     [FIFO_LOG2_DEPTH-1:0] 	wptr, wptr_nxt;
-reg             				wptr_round, wptr_round_nxt;
-reg     [FIFO_LOG2_DEPTH-1:0] 	rptr, rptr_nxt;
-reg             				rptr_round, rptr_round_nxt;
-reg     [DATA_BITWIDTH-1:0] 	cmd_fifo[FIFO_DEPTH-1:0];
+    assign full  = (head_MSB      != tail_MSB) &
+                   (head_fifo_ptr == tail_fifo_ptr);
+    assign empty = (head_MSB      == tail_MSB) &
+                   (head_fifo_ptr == tail_fifo_ptr);
 
-/// Body
-integer i;
-always @(posedge clk ) begin
-	if (reset) begin
-		wptr <= 0;
-		wptr_round <= 0;
-		for (i=0; i<FIFO_DEPTH; i=i+1)
-			cmd_fifo[i] <= {(DATA_BITWIDTH){1'b0}};
-	end else if (i_hs) begin
-		cmd_fifo[wptr] <= s_data;
-		{wptr_round,wptr}<= {wptr_round_nxt,wptr_nxt};
-	end
-end
+    wire push_flag, pop_flag, shift_flag, bypass_flag;
 
-always @(*) begin
-	if (wptr == (FIFO_DEPTH-1)) begin
-		wptr_nxt = 0;
-		wptr_round_nxt = ~wptr_round;
-	end else begin
-		wptr_nxt = wptr + 'd1;
-		wptr_round_nxt = wptr_round;
-	end
-end
+    assign shift_flag  = (i_ready & i_valid) & full;
+    assign bypass_flag = (i_ready & i_valid) & empty;
+    
+    assign o_valid = bypass_flag ? 1'b1 : ~empty;
+    assign o_ready = shift_flag  ? 1'b1 : ~full;
+    assign o_pop_data = bypass_flag ? i_push_data : queue_mem[head_fifo_ptr];
 
-always @(posedge clk) begin
-	if (reset) begin
-		rptr <= 0;
-		rptr_round <= 0;
-	end else if (o_hs) begin
-		{rptr_round,rptr} <= {rptr_round_nxt,rptr_nxt};
-	end
-end
-
-assign m_data = cmd_fifo[rptr];
-
-always @(*) begin
-	if (rptr == (FIFO_DEPTH-1)) begin
-		rptr_nxt = 0;
-		rptr_round_nxt = ~rptr_round;
-	end else begin
-		rptr_nxt = rptr + 'd1;
-		rptr_round_nxt = rptr_round;
-	end
-end
-
-assign o_empty  = (wptr_round==rptr_round) && (wptr==rptr);
-assign o_full = (wptr_round!=rptr_round) && (wptr==rptr);
-
-assign s_ready = ~o_full;
-assign m_valid = ~o_empty;
+    assign pop_flag    = o_valid & i_ready;
+    assign push_flag   = i_valid & o_ready;
+    
+    always @(posedge i_clk or negedge i_rst) begin
+        if (~i_rst) begin
+            tail <= 0;
+            head <= 0;
+        end else begin
+            if(shift_flag) begin
+                queue_mem[tail_fifo_ptr] <= i_push_data;
+                tail                     <= tail+1;
+                head                     <= head+1;
+            end
+            else if(bypass_flag) begin
+                queue_mem[tail_fifo_ptr] <= queue_mem[tail_fifo_ptr];
+                tail                     <= tail;
+                head                     <= head;
+            end 
+            else if(push_flag && pop_flag) begin
+                queue_mem[tail_fifo_ptr] <= i_push_data;
+                tail                     <= tail+1;
+                head                     <= head+1;
+            end 
+            else if(push_flag) begin 
+                queue_mem[tail_fifo_ptr] <= i_push_data;
+                tail                     <= tail+1;
+                head                     <= head;
+            end else if(pop_flag) begin 
+                queue_mem[tail_fifo_ptr] <= queue_mem[tail_fifo_ptr];
+                tail                     <= tail;
+                head                     <= head+1;
+            end else begin 
+                queue_mem[tail_fifo_ptr] <= queue_mem[tail_fifo_ptr];
+                tail                     <= tail;
+                head                     <= head;
+            end
+        end
+    end
 
 endmodule

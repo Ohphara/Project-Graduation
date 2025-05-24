@@ -16,7 +16,7 @@ module tb_PE_control;
     parameter S = 3;
 
     // DUT I/Os
-    reg clk, rst, start;
+    reg i_clk, i_rst, i_start;
     wire o_idle, o_load, o_conv, o_done;
 
     wire [IFMAP_ADDR_BITWIDTH-1:0] ifmap_ra;
@@ -26,11 +26,11 @@ module tb_PE_control;
     wire [WGHT_ADDR_BITWIDTH-1:0] wght_wa;
     wire [PSUM_ADDR_BITWIDTH-1:0] psum_wa;
     wire ifmap_we, wght_we, psum_we;
-    wire acc_sel, rst_psum;
+    wire o_acc_sel, o_rst_psum;
 
     // Clock generation
-    initial clk = 0;
-    always #5 clk = ~clk; // 100MHz
+    initial i_clk = 0;
+    always #5 i_clk = ~i_clk; // 100MHz
 
     // DUT instantiation
     PE_control #(
@@ -43,9 +43,9 @@ module tb_PE_control;
         .Q(Q),
         .S(S)
     ) dut (
-        .clk(clk),
-        .rst(rst),
-        .start(start),
+        .i_clk(i_clk),
+        .i_rst(i_rst),
+        .i_start(i_start),
         .o_idle(o_idle),
         .o_load(o_load),
         .o_conv(o_conv),
@@ -59,8 +59,8 @@ module tb_PE_control;
         .ifmap_we(ifmap_we),
         .wght_we(wght_we),
         .psum_we(psum_we),
-        .acc_sel(acc_sel),
-        .rst_psum(rst_psum)
+        .o_acc_sel(o_acc_sel),
+        .o_rst_psum(o_rst_psum)
     );
 
     // Monitoring and counters
@@ -68,7 +68,7 @@ module tb_PE_control;
     integer wght_we_count = 0;
     integer psum_we_count = 0;
 
-    always @(posedge clk) begin
+    always @(posedge i_clk) begin
         if (ifmap_we) ifmap_we_count = ifmap_we_count + 1;
         if (wght_we)  wght_we_count = wght_we_count + 1;
         if (psum_we)  psum_we_count = psum_we_count + 1;
@@ -76,17 +76,17 @@ module tb_PE_control;
 
     initial begin
         // Initial state
-        rst = 1;
-        start = 0;
+        i_rst = 1;
+        i_start = 0;
 
         #20;
-        rst = 0;
+        i_rst = 0;
         #10;
 
-        // Trigger start
-        start = 1;
+        // Trigger i_start
+        i_start = 1;
         #10;
-        start = 0;
+        i_start = 0;
 
         // Wait for DONE signal
         wait (o_done);

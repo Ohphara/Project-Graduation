@@ -16,10 +16,10 @@ module PE_control #(
     parameter S = 3,    // filter width
     parameter U = 1     // stride
 )(
-    input clk,
-    input rst,
+    input i_clk,
+    input i_rst,
 
-    input start,
+    input i_start,
 
     output o_idle,
     output o_load,
@@ -27,20 +27,20 @@ module PE_control #(
     output o_done,
 
     //// Interface to PE_datapath.v ////
-	output reg [IFMAP_ADDR_BITWIDTH-1:0] ifmap_ra,
-	output reg [WGHT_ADDR_BITWIDTH-1:0] wght_ra,
-	output reg [PSUM_ADDR_BITWIDTH-1:0] psum_ra,
+	output reg [IFMAP_ADDR_BITWIDTH-1:0] o_ifmap_ra,
+	output reg [WGHT_ADDR_BITWIDTH-1:0] o_wght_ra,
+	output reg [PSUM_ADDR_BITWIDTH-1:0] o_psum_ra,
 	
-	output reg [IFMAP_ADDR_BITWIDTH-1:0] ifmap_wa,
-	output reg [WGHT_ADDR_BITWIDTH-1:0] wght_wa,
-	output reg [PSUM_ADDR_BITWIDTH-1:0] psum_wa,
+	output reg [IFMAP_ADDR_BITWIDTH-1:0] o_ifmap_wa,
+	output reg [WGHT_ADDR_BITWIDTH-1:0] o_wght_wa,
+	output reg [PSUM_ADDR_BITWIDTH-1:0] o_psum_wa,
 
-	output reg ifmap_we,
-	output reg wght_we,
-	output reg psum_we,
+	output reg o_ifmap_we,
+	output reg o_wght_we,
+	output reg o_psum_we,
 
-    output reg acc_sel,
-    output reg rst_psum
+    output reg o_acc_sel,
+    output reg o_rst_psum
 );
 
     localparam  IDLE             = 3'h0;
@@ -68,8 +68,8 @@ module PE_control #(
     endfunction
 
     //FSM : state register update
-    always @(posedge clk) begin
-        if(rst) begin
+    always @(posedge i_clk) begin
+        if(i_rst) begin
             state <= 0;
         end
         else begin
@@ -81,7 +81,7 @@ module PE_control #(
     always @(*) begin
         case(state)
             IDLE: begin
-                if(start)
+                if(i_start)
                     n_state = LOAD;
                 else
                     n_state = IDLE;
@@ -111,8 +111,8 @@ module PE_control #(
     
     wire [clog2(P * Q * S)-1:0] cnt_sum = cnt_P + (P * cnt_S) + (P * S * cnt_Q);
     
-    always @(posedge clk) begin
-        if(rst) begin
+    always @(posedge i_clk) begin
+        if(i_rst) begin
             cnt_P <= 0; 
             cnt_Q <= 0; 
             cnt_S <= 0; 
@@ -144,82 +144,82 @@ module PE_control #(
     end
 
 
-    always @(posedge clk) begin
-        if(rst) begin
-            ifmap_wa <= 0;
-            wght_wa <= 0;
+    always @(posedge i_clk) begin
+        if(i_rst) begin
+            o_ifmap_wa <= 0;
+            o_wght_wa <= 0;
 
-            ifmap_we <= 0;
-            wght_we <= 0;
+            o_ifmap_we <= 0;
+            o_wght_we <= 0;
 
-            psum_ra <= 0;
-            psum_wa <= 0;
-            psum_we <= 0;
+            o_psum_ra <= 0;
+            o_psum_wa <= 0;
+            o_psum_we <= 0;
 
-            acc_sel <= 0;
-            rst_psum <= 0;
+            o_acc_sel <= 0;
+            o_rst_psum <= 0;
         end
         case(state)
             LOAD: begin
                 if(load_done) begin
-                    ifmap_wa <= 0;
-                    wght_wa <= 0;
+                    o_ifmap_wa <= 0;
+                    o_wght_wa <= 0;
 
-                    ifmap_we <= 0;
-                    wght_we <= 0;
+                    o_ifmap_we <= 0;
+                    o_wght_we <= 0;
                 end
                 else begin
                     if(ifmap_load_done) begin
-                        ifmap_wa <= 0;
-                        ifmap_we <= 0;
+                        o_ifmap_wa <= 0;
+                        o_ifmap_we <= 0;
                     end
                     else begin
-                        ifmap_wa <= cnt_S + (S * cnt_Q);
-                        ifmap_we <= 1;
+                        o_ifmap_wa <= cnt_S + (S * cnt_Q);
+                        o_ifmap_we <= 1;
                     end
 
                     if(wght_load_done) begin
-                        wght_wa <= 0;
-                        wght_we <= 0;
+                        o_wght_wa <= 0;
+                        o_wght_we <= 0;
                     end
                     else begin
-                        wght_wa <= cnt_P + (P * cnt_S) + (P * S * cnt_Q);
-                        wght_we <= 1;
+                        o_wght_wa <= cnt_P + (P * cnt_S) + (P * S * cnt_Q);
+                        o_wght_we <= 1;
                     end
                 end
             end
 
             CONV: begin
                 if(conv_done) begin
-                    ifmap_ra <= 0;
-                    wght_ra <= 0;
+                    o_ifmap_ra <= 0;
+                    o_wght_ra <= 0;
 
-                    psum_ra <= 0;
-                    psum_wa <= 0;
-                    psum_we <= 0;
+                    o_psum_ra <= 0;
+                    o_psum_wa <= 0;
+                    o_psum_we <= 0;
 
-                    rst_psum <= 0;
+                    o_rst_psum <= 0;
                 end
                 else begin
-                    ifmap_ra <= cnt_S + (S * cnt_Q);
-                    wght_ra <= cnt_P + (P * cnt_S) + (P * S * cnt_Q);
+                    o_ifmap_ra <= cnt_S + (S * cnt_Q);
+                    o_wght_ra <= cnt_P + (P * cnt_S) + (P * S * cnt_Q);
 
-                    psum_ra <= cnt_P;
-                    psum_wa <= cnt_P_d3;
-                    psum_we <= (cnt_P_d3 + cnt_S + cnt_Q != 0);
+                    o_psum_ra <= cnt_P;
+                    o_psum_wa <= cnt_P_d3;
+                    o_psum_we <= (cnt_P_d3 + cnt_S + cnt_Q != 0);
 
-                    rst_psum <= (cnt_S == 0) && (cnt_Q == 0);
+                    o_rst_psum <= (cnt_S == 0) && (cnt_Q == 0);
                 end
             end
 
             ACC: begin
                 if(acc_done) begin
-                    psum_ra <= 0;
-                    acc_sel <= 0;
+                    o_psum_ra <= 0;
+                    o_acc_sel <= 0;
                 end
                 else begin
-                    psum_ra <= cnt_P;
-                    acc_sel <= (cnt_P_d1 != 0);
+                    o_psum_ra <= cnt_P;
+                    o_acc_sel <= (cnt_P_d1 != 0);
                 end
             end
         endcase
@@ -231,7 +231,7 @@ module PE_control #(
     assign load_done = ifmap_load_done && wght_load_done;
     assign conv_done = (cnt_sum == (P * Q * S) - 1 + 3); // due to 3 cycle delay of psum wr
     assign acc_done = (cnt_sum == P - 1 + 1); // due to 1 cycle delay or psum rd
-    assign rst_done = (cnt_sum == (P - 1 + 3)); // due to 3 cycle delay of psum wr
+    assign i_rst_done = (cnt_sum == (P - 1 + 3)); // due to 3 cycle delay of psum wr
 
     assign o_idle = (state == IDLE);
     assign o_load = (state == LOAD);

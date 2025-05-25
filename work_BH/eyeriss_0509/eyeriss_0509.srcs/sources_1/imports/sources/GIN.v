@@ -1,38 +1,36 @@
 //global input network for communication between GLB and PE Array.
-module GIN_YBUS #(
+module GIN_BUS #(
     parameter DATA_BITWIDTH = 16,
-    parameter COL_LEN = 6
+    parameter SLV_NUM = 6
 )(
     input i_clk,
     input i_rst,
 
-    //fifo interface
-    input i_fifo_data,
-    input i_fifo_valid,
-    output o_fifo_ready,
+    input [DATA_BITWIDTH-1:0] i_data;
 
     //top control interface
-    input [5:0] i_tag,
+    input [2:0] i_id,
+    input [2:0] i_tag,
 
-    //xbus interface
-    input [COL_LEN-1:0] i_bus_ready,
-    output o_bus_valid
+
+    input [SLV_NUM-1:0] i_ready,
+    output o_bus_valid,
     output [DATA_BITWIDTH-1:0] o_bus_data,
     output [2:0] o_tag
 );
 
     wire [2:0] tag_row, tag_col;
     assign {tag_row, tag_col} = i_tag;
+    assign o_tag = tag_row;
 
     wire                ybus_ready;
-    wire [COL_LEN-1:0]  xbus_ready;
-    
-    assign ybus_ready = & xbus_ready; 
+    assign ybus_ready = & i_xbus_ready;
+
     assign o_fifo_ready = ybus_ready;
 
     genvar i;
     generate
-        for(i=0; i<COL_LEN; i=i+1) begin: YBUS_MC_gen
+        for(i=0; i<SLV_NUM; i=i+1) begin: YBUS_MC_gen
             MC #(
                 .DATA_BITWIDTH(DATA_BITWIDTH)
             ) u_MC (

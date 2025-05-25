@@ -1,7 +1,4 @@
 Time resolution is 1 ps
-Start MC testbench
-Match Case - o_valid: 1, o_data: 1
-Mismatch Case - o_valid: 0, o_data: 0
-No Ready - o_valid: 0, o_data: 0
-No Valid - o_valid: 0, o_data: 0
-$finish called at time : 105 ns : File "C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_MC.v" Line 88
+Start Testbench
+Finish Simulation
+$finish called at time : 2375 ns : File "C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/sim_1/imports/sources/tb_PE_datapath.v" Line 208

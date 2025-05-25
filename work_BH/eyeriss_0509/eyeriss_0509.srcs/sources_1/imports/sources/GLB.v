@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module SPad #( 
+module GLB #( 
 	parameter DATA_BITWIDTH = 16,
 	parameter ADDR_BITWIDTH = 9 
 )( 

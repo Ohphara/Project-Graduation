@@ -1,12 +1,8 @@
-
 `timescale 1ns / 1ps
 
 module tb_PE_control;
 
-    // Parameters
     parameter DATA_BITWIDTH = 16;
-    parameter PSUM_BITWIDTH = 32;
-
     parameter IFMAP_ADDR_BITWIDTH = 4;
     parameter WGHT_ADDR_BITWIDTH = 8;
     parameter PSUM_ADDR_BITWIDTH = 5;
@@ -15,93 +11,126 @@ module tb_PE_control;
     parameter Q = 4;
     parameter S = 3;
 
-    // DUT I/Os
-    reg i_clk, i_rst, i_start;
-    wire o_idle, o_load, o_conv, o_done;
+    // Inputs
+    reg i_clk = 0;
+    reg i_rst;
+    reg i_start;
+    reg [2:0] i_opcode;
+    reg [8:0] i_conv_info;
 
-    wire [IFMAP_ADDR_BITWIDTH-1:0] ifmap_ra;
-    wire [WGHT_ADDR_BITWIDTH-1:0] wght_ra;
-    wire [PSUM_ADDR_BITWIDTH-1:0] psum_ra;
-    wire [IFMAP_ADDR_BITWIDTH-1:0] ifmap_wa;
-    wire [WGHT_ADDR_BITWIDTH-1:0] wght_wa;
-    wire [PSUM_ADDR_BITWIDTH-1:0] psum_wa;
-    wire ifmap_we, wght_we, psum_we;
+    // Outputs
+    wire o_ready_fifo_inst;
+    wire [IFMAP_ADDR_BITWIDTH-1:0] o_ifmap_ra;
+    wire [WGHT_ADDR_BITWIDTH-1:0] o_wght_ra;
+    wire [PSUM_ADDR_BITWIDTH-1:0] o_psum_ra;
+    wire [IFMAP_ADDR_BITWIDTH-1:0] o_ifmap_wa;
+    wire [WGHT_ADDR_BITWIDTH-1:0] o_wght_wa;
+    wire [PSUM_ADDR_BITWIDTH-1:0] o_psum_wa;
+    wire o_ifmap_we, o_wght_we, o_psum_we;
     wire o_acc_sel, o_rst_psum;
 
-    // Clock generation
-    initial i_clk = 0;
-    always #5 i_clk = ~i_clk; // 100MHz
-
-    // DUT instantiation
+    // Instantiate DUT
     PE_control #(
         .DATA_BITWIDTH(DATA_BITWIDTH),
-        .PSUM_BITWIDTH(PSUM_BITWIDTH),
         .IFMAP_ADDR_BITWIDTH(IFMAP_ADDR_BITWIDTH),
         .WGHT_ADDR_BITWIDTH(WGHT_ADDR_BITWIDTH),
-        .PSUM_ADDR_BITWIDTH(PSUM_ADDR_BITWIDTH),
-        .P(P),
-        .Q(Q),
-        .S(S)
+        .PSUM_ADDR_BITWIDTH(PSUM_ADDR_BITWIDTH)
     ) dut (
         .i_clk(i_clk),
         .i_rst(i_rst),
         .i_start(i_start),
-        .o_idle(o_idle),
-        .o_load(o_load),
-        .o_conv(o_conv),
-        .o_done(o_done),
-        .ifmap_ra(ifmap_ra),
-        .wght_ra(wght_ra),
-        .psum_ra(psum_ra),
-        .ifmap_wa(ifmap_wa),
-        .wght_wa(wght_wa),
-        .psum_wa(psum_wa),
-        .ifmap_we(ifmap_we),
-        .wght_we(wght_we),
-        .psum_we(psum_we),
+        .i_opcode(i_opcode),
+        .i_conv_info(i_conv_info),
+        .i_valid_fifo_inst(1'b0), // not used
+        .o_ready_fifo_inst(o_ready_fifo_inst),
+        .o_ifmap_ra(o_ifmap_ra),
+        .o_wght_ra(o_wght_ra),
+        .o_psum_ra(o_psum_ra),
+        .o_ifmap_wa(o_ifmap_wa),
+        .o_wght_wa(o_wght_wa),
+        .o_psum_wa(o_psum_wa),
+        .o_ifmap_we(o_ifmap_we),
+        .o_wght_we(o_wght_we),
+        .o_psum_we(o_psum_we),
         .o_acc_sel(o_acc_sel),
         .o_rst_psum(o_rst_psum)
     );
 
-    // Monitoring and counters
+    // Clock
+    always #5 i_clk = ~i_clk;
+
+    // Signal counters
     integer ifmap_we_count = 0;
     integer wght_we_count = 0;
     integer psum_we_count = 0;
 
     always @(posedge i_clk) begin
-        if (ifmap_we) ifmap_we_count = ifmap_we_count + 1;
-        if (wght_we)  wght_we_count = wght_we_count + 1;
-        if (psum_we)  psum_we_count = psum_we_count + 1;
+        if (o_ifmap_we) ifmap_we_count = ifmap_we_count + 1;
+        if (o_wght_we)  wght_we_count  = wght_we_count + 1;
+        if (o_psum_we)  psum_we_count  = psum_we_count + 1;
     end
 
+    // Wait until state becomes DONE
+    task wait_done();
+        begin
+            wait (dut.state == 4'h9); // DONE
+            @(posedge i_clk);
+            @(posedge i_clk);
+        end
+    endtask
+
+    // Send one command
+    task send_cmd(input [2:0] opcode);
+        begin
+            i_opcode = opcode;
+            i_start = 1;
+            @(posedge i_clk);
+            i_start = 0;
+            wait_done();
+        end
+    endtask
+
     initial begin
-        // Initial state
+        $display("=== PE_control Full Functional Testbench ===");
+
+        // Reset
         i_rst = 1;
         i_start = 0;
-
+        i_opcode = 0;
+        i_conv_info = 0;
         #20;
+
         i_rst = 0;
-        #10;
+        @(posedge i_clk);
 
-        // Trigger i_start
-        i_start = 1;
-        #10;
-        i_start = 0;
+        // 0. NOP
+        send_cmd(3'b000); // NOP
 
-        // Wait for DONE signal
-        wait (o_done);
-        #10;
+        // 1. SET (P=6, Q=4, S=3)
+        i_conv_info = {P[2:0], Q[2:0], S[2:0]};
+        send_cmd(3'b001); // SET
 
-        // Show results
-        $display("=== Test Summary ===");
-        $display("ifmap_we_count = %0d (expected %0d)", ifmap_we_count, Q * S);
-        $display("wght_we_count  = %0d (expected %0d)", wght_we_count, P * Q * S);
-        $display("psum_we_count  = %0d (expected %0d)", psum_we_count, P * Q * S);
+        // 2. LOAD_IFMAP (Q*S = 12)
+        send_cmd(3'b010); // LOAD_IFMAP
 
-        if (ifmap_we_count == Q*S && wght_we_count == P*Q*S && psum_we_count == P*Q*S)
-            $display("Test PASSED");
+        // 3. LOAD_WGHT (P*Q*S = 72)
+        send_cmd(3'b011); // LOAD_WGHT
+
+        // 4. CONV (P*Q*S = 72 cycles + ACC)
+        send_cmd(3'b100); // CONV
+
+        // 결과 출력
+        $display("=== Test 결과 ===");
+        $display("ifmap_we_count = %0d (예상: %0d)", ifmap_we_count, Q*S);
+        $display("wght_we_count  = %0d (예상: %0d)", wght_we_count, P*Q*S);
+        $display("psum_we_count  = %0d (예상: %0d)", psum_we_count, P*Q*S);
+
+        if (ifmap_we_count == Q*S &&
+            wght_we_count  == P*Q*S &&
+            psum_we_count  == P*Q*S)
+            $display("✅ 테스트 통과");
         else
-            $display("Test FAILED");
+            $display("❌ 테스트 실패");
 
         $stop;
     end

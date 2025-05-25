@@ -3,12 +3,12 @@
 module tb_PE_datapath;
 
 	parameter DATA_BITWIDTH = 16;
-	parameter PSUM_BITWIDTH = 32;
 
 	parameter IFMAP_ADDR_BITWIDTH = 4;
 	parameter WGHT_ADDR_BITWIDTH = 8;
 	parameter PSUM_ADDR_BITWIDTH = 5;
 
+	//conv parameter set
     parameter P = 6;
     parameter Q = 4;
     parameter S = 3;
@@ -29,15 +29,14 @@ module tb_PE_datapath;
 
 	reg i_ifmap_we, i_wght_we, i_psum_we;
 
-	reg [DATA_BITWIDTH-1:0] i_ifmap;
-	reg [DATA_BITWIDTH-1:0] i_wght;
-	reg [PSUM_BITWIDTH-1:0] i_psum;
+	reg [DATA_BITWIDTH-1:0] i_ifmap_data;
+	reg [DATA_BITWIDTH-1:0] i_wght_data;
+	reg [DATA_BITWIDTH-1:0] i_psum_data;
 
-	wire [PSUM_BITWIDTH-1:0] psum_out;
+	wire [DATA_BITWIDTH-1:0] o_psum_data;
 
 	PE_datapath #(
 		.DATA_BITWIDTH(DATA_BITWIDTH),
-		.PSUM_BITWIDTH(PSUM_BITWIDTH),
 		.IFMAP_ADDR_BITWIDTH(IFMAP_ADDR_BITWIDTH),
 		.WGHT_ADDR_BITWIDTH(WGHT_ADDR_BITWIDTH),
 		.PSUM_ADDR_BITWIDTH(PSUM_ADDR_BITWIDTH)
@@ -55,15 +54,15 @@ module tb_PE_datapath;
 		.i_ifmap_we(i_ifmap_we),
 		.i_wght_we(i_wght_we),
 		.i_psum_we(i_psum_we),
-		.i_ifmap(i_ifmap),
-		.i_wght(i_wght),
-		.i_psum(i_psum),
-		.o_psum(o_psum)
+		.i_ifmap_data(i_ifmap_data),
+		.i_wght_data(i_wght_data),
+		.i_psum_data(i_psum_data),
+		.o_psum_data(o_psum_data)
 	);
 
 	always #5 i_clk = ~i_clk; // 10ns clock period
 
-    integer i, j, k;
+    integer i,j,k;
 	initial begin
 		$display("Start Testbench");
 
@@ -74,11 +73,11 @@ module tb_PE_datapath;
 		i_ifmap_we = 0;
 		i_wght_we = 0;
 		i_psum_we = 0;
-		i_ifmap = 0;
-		i_wght = 0;
-		i_psum = 0;
+		i_ifmap_data = 0;
+		i_wght_data = 0;
+		i_psum_data = 0;
 
-		repeat (10) @(negedge i_clk);
+		repeat (10) @(posedge i_clk);
 		i_rst = 0;
 
 //////////////////////////////////////////////////////////
@@ -88,9 +87,9 @@ module tb_PE_datapath;
 		for (i = 0; i < Q; i = i + 1) begin
 			for (j = 0; j < S; j = j + 1) begin
 				i_ifmap_wa = (i * S) + j;
-				i_ifmap = j + 1;
+				i_ifmap_data = j + 1;
 				i_ifmap_we = 1;
-				@(negedge i_clk);
+				@(posedge i_clk);
 			end
 		end
 		i_ifmap_we = 0;
@@ -106,9 +105,9 @@ module tb_PE_datapath;
 			for(j = 0; j < S; j = j + 1) begin
 				for (k = 0; k < P; k = k + 1) begin
 					i_wght_wa = (i * S) + j + (k * Q * S);
-					i_wght = j + 1;
+					i_wght_data = j + 1;
 					i_wght_we = 1;
-					@(negedge i_clk);
+					@(posedge i_clk);
 				end
 			end
 		end
@@ -116,64 +115,64 @@ module tb_PE_datapath;
 
 //////////////////////////////////////////////////////////
 
-		repeat (10) @(negedge i_clk);
+		repeat (10) @(posedge i_clk);
 
 		// Convolution
 		for (i = 0; i < Q; i = i + 1) begin
 			for (j = 0; j < S; j = j + 1) begin
 				for (k = 0; k < P; k = k + 1) begin
-					@(negedge i_clk);
+					@(posedge i_clk);
 					i_ifmap_ra = (i * S) + j;
 					i_wght_ra = (i * S) + j + (k * Q * S);
 					i_psum_ra = k;
-					i_psum_wa = (i==0 && j==0 && k<3) ? 0 : (k>=3) ? k-3 : k+3; // 3 cycle delay for valid psum_out
-					i_psum_we = (i==0 && j==0 && k<3) ? 0 : 1; // 3 cycle delay for valid psum_out
+					i_psum_wa = k;
+					i_psum_we = 1;
 					i_rst_psum = 0;
 					i_acc_sel = 0;
 				end
 			end
 		end
 		for (i = 0; i < 3; i = i + 1) begin
-			@(negedge i_clk);
+			@(posedge i_clk);
 			i_psum_wa = i + 3;
 			i_psum_we = 1;
 		end
-		@(negedge i_clk);
+		@(posedge i_clk);
 		i_psum_we = 0;
 
 //////////////////////////////////////////////////////////
 
 		// Psum Accumulation
 		for (i = 0; i < 6; i = i + 1) begin
-			@(negedge i_clk);
+			@(posedge i_clk);
 			i_psum_ra = i;
-			i_acc_sel = (i==0) ? 0 : 1; // 1 cycle delay
-			i_psum = 10;
+			i_acc_sel = 1;
+			i_psum_data = 10;
 		end
-		@(negedge i_clk);
+		@(posedge i_clk);
 		i_acc_sel = 1;
-		@(negedge i_clk);
+		@(posedge i_clk);
 		i_acc_sel = 0;
 		
 
 //////////////////////////////////////////////////////////
 
-		repeat (10) @(negedge i_clk);
+		repeat (10) @(posedge i_clk);
 
-		// Reset Accumulation without i_psum
+		// Reset Accumulation without i_psum_data
 		for (i = 0; i < 3; i = i + 1) begin
-			@(negedge i_clk);
-			i_psum = 0;
+			@(posedge i_clk);
+			i_psum_data = 0;
 			i_acc_sel = 1;
 			i_rst_psum = 1;
 		end
 		for (i = 0; i < 6; i = i + 1) begin
-			@(negedge i_clk);
+			@(posedge i_clk);
 			i_psum_wa = i;
 			i_psum_we = 1;
 		end
 
-		@(negedge i_clk);
+		@(posedge i_clk);
 		i_rst_psum = 0;
 		i_acc_sel = 0;
 		i_psum_we = 0;
@@ -181,29 +180,29 @@ module tb_PE_datapath;
 
 //////////////////////////////////////////////////////////
 
-		repeat (10) @(negedge i_clk);
+		repeat (10) @(posedge i_clk);
 
-		// Reset Accumulation with i_psum
+		// Reset Accumulation with i_psum_data
 		for (i = 0; i < 3; i = i + 1) begin
-			@(negedge i_clk);
-			i_psum = 10;
+			@(posedge i_clk);
+			i_psum_data = 10;
 			i_acc_sel = 1;
 			i_rst_psum = 1;
 		end
 		for (i = 0; i < 6; i = i + 1) begin
-			@(negedge i_clk);
+			@(posedge i_clk);
 			i_psum_wa = i;
 			i_psum_we = 1;
 		end
 
-		@(negedge i_clk);
+		@(posedge i_clk);
 		i_rst_psum = 0;
 		i_acc_sel = 0;
 		i_psum_we = 0;
 
 //////////////////////////////////////////////////////////
 
-		repeat (10) @(negedge i_clk);
+		repeat (10) @(posedge i_clk);
 
 		$display("Finish Simulation");
 		$finish;

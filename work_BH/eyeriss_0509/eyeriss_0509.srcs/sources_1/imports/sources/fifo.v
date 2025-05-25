@@ -1,6 +1,5 @@
 module fifo#(
     parameter QUEUE_PTR_BANDWIDTH = 3,
-    parameter QUEUE_SIZE          = (1<<QUEUE_PTR_BANDWIDTH),
     parameter ELE_BANDWIDTH       = 8
 )(
     input i_clk,
@@ -16,6 +15,8 @@ module fifo#(
     output o_valid,
     output [ELE_BANDWIDTH-1:0] o_pop_data
 );
+
+    localparam QUEUE_SIZE = (1<<QUEUE_PTR_BANDWIDTH);
 
     reg [ELE_BANDWIDTH-1:0] queue_mem [QUEUE_SIZE-1:0];
     reg [QUEUE_PTR_BANDWIDTH:0] head;

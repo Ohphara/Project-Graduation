@@ -32,25 +32,30 @@ module PE_datapath #(
 	input i_psum_we
 );
 
-	//delayed input data
+	//delayed input psum data
+	reg [DATA_BITWIDTH-1:0] ipsum_reg, ipsum_reg_d, ipsum_reg_d2, ipsum_reg_d3;
+
+	//delayed spad data
 	wire signed [DATA_BITWIDTH-1:0] ifmap_rd;
 	wire signed [DATA_BITWIDTH-1:0] wght_rd;
 	wire signed [DATA_BITWIDTH-1:0] psum_rd;
 
 	reg [DATA_BITWIDTH-1:0] ifmap_reg, ifmap_reg_d;
-	reg [DATA_BITWIDTH-1:0] psum_reg, psum_reg_d, psum_reg_d2 ;
+	reg [DATA_BITWIDTH-1:0] psum_reg, psum_reg_d, psum_reg_d2;
 	reg [DATA_BITWIDTH-1:0] wght_reg;
 
 	//delayed control signal
-	reg [1:0] acc_sel_sft_reg;
-	reg [1:0] rst_psum_sft_reg;
+	reg [3:0] acc_sel_sft_reg;
+	reg [2:0] rst_psum_sft_reg; // 2 cycle delay
 	reg [PSUM_ADDR_BITWIDTH-1:0] psum_wa_reg, psum_wa_reg_d1, psum_wa_reg_d2, psum_wa_reg_d3; //3 cycle delay
 	reg [3:0] psum_we_sftreg; //3 cycle delay
 
-	wire acc_sel = acc_sel_sft_reg[1];
-	wire rst_psum = rst_psum_sft_reg[1];
+	wire rst_psum = rst_psum_sft_reg[2];
 	wire psum_we = psum_we_sftreg[3];
 	wire [PSUM_ADDR_BITWIDTH-1:0] psum_wa = psum_wa_reg_d3;
+
+	wire acc_sel = acc_sel_sft_reg[2];
+	wire acc_sel_d = acc_sel_sft_reg[3];
 
 	RF #(
 		.DATA_BITWIDTH(DATA_BITWIDTH),
@@ -64,25 +69,11 @@ module PE_datapath #(
 		.i_wa(i_ifmap_wa),
 		.i_wd(i_ifmap_data)
 	);
-	/*
-	true_dpbram #(
-		.DATA_BITWIDTH(DATA_BITWIDTH),
-		.ADDR_BITWIDTH(WGHT_ADDR_BITWIDTH)
-	) spad_weight ( 
-		.i_clk(i_clk), 
-		.i_rst(i_rst), 
-		.i_re(1'b1),
-		.i_ra(i_wght_ra),
-		.o_rd(wght_rd),
-		.i_we(i_wght_we),
-		.i_wa(i_wght_wa),
-		.i_wd(i_wght_data)
-	);
-	*/
+
 	true_dpbram #(
 		.RAM_WIDTH(DATA_BITWIDTH),                       // Specify RAM data width
 		.RAM_DEPTH(1<<WGHT_ADDR_BITWIDTH),    // Specify RAM depth (number of entries)
-		.RAM_PERFORMANCE("LOW_LATENCY"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
+		.RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
 		.INIT_FILE("")                        // Specify name/location of RAM initialization file if using one (leave blank if not)
 	) spad_weight (
 		.addra(i_wght_ra),   // Port A address bus, width determined from RAM_DEPTH
@@ -117,6 +108,11 @@ module PE_datapath #(
 
 	always @(posedge i_clk) begin
 		if(i_rst) begin
+			ipsum_reg <= 0;
+			ipsum_reg_d <= 0;
+			ipsum_reg_d2 <= 0;
+			ipsum_reg_d3 <= 0;
+
 			ifmap_reg <= 0;
 			ifmap_reg_d <= 0;
 			wght_reg <= 0;
@@ -130,10 +126,15 @@ module PE_datapath #(
 			psum_wa_reg_d2 <= 0;
 			psum_wa_reg_d3 <= 0;
 
-			acc_sel_sft_reg <= 0;
 			rst_psum_sft_reg <= 0;
+			acc_sel_sft_reg <= 0;
 		end
 		else begin
+			ipsum_reg <= i_psum_data;
+			ipsum_reg_d <= ipsum_reg;
+			ipsum_reg_d2 <= ipsum_reg_d;
+			ipsum_reg_d3 <= ipsum_reg_d2;
+
 			ifmap_reg <= ifmap_rd;
 			ifmap_reg_d <= ifmap_reg;
 			wght_reg <= wght_rd;
@@ -147,8 +148,8 @@ module PE_datapath #(
 			psum_wa_reg_d2 <= psum_wa_reg_d1;
 			psum_wa_reg_d3 <= psum_wa_reg_d2;
 			
-			acc_sel_sft_reg <= {acc_sel_sft_reg[0], i_acc_sel};
-			rst_psum_sft_reg <= {rst_psum_sft_reg[0], i_rst_psum};
+			rst_psum_sft_reg <= {rst_psum_sft_reg[1:0], i_rst_psum};
+			acc_sel_sft_reg <= {acc_sel_sft_reg[2:0], i_acc_sel};
 		end
 	end
 
@@ -159,10 +160,10 @@ module PE_datapath #(
 			mul_reg <= 0;
 		end
 		else begin
-			mul_reg <= ifmap_reg_d * wght_reg;
+			mul_reg <= (rst_psum) ? 0 : ifmap_reg_d * wght_reg;
 		end
 	end
 
-	assign o_psum_data = psum_reg_d2 + ((acc_sel) ? i_psum_data : mul_reg);
+	assign o_psum_data = psum_reg_d2 + ((acc_sel || acc_sel_d) ? ipsum_reg_d3 : mul_reg);
 
 endmodule

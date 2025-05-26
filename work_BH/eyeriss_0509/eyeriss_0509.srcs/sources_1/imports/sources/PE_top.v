@@ -62,35 +62,35 @@ module PE_top #(
     );
 
     PE_datapath #(
-        parameter DATA_BITWIDTH = 16,
+        .DATA_BITWIDTH(DATA_BITWIDTH),
 
-        parameter IFMAP_ADDR_BITWIDTH = 4,
-        parameter WGHT_ADDR_BITWIDTH = 8,
-        parameter PSUM_ADDR_BITWIDTH = 5
-    )(
-        i_clk,
-        i_rst,
+        .IFMAP_ADDR_BITWIDTH(IFMAP_ADDR_BITWIDTH),
+        .WGHT_ADDR_BITWIDTH(WGHT_ADDR_BITWIDTH),
+        .PSUM_ADDR_BITWIDTH(PSUM_ADDR_BITWIDTH)
+    ) u_PE_datapath (
+        .i_clk(),
+        .i_rst(),
 
-        input signed [DATA_BITWIDTH-1:0] i_ifmap,
-        input signed [DATA_BITWIDTH-1:0] i_wght,
-        input signed [PSUM_BITWIDTH-1:0] i_psum,
-        output signed [PSUM_BITWIDTH-1:0] o_psum,
+        .i_ifmap_data(),
+        .i_wght_data(),
+        .i_psum_data(),
+        .o_psum_data(),
 
         //controller interface
-        input i_acc_sel,
-        input i_rst_psum,
+        .i_acc_sel(),
+        .i_rst_psum(),
 
-        input [IFMAP_ADDR_BITWIDTH-1:0] i_ifmap_ra,
-        input [WGHT_ADDR_BITWIDTH-1:0] i_wght_ra,
-        input [PSUM_ADDR_BITWIDTH-1:0] i_psum_ra,
+        .i_ifmap_ra(),
+        .i_wght_ra(),
+        .i_psum_ra(),
         
-        input [IFMAP_ADDR_BITWIDTH-1:0] i_ifmap_wa,
-        input [WGHT_ADDR_BITWIDTH-1:0]  i_wght_wa,
-        input [PSUM_ADDR_BITWIDTH-1:0] i_psum_wa,
+        .i_ifmap_wa(),
+        .i_wght_wa(),
+        .i_psum_wa(),
 
-        input i_ifmap_we,
-        input i_wght_we,
-        input i_psum_we
+        .i_ifmap_we(),
+        .i_wght_we(),
+        .i_psum_we()
     );
 
 endmodule

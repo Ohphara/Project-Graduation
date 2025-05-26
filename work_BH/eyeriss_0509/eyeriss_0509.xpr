@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="60" Path="C:/LAB/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.xpr">
+<Project Version="7" Minor="60" Path="C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="a2fed15ea1f346059890b06dea5779ff"/>
@@ -58,7 +58,7 @@
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSABoardId" Val="zybo-z7-20"/>
-    <Option Name="WTXSimLaunchSim" Val="212"/>
+    <Option Name="WTXSimLaunchSim" Val="288"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -266,7 +266,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7z020clg400-1" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" SynthRun="synth_1" IncludeInArchive="true" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/utils_1/imports/impl_1" AutoRQSDir="$PPRDIR/../../Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/utils_1/imports/impl_1">
+    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7z020clg400-1" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" SynthRun="synth_1" IncludeInArchive="true" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../Project-Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/utils_1/imports/impl_1" AutoRQSDir="$PPRDIR/../../../../Project-Graduation/Project-Graduation/work_BH/eyeriss_0509/eyeriss_0509.srcs/utils_1/imports/impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>

@@ -94,7 +94,9 @@ module tb_PE_datapath;
 		end
 		i_ifmap_we = 0;
 
-		// Load weight in a vertical order
+//////////////////////////////////////////////////////////
+
+		// Load weight
 		// [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
 		// [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
 		// [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
@@ -132,15 +134,13 @@ module tb_PE_datapath;
 				end
 			end
 		end
-		for (i = 0; i < 3; i = i + 1) begin
-			@(posedge i_clk);
-			i_psum_wa = i + 3;
-			i_psum_we = 1;
-		end
 		@(posedge i_clk);
+		i_psum_wa = 0;
 		i_psum_we = 0;
 
 //////////////////////////////////////////////////////////
+		
+		repeat (10) @(posedge i_clk);
 
 		// Psum Accumulation
 		for (i = 0; i < 6; i = i + 1) begin
@@ -150,54 +150,51 @@ module tb_PE_datapath;
 			i_psum_data = 10;
 		end
 		@(posedge i_clk);
-		i_acc_sel = 1;
-		@(posedge i_clk);
+		i_psum_ra = 0;
 		i_acc_sel = 0;
+		i_psum_data = 0;
 		
 
 //////////////////////////////////////////////////////////
 
 		repeat (10) @(posedge i_clk);
 
-		// Reset Accumulation without i_psum_data
-		for (i = 0; i < 3; i = i + 1) begin
-			@(posedge i_clk);
-			i_psum_data = 0;
-			i_acc_sel = 1;
-			i_rst_psum = 1;
-		end
+		// Reset Psum accumulation
 		for (i = 0; i < 6; i = i + 1) begin
 			@(posedge i_clk);
+			i_rst_psum = 1;
+			i_psum_data = 0;
+			i_acc_sel = 1;
 			i_psum_wa = i;
 			i_psum_we = 1;
 		end
 
 		@(posedge i_clk);
 		i_rst_psum = 0;
+		i_psum_data = 0;
 		i_acc_sel = 0;
+		i_psum_wa = 0;
 		i_psum_we = 0;
-
 
 //////////////////////////////////////////////////////////
 
 		repeat (10) @(posedge i_clk);
 
-		// Reset Accumulation with i_psum_data
-		for (i = 0; i < 3; i = i + 1) begin
-			@(posedge i_clk);
-			i_psum_data = 10;
-			i_acc_sel = 1;
-			i_rst_psum = 1;
-		end
+		// Reset Psum accumulation with i_psum_data
 		for (i = 0; i < 6; i = i + 1) begin
 			@(posedge i_clk);
+			i_rst_psum = 1;
+			i_psum_data = 10;
+			i_acc_sel = 1;
 			i_psum_wa = i;
 			i_psum_we = 1;
 		end
 
 		@(posedge i_clk);
 		i_rst_psum = 0;
+		i_psum_data = 0;
 		i_acc_sel = 0;
+		i_psum_wa = 0;
 		i_psum_we = 0;
 
 //////////////////////////////////////////////////////////

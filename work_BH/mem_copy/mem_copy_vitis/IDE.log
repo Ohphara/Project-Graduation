@@ -1,0 +1,17 @@
+19:15:23 DEBUG : Logs will be stored at 'C:/LAB/Project_Graduation/Project-Graduation/work_BH/mem_copy_vitis/IDE.log'.
+19:15:26 INFO  : Registering command handlers for Vitis TCF services
+19:15:26 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\LAB\Project_Graduation\Project-Graduation\work_BH\mem_copy_vitis\temp_xsdb_launch_script.tcl
+19:15:27 INFO  : Platform repository initialization has completed.
+19:15:30 INFO  : XSCT server has started successfully.
+19:15:30 INFO  : Successfully done setting XSCT server connection channel  
+19:15:30 INFO  : plnx-install-location is set to ''
+19:15:32 INFO  : Successfully done setting workspace for the tool. 
+19:15:32 INFO  : Successfully done query RDI_DATADIR 
+19:17:17 INFO  : Result from executing command 'getProjects': design_1_wrapper
+19:17:17 INFO  : Result from executing command 'getPlatforms': xilinx_vck190_base_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_vck190_base_202210_1/xilinx_vck190_base_202210_1.xpfm;xilinx_vck190_base_dfx_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_vck190_base_dfx_202210_1/xilinx_vck190_base_dfx_202210_1.xpfm;xilinx_vmk180_base_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_vmk180_base_202210_1/xilinx_vmk180_base_202210_1.xpfm;xilinx_zcu102_base_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_zcu102_base_202210_1/xilinx_zcu102_base_202210_1.xpfm;xilinx_zcu102_base_dfx_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_zcu102_base_dfx_202210_1/xilinx_zcu102_base_dfx_202210_1.xpfm;xilinx_zcu104_base_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_zcu104_base_202210_1/xilinx_zcu104_base_202210_1.xpfm
+19:17:17 WARN  : An unexpected exception occurred in the module 'platform project logging'
+19:17:18 INFO  : Platform 'design_1_wrapper' is added to custom repositories.
+19:17:31 INFO  : Platform 'design_1_wrapper' is added to custom repositories.
+19:18:55 INFO  : Result from executing command 'getProjects': design_1_wrapper
+19:18:55 INFO  : Result from executing command 'getPlatforms': design_1_wrapper|C:/LAB/Project_Graduation/Project-Graduation/work_BH/mem_copy_vitis/design_1_wrapper/export/design_1_wrapper/design_1_wrapper.xpfm;xilinx_vck190_base_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_vck190_base_202210_1/xilinx_vck190_base_202210_1.xpfm;xilinx_vck190_base_dfx_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_vck190_base_dfx_202210_1/xilinx_vck190_base_dfx_202210_1.xpfm;xilinx_vmk180_base_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_vmk180_base_202210_1/xilinx_vmk180_base_202210_1.xpfm;xilinx_zcu102_base_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_zcu102_base_202210_1/xilinx_zcu102_base_202210_1.xpfm;xilinx_zcu102_base_dfx_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_zcu102_base_dfx_202210_1/xilinx_zcu102_base_dfx_202210_1.xpfm;xilinx_zcu104_base_202210_1|C:/Xilinx/Vitis/2022.1/base_platforms/xilinx_zcu104_base_202210_1/xilinx_zcu104_base_202210_1.xpfm
+19:18:56 INFO  : Checking for BSP changes to sync application flags for project 'mem_copy_app'...

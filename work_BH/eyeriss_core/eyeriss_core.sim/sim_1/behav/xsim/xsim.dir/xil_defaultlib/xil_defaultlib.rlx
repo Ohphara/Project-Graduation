@@ -1,0 +1,13 @@
+0.7
+2020.2
+Apr 18 2022
+16:05:34
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.sim/sim_1/behav/xsim/glbl.v,1649976174,verilog,,,,glbl,,,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sim_1/imports/eyeriss_core.srcs/tb_PE_core.v,1743147089,verilog,,,,tb_PE_core,,,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sim_1/imports/eyeriss_core.srcs/tb_PE_dataloader.v,1743224605,verilog,,,,tb_PE_dataloader,,,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sim_1/imports/eyeriss_core.srcs/tb_PE_primitive.v,1743323174,verilog,,,,tb_PE_primitive,,,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sources_1/new/PE_core.v,1743224574,verilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sources_1/new/spad.v,,PE_core,,,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sources_1/new/PE_dataloader.v,1743149693,verilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sources_1/new/spad.v,,PE_dataloader,,,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sources_1/new/PE_primitive.v,1743323083,verilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sim_1/imports/eyeriss_core.srcs/tb_PE_primitive.v,,PE_primitive,,,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sources_1/new/SPad_DP.v,1742889184,verilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sim_1/imports/eyeriss_core.srcs/tb_PE_core.v,,SPad_DP,,,,,,,,
+C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sources_1/new/spad.v,1743149745,verilog,,C:/LAB/Project_Graduation/Project-Graduation/work_BH/eyeriss_core/eyeriss_core.srcs/sim_1/imports/eyeriss_core.srcs/tb_PE_dataloader.v,,spad,,,,,,,,

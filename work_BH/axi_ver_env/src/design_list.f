@@ -1,0 +1,14 @@
+./matbi_dma_ip/matbi_axis_adder.v 
+./matbi_dma_ip/matbi_dma_ip_control_s_axi.v 
+./matbi_dma_ip/matbi_dma_ip_top.v 
+./matbi_dma_ip/matbi_dma_wrapper.v 
+./matbi_dma_ip/RDMA/matbi_hls_rdma.v
+./matbi_dma_ip/RDMA/matbi_hls_rdma_flow_control_loop_pipe_sequential_init.v
+./matbi_dma_ip/RDMA/matbi_hls_rdma_gmem_m_axi.v 
+./matbi_dma_ip/RDMA/matbi_hls_rdma_matbi_hls_rdma_Pipeline_VITIS_LOOP_11_1.v 
+./matbi_dma_ip/WDMA/matbi_hls_wdma.v 
+./matbi_dma_ip/WDMA/matbi_hls_wdma_flow_control_loop_pipe_sequential_init.v 
+./matbi_dma_ip/WDMA/matbi_hls_wdma_gmem_m_axi.v 
+./matbi_dma_ip/WDMA/matbi_hls_wdma_matbi_hls_wdma_Pipeline_VITIS_LOOP_11_1.v 
+./matbi_peri_ip/matbi_skid_buffer.v
+./matbi_peri_ip/matbi_sync_fifo.v

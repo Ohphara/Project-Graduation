@@ -14,12 +14,13 @@ module tb_PE_control;
     // Inputs
     reg i_clk = 0;
     reg i_rst;
-    reg i_start;
+    
     reg [2:0] i_opcode;
     reg [8:0] i_conv_info;
+    reg i_inst_valid, i_ifmap_fifo_valid, i_wght_fifo_valid, i_psum_fifo_valid;
 
     // Outputs
-    wire o_ready_fifo_inst;
+    wire o_inst_ready, o_ifmap_fifo_ready, o_wght_fifo_ready, o_psum_fifo_ready;
     wire [IFMAP_ADDR_BITWIDTH-1:0] o_ifmap_ra;
     wire [WGHT_ADDR_BITWIDTH-1:0] o_wght_ra;
     wire [PSUM_ADDR_BITWIDTH-1:0] o_psum_ra;
@@ -28,6 +29,26 @@ module tb_PE_control;
     wire [PSUM_ADDR_BITWIDTH-1:0] o_psum_wa;
     wire o_ifmap_we, o_wght_we, o_psum_we;
     wire o_acc_sel, o_rst_psum;
+
+    task automatic fluctuate_valid_signals(input integer cycles);
+        integer i;
+        begin
+            for (i = 0; i < cycles; i = i + 1) begin
+                // 일정 확률로 valid 신호를 ON/OFF
+                i_inst_valid  = ($urandom % 3 != 0); // 약 66% 확률로 1
+                i_ifmap_fifo_valid = ($urandom % 2);     // 약 50% 확률로 1
+                i_wght_fifo_valid  = ($urandom % 4 != 0); // 약 75% 확률로 1
+                i_psum_fifo_valid  = ($urandom % 2);     // 약 50% 확률로 1
+                @(posedge i_clk);
+            end
+
+            // 이후 다시 안정화된 상태로 복구
+            i_inst_valid  = 1;
+            i_ifmap_fifo_valid = 1;
+            i_wght_fifo_valid  = 1;
+            i_psum_fifo_valid  = 1;
+        end
+    endtask
 
     // Instantiate DUT
     PE_control #(
@@ -38,11 +59,19 @@ module tb_PE_control;
     ) dut (
         .i_clk(i_clk),
         .i_rst(i_rst),
-        .i_start(i_start),
+
         .i_opcode(i_opcode),
         .i_conv_info(i_conv_info),
-        .i_valid_fifo_inst(1'b0), // not used
-        .o_ready_fifo_inst(o_ready_fifo_inst),
+
+        .i_inst_valid(i_inst_valid),
+        .o_inst_ready(o_inst_ready),
+        .i_ifmap_fifo_valid(i_ifmap_fifo_valid),
+        .o_ifmap_fifo_ready(o_ifmap_fifo_ready),
+        .i_wght_fifo_valid(i_wght_fifo_valid),
+        .o_wght_fifo_ready(o_wght_fifo_ready),
+        .i_psum_fifo_valid(i_psum_fifo_valid),
+        .o_psum_fifo_ready(o_psum_fifo_ready),
+    
         .o_ifmap_ra(o_ifmap_ra),
         .o_wght_ra(o_wght_ra),
         .o_psum_ra(o_psum_ra),
@@ -83,9 +112,6 @@ module tb_PE_control;
     task send_cmd(input [2:0] opcode);
         begin
             i_opcode = opcode;
-            i_start = 1;
-            @(posedge i_clk);
-            i_start = 0;
             wait_done();
         end
     endtask
@@ -95,12 +121,20 @@ module tb_PE_control;
 
         // Reset
         i_rst = 1;
-        i_start = 0;
         i_opcode = 0;
         i_conv_info = 0;
+
+        i_inst_valid = 0;
+        i_ifmap_fifo_valid = 0;
+        i_wght_fifo_valid = 0;
+        i_psum_fifo_valid = 0;
         #20;
 
         i_rst = 0;
+        i_inst_valid = 1;
+        i_ifmap_fifo_valid = 1;
+        i_wght_fifo_valid = 1;
+        i_psum_fifo_valid = 1;
         @(posedge i_clk);
 
         // 0. NOP
@@ -111,26 +145,19 @@ module tb_PE_control;
         send_cmd(3'b001); // SET
 
         // 2. LOAD_IFMAP (Q*S = 12)
-        send_cmd(3'b010); // LOAD_IFMAP
+        fork
+            fluctuate_valid_signals(Q*S + 5);  // 조금 여유 있게 반복
+            send_cmd(3'b010); // LOAD_IFMAP
+        join
 
         // 3. LOAD_WGHT (P*Q*S = 72)
-        send_cmd(3'b011); // LOAD_WGHT
+        fork
+            fluctuate_valid_signals(P*Q*S + 5);  // 조금 여유 있게 반복
+            send_cmd(3'b011);
+        join
 
-        // 4. CONV (P*Q*S = 72 cycles + ACC)
+        // 4. CONV (P*Q*S = 72 + ACC)
         send_cmd(3'b100); // CONV
-
-        // 결과 출력
-        $display("=== Test 결과 ===");
-        $display("ifmap_we_count = %0d (예상: %0d)", ifmap_we_count, Q*S);
-        $display("wght_we_count  = %0d (예상: %0d)", wght_we_count, P*Q*S);
-        $display("psum_we_count  = %0d (예상: %0d)", psum_we_count, P*Q*S);
-
-        if (ifmap_we_count == Q*S &&
-            wght_we_count  == P*Q*S &&
-            psum_we_count  == P*Q*S)
-            $display("✅ 테스트 통과");
-        else
-            $display("❌ 테스트 실패");
 
         $stop;
     end

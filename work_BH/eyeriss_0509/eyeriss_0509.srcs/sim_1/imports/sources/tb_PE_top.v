@@ -1,110 +1,177 @@
 `timescale 1ns / 1ps
 
 module tb_PE_top;
-  parameter P = 6;
-  parameter Q = 4;
-  parameter S = 3;
-  
-  parameter IFMAP_SIZE = Q*S;     // 12
-  parameter WEIGHT_SIZE = P*Q*S;  // 72
 
-  // Inputs
-  reg clk = 0;
-  reg rst;
-  reg start;
-  reg signed [15:0] ifmap_in;
-  reg signed [15:0] wght_in;
-  reg signed [31:0] psum_in;
+	parameter DATA_BITWIDTH = 16;
+	parameter IFMAP_ADDR_BITWIDTH = 4;
+	parameter WGHT_ADDR_BITWIDTH = 7;
+	parameter PSUM_ADDR_BITWIDTH = 5;
 
-  // Outputs
-  wire o_idle, o_load, o_conv, o_done;
-  wire signed [31:0] psum_out;
+    localparam CMD_NOP          = 3'b000;
+    localparam CMD_SET          = 3'b001;
+    localparam CMD_LOAD_IFMAP   = 3'b010;
+    localparam CMD_LOAD_WGHT    = 3'b011;
+    localparam CMD_CONV         = 3'b100;
 
-  // Instantiate DUT
-  PE_top dut (
-    .clk(clk),
-    .rst(rst),
-    .start(start),
-    .ifmap_in(ifmap_in),
-    .wght_in(wght_in),
-    .psum_in(psum_in),
-    .o_idle(o_idle),
-    .o_load(o_load),
-    .o_conv(o_conv),
-    .o_done(o_done),
-    .psum_out(psum_out)
-  );
+    reg i_clk = 0;
+    reg i_rst;
 
-  // Clock generation
-  always #5 clk = ~clk;
+    //TOP CTRL
+    reg [2:0] i_inst_data;
+    reg [8:0] i_conv_info;
+    reg i_inst_valid;
+    wire o_inst_ready;
 
-  // Test data
-  reg [15:0] ifmap_mem [0:IFMAP_SIZE-1];
-  reg [15:0] weight_mem [0:WEIGHT_SIZE-1];
-  reg [31:0] golden_psum [0:P-1];
-  integer i, p, q, s, idx, widx;
+    //fifo interface
+	reg [DATA_BITWIDTH-1:0] i_ifmap_fifo_data;
+    reg i_ifmap_fifo_valid;
+    wire o_ifmap_fifo_ready;
 
-  initial begin
-    // Initialize inputs
-    rst = 1;
-    start = 0;
-    ifmap_in = 0;
-    wght_in = 0;
-    psum_in = 0;
+    reg [DATA_BITWIDTH-1:0] i_wght_fifo_data;
+    reg i_wght_fifo_valid;
+    wire o_wght_fifo_ready;
 
-    // Wait for reset
-    #20;
-    rst = 0;
-    #10;
-    start = 1;
-    #10;
-    start = 0;
+    reg [DATA_BITWIDTH-1:0] i_psum_in_fifo_data;
+    reg i_psum_in_fifo_valid;
+    wire o_psum_in_fifo_ready;
 
-    // Initialize ifmap and weight (자동 생성된 값)
-    for (i = 0; i < IFMAP_SIZE; i = i + 1)
-      ifmap_mem[i] = i + 1; // 1~12
+    wire [DATA_BITWIDTH-1:0] o_psum_out_fifo_data;
+    wire o_psum_out_fifo_valid;
+    reg i_psum_out_fifo_ready;
 
-    for (i = 0; i < WEIGHT_SIZE; i = i + 1)
-      weight_mem[i] = i % 3 + 1; // 반복되는 값 1~3
+	PE_top #(
+		.DATA_BITWIDTH(DATA_BITWIDTH), 
+		.IFMAP_ADDR_BITWIDTH(IFMAP_ADDR_BITWIDTH), 
+		.WGHT_ADDR_BITWIDTH(WGHT_ADDR_BITWIDTH), 
+		.PSUM_ADDR_BITWIDTH(PSUM_ADDR_BITWIDTH)
+	) dut (
+		.i_clk(i_clk),
+		.i_rst(i_rst),
 
-    // Golden output 계산
-    for (p = 0; p < P; p = p + 1) begin
-        golden_psum[p] = 0;
-        for (q = 0; q < Q; q = q + 1) begin
-            for (s = 0; s < S; s = s + 1) begin
-                idx = q*S + s;
-                widx = p*Q*S + q*S + s;
-                golden_psum[p] = golden_psum[p] + ifmap_mem[idx] * weight_mem[widx];
-            end
-        end
-    end
+		// TOP CTRL
+		.i_inst_data(i_inst_data),
+		.i_conv_info(i_conv_info),
+		.i_inst_valid(i_inst_valid),
+		.o_inst_ready(o_inst_ready),
 
-    // Feed ifmap and weight to DUT
-    for (i = 0; i < WEIGHT_SIZE; i = i + 1) begin
-      ifmap_in = ifmap_mem[i % IFMAP_SIZE];
-      wght_in = weight_mem[i];
-      #10;
-    end
+		// FIFO interface
+		.i_ifmap_fifo_data(i_ifmap_fifo_data),
+		.i_ifmap_fifo_valid(i_ifmap_fifo_valid),
+		.o_ifmap_fifo_ready(o_ifmap_fifo_ready),
 
-    
+		.i_wght_fifo_data(i_wght_fifo_data),
+		.i_wght_fifo_valid(i_wght_fifo_valid),
+		.o_wght_fifo_ready(o_wght_fifo_ready),
 
-    // Apply psum_in = 0 when done is high
-    wait (o_done);
-    psum_in = 0;
-    #10;
+		.i_psum_in_fifo_data(i_psum_in_fifo_data),
+		.i_psum_in_fifo_valid(i_psum_in_fifo_valid),
+		.o_psum_in_fifo_ready(o_psum_in_fifo_ready),
 
-    // Check outputs
-    for (p = 0; p < P; p = p + 1) begin
-      #10;
-      if (psum_out !== golden_psum[p]) begin
-        $display("[ERROR] Mismatch at psum[%0d]: got %0d, expected %0d", p, psum_out, golden_psum[p]);
-      end else begin
-        $display("[PASS] psum[%0d] = %0d", p, psum_out);
-      end
-    end
-    $finish;
+		.o_psum_out_fifo_data(o_psum_out_fifo_data),
+		.o_psum_out_fifo_valid(o_psum_out_fifo_valid),
+		.i_psum_out_fifo_ready(i_psum_out_fifo_ready)
+	);
 
-    $display("\nAll tests passed.");
-    $finish;
-  end
+	always #5 i_clk = ~i_clk; // 10ns clock period
+
+    integer i,j,k;
+	initial begin
+		$display("Start Testbench");
+
+		// Reset
+		i_rst = 1;
+		i_inst_data = 0;
+		i_conv_info = 0;
+		i_inst_valid = 0;
+		i_ifmap_fifo_data = 0;
+		i_ifmap_fifo_valid = 0;
+		i_wght_fifo_data = 0;
+		i_wght_fifo_valid = 0;
+		i_psum_in_fifo_data = 0;
+		i_psum_in_fifo_valid = 0;
+		i_psum_out_fifo_ready = 0;
+		
+		repeat (10) @(posedge i_clk);
+		i_rst = 0;
+
+		///// SET /////
+		i_inst_data = CMD_SET;
+		i_conv_info = 9'b110100011; //(P=6, Q=4, S=3)
+		i_inst_valid = 1;
+		@(posedge i_clk);
+		wait(o_inst_ready);
+		i_inst_valid = 0;
+		
+		repeat (5) @(posedge i_clk);
+
+
+		///// LOAD_IFMAP /////
+		i_inst_data = CMD_LOAD_IFMAP;
+		i_inst_valid = 1;
+		@(posedge i_clk);
+		wait(o_inst_ready);
+		i_inst_valid = 0;
+
+		@(posedge i_clk); //wait 1 cycle for DEC state
+
+		i_ifmap_fifo_valid = 1;
+
+		for(j=0; j<dut.u_PE_control.conv_info_reg[5:3]; j=j+1) begin  // loop for Q
+			for(k=0; k<dut.u_PE_control.conv_info_reg[2:0]; k=k+1) begin // loop for S
+				i_ifmap_fifo_data = k + 1;
+				@(posedge i_clk);
+			end
+		end
+		i_ifmap_fifo_valid = 0;
+
+		repeat (5) @(posedge i_clk);
+
+
+		///// LOAD_WGHT /////
+		i_inst_data = CMD_LOAD_WGHT;
+		i_inst_valid = 1;
+		@(posedge i_clk);
+		wait(o_inst_ready);
+		i_inst_valid = 0;
+
+		@(posedge i_clk); //wait 1 cycle for DEC state
+		
+		i_wght_fifo_valid = 1;
+
+		for(i=0; i<dut.u_PE_control.conv_info_reg[5:3]; i=i+1) begin  // loop for Q
+			for(j=0; j<dut.u_PE_control.conv_info_reg[2:0]; j=j+1) begin // loop for S
+				for(k=0; k<dut.u_PE_control.conv_info_reg[8:6]; k=k+1) begin // loop for P
+					i_wght_fifo_data = j + 1;
+					@(posedge i_clk);
+				end
+			end
+		end
+		i_wght_fifo_valid = 0;
+
+		repeat (5) @(posedge i_clk);
+
+
+		///// CONV /////
+		i_inst_data = CMD_CONV;
+		i_inst_valid = 1;
+		@(posedge i_clk);
+		wait(o_inst_ready);
+		i_inst_valid = 0;
+
+		@(posedge i_clk); //wait 1 cycle for DEC state
+
+		repeat (72) @(posedge i_clk);
+
+		i_psum_in_fifo_valid = 1;
+		for(i=0; i<dut.u_PE_control.conv_info_reg[8:6]; i=i+1) begin  // loop for P
+			i_psum_in_fifo_data = 10;
+			@(posedge i_clk);
+		end
+		i_psum_in_fifo_valid = 0;
+
+		repeat (10) @(posedge i_clk);
+
+		$stop;
+	end
+
 endmodule

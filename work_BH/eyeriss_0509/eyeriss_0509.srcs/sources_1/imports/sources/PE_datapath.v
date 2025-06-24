@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
 
-module PE_datapath #(
+(* use_dsp = "yes" *) module PE_datapath #(
 	parameter DATA_BITWIDTH = 16,
-
 	parameter IFMAP_ADDR_BITWIDTH = 4,
 	parameter WGHT_ADDR_BITWIDTH = 7,
 	parameter PSUM_ADDR_BITWIDTH = 5
@@ -51,8 +50,8 @@ module PE_datapath #(
 	reg [3:0] psum_we_sftreg; //3 cycle delay
 
 	wire rst_psum = rst_psum_sft_reg[2];
-	wire psum_we = psum_we_sftreg[3];
-	wire [PSUM_ADDR_BITWIDTH-1:0] psum_wa = psum_wa_reg_d3;
+	wire psum_we = psum_we_sftreg[2];
+	wire [PSUM_ADDR_BITWIDTH-1:0] psum_wa = psum_wa_reg_d2;
 
 	wire acc_sel = acc_sel_sft_reg[2];
 	wire acc_sel_d = acc_sel_sft_reg[3];
@@ -73,7 +72,7 @@ module PE_datapath #(
 	true_dpbram #(
 		.RAM_WIDTH(DATA_BITWIDTH),                       // Specify RAM data width
 		.RAM_DEPTH(1<<WGHT_ADDR_BITWIDTH),    // Specify RAM depth (number of entries)
-		.RAM_PERFORMANCE("HIGH_PERFORMANCE"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
+		.RAM_PERFORMANCE("LOW_LATENCY"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
 		.INIT_FILE("")                        // Specify name/location of RAM initialization file if using one (leave blank if not)
 	) spad_weight (
 		.addra(i_wght_ra),   // Port A address bus, width determined from RAM_DEPTH

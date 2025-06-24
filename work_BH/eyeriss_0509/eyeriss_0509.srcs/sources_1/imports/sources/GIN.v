@@ -6,7 +6,7 @@ module GIN_BUS #(
     input i_clk,
     input i_rst,
 
-    input [DATA_BITWIDTH-1:0] i_data;
+    input [DATA_BITWIDTH-1:0] i_data,
 
     //top control interface
     input [2:0] i_id,

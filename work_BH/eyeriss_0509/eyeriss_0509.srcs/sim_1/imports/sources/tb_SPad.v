@@ -12,7 +12,6 @@ module tb_Spad;
     reg [DATA_BITWIDTH-1:0] dina = 0;
     reg [DATA_BITWIDTH-1:0] dinb = 0;
     reg clka = 0;
-    reg clkb = 0;
     reg wea = 0;
     reg web = 0;
     reg ena = 0;
@@ -27,7 +26,7 @@ module tb_Spad;
     wire [DATA_BITWIDTH-1:0] doutb;
 
     // DUT 인스턴스
-    SPad #(
+    true_dpbram #(
         .DATA_BITWIDTH(DATA_BITWIDTH),
         .ADDR_BITWIDTH(ADDR_BITWIDTH),
         .RAM_DEPTH(RAM_DEPTH),
@@ -36,7 +35,7 @@ module tb_Spad;
     ) dut (
         .addra(addra), .addrb(addrb),
         .dina(dina), .dinb(dinb),
-        .clka(clka), .clkb(clkb),
+        .clka(clka), .clkb(clka),
         .wea(wea), .web(web),
         .ena(ena), .enb(enb),
         .rsta(rsta), .rstb(rstb),
@@ -46,7 +45,6 @@ module tb_Spad;
 
     // Clock generation
     always #5 clka = ~clka;
-    always #7 clkb = ~clkb;
 
     initial begin
         $display("=== Test Start: True Dual Port RAM ===");

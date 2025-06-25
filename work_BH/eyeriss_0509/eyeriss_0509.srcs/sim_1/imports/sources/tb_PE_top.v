@@ -5,13 +5,14 @@ module tb_PE_top;
 	parameter DATA_BITWIDTH = 16;
 	parameter IFMAP_ADDR_BITWIDTH = 4;
 	parameter WGHT_ADDR_BITWIDTH = 7;
-	parameter PSUM_ADDR_BITWIDTH = 5;
+	parameter PSUM_ADDR_BITWIDTH = 3;
 
     localparam CMD_NOP          = 3'b000;
     localparam CMD_SET          = 3'b001;
     localparam CMD_LOAD_IFMAP   = 3'b010;
     localparam CMD_LOAD_WGHT    = 3'b011;
     localparam CMD_CONV         = 3'b100;
+	localparam CMD_ACC          = 3'b101;
 
     reg i_clk = 0;
     reg i_rst;
@@ -161,6 +162,18 @@ module tb_PE_top;
 		@(posedge i_clk); //wait 1 cycle for DEC state
 
 		repeat (72) @(posedge i_clk);
+
+		repeat (5) @(posedge i_clk);
+
+
+		///// ACCRST /////
+		i_inst_data = CMD_ACC;
+		i_inst_valid = 1;
+		@(posedge i_clk);
+		wait(o_inst_ready);
+		i_inst_valid = 0;
+
+		@(posedge i_clk); //wait 1 cycle for DEC state
 
 		i_psum_in_fifo_valid = 1;
 		for(i=0; i<dut.u_PE_control.conv_info_reg[8:6]; i=i+1) begin  // loop for P

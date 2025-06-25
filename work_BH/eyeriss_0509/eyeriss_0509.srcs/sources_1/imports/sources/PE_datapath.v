@@ -4,7 +4,7 @@
 	parameter DATA_BITWIDTH = 16,
 	parameter IFMAP_ADDR_BITWIDTH = 4,
 	parameter WGHT_ADDR_BITWIDTH = 7,
-	parameter PSUM_ADDR_BITWIDTH = 5
+	parameter PSUM_ADDR_BITWIDTH = 3
 )(
 	input i_clk, i_rst,
 
@@ -12,7 +12,7 @@
 	input signed [DATA_BITWIDTH-1:0] i_ifmap_data,
 	input signed [DATA_BITWIDTH-1:0] i_wght_data,
 	input signed [DATA_BITWIDTH-1:0] i_psum_data,
-	output signed [DATA_BITWIDTH-1:0] o_psum_data,
+	output reg signed [DATA_BITWIDTH-1:0] o_psum_data,
 
 	//controller interface
 	input i_acc_sel,
@@ -32,7 +32,7 @@
 );
 
 	//delayed input psum data
-	reg [DATA_BITWIDTH-1:0] ipsum_reg, ipsum_reg_d, ipsum_reg_d2, ipsum_reg_d3;
+	reg [DATA_BITWIDTH-1:0] ipsum_reg, ipsum_reg_d, ipsum_reg_d2;
 
 	//delayed spad data
 	wire signed [DATA_BITWIDTH-1:0] ifmap_rd;
@@ -110,7 +110,6 @@
 			ipsum_reg <= 0;
 			ipsum_reg_d <= 0;
 			ipsum_reg_d2 <= 0;
-			ipsum_reg_d3 <= 0;
 
 			ifmap_reg <= 0;
 			ifmap_reg_d <= 0;
@@ -129,10 +128,9 @@
 			acc_sel_sft_reg <= 0;
 		end
 		else begin
-			ipsum_reg <= i_psum_data;
+			ipsum_reg <= (rst_psum) ? 0 : i_psum_data ;
 			ipsum_reg_d <= ipsum_reg;
 			ipsum_reg_d2 <= ipsum_reg_d;
-			ipsum_reg_d3 <= ipsum_reg_d2;
 
 			ifmap_reg <= ifmap_rd;
 			ifmap_reg_d <= ifmap_reg;
@@ -159,10 +157,19 @@
 			mul_reg <= 0;
 		end
 		else begin
-			mul_reg <= (rst_psum) ? 0 : ifmap_reg_d * wght_reg;
+			mul_reg <= ifmap_reg_d * wght_reg;
 		end
 	end
 
-	assign o_psum_data = psum_reg_d2 + ((acc_sel || acc_sel_d) ? ipsum_reg_d3 : mul_reg);
+	//assign o_psum_data = psum_reg_d2 + ((acc_sel) ? ipsum_reg_d3 : (rst_psum) ? 0 : mul_reg);
+	always @(*) begin
+		case({rst_psum, acc_sel})
+			2'b00: o_psum_data = psum_reg_d2 + mul_reg;
+			2'b01: o_psum_data = psum_reg_d2 + ipsum_reg_d2;
+			2'b10: o_psum_data = 0;
+			2'b11: o_psum_data = 0;
+		endcase
+	end
+
 
 endmodule

@@ -56,6 +56,7 @@ module PE_control #(
     localparam CMD_LOAD_IFMAP   = 3'b010;
     localparam CMD_LOAD_WGHT    = 3'b011;
     localparam CMD_CONV         = 3'b100;
+    localparam CMD_ACC          = 3'b101;
 
     //States
     localparam  IDLE             = 4'h0;
@@ -65,9 +66,8 @@ module PE_control #(
     localparam  LOAD_IFMAP       = 4'h4;
     localparam  LOAD_WGHT        = 4'h5;
     localparam  CONV             = 4'h6;
-    localparam  ACC              = 4'h7;
-    localparam  RST              = 4'h8;
-    localparam  DONE             = 4'h9;
+    localparam  ACCRST           = 4'h7;
+    localparam  DONE             = 4'h8;
 
     reg [8:0] conv_info_reg;
     reg [3:0] state;
@@ -133,6 +133,7 @@ module PE_control #(
                     CMD_LOAD_IFMAP  : n_state = LOAD_IFMAP;
                     CMD_LOAD_WGHT   : n_state = LOAD_WGHT;
                     CMD_CONV        : n_state = CONV;
+                    CMD_ACC         : n_state = ACCRST;
                     default         : n_state = DONE;
                 endcase
             end
@@ -162,21 +163,15 @@ module PE_control #(
             end
             CONV: begin
                 if(counter == 0)
-                    n_state = ACC;
+                    n_state = DONE;
                 else
                     n_state = CONV;
             end
-            ACC: begin
+            ACCRST: begin
                 if(counter == 0)
                     n_state = DONE;
                 else
-                    n_state = ACC;
-            end
-            RST: begin
-                if(counter == 0)
-                    n_state = DONE;
-                else
-                    n_state = RST;
+                    n_state = ACCRST;
             end
             DONE: begin
                 n_state = IDLE;
@@ -196,7 +191,8 @@ module PE_control #(
                 case(state)
                     LOAD_IFMAP      : counter <= (ifmap_fifo_hs) ? counter - 1 : counter;
                     LOAD_WGHT       : counter <= (wght_fifo_hs) ? counter - 1 : counter;
-                    ACC             : counter <= (psum_in_fifo_hs && psum_out_fifo_hs) ? counter - 1 : counter;
+                    ACCRST             : counter <= (psum_in_fifo_hs && psum_out_fifo_hs) ||
+                                                    (counter < P) ? counter - 1 : counter;
                     default:        counter <= counter - 1;
                 endcase
             end 
@@ -210,9 +206,9 @@ module PE_control #(
                     LOAD_IFMAP      : counter <= Q * S - 1;
                     LOAD_WGHT       : counter <= P * Q * S - 1;
                     CONV            : counter <= P * Q * S - 1;
-                    ACC             : counter <= P - 1;
+                    ACCRST          : counter <= (2*P - 1);
                     DONE            : counter <= 0;
-                    default           : counter <= 0;
+                    default         : counter <= 0;
                 endcase
             end
         end
@@ -223,7 +219,7 @@ module PE_control #(
         if(i_rst) begin
             cnt_P <= 0; 
             cnt_Q <= 0; 
-            cnt_S <= 0; 
+            cnt_S <= 0;
         end
         else begin
             if(n_state != state) begin
@@ -240,7 +236,7 @@ module PE_control #(
                 cnt_S <= (cnt_P == P - 1) ? ((cnt_S == S - 1) ? 0 : cnt_S + 1) : cnt_S;
                 cnt_Q <= (cnt_P == P - 1) ? ((cnt_S == S - 1) ? ((cnt_Q == Q - 1) ? 0 : cnt_Q + 1) : cnt_Q) : cnt_Q;
             end
-            else if(state == ACC) begin
+            else if(state == ACCRST) begin
                 cnt_P <= (cnt_P == P - 1) ? 0 : cnt_P + 1; 
             end
             else begin
@@ -382,12 +378,12 @@ module PE_control #(
                 o_acc_sel = 0;
                 o_rst_psum = 0;
             end
-            ACC: begin
+            ACCRST: begin
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = 1;
-                o_psum_out_fifo_valid = 1;
+                o_psum_in_fifo_ready = (counter >= P);
+                o_psum_out_fifo_valid = (counter >= P);
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -399,11 +395,11 @@ module PE_control #(
                 o_wght_wa = 0;
                 o_wght_we = 0;
 
-                o_psum_wa = 0;
-                o_psum_we = 0;
+                o_psum_wa = cnt_P;
+                o_psum_we = (counter < P);
 
-                o_acc_sel = 1;
-                o_rst_psum = 0;
+                o_acc_sel = (counter >= P);
+                o_rst_psum = (counter < P);
             end
             DONE: begin
                 o_inst_ready = 0;

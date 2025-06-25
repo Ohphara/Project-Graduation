@@ -4,7 +4,7 @@ module PE_top #(
     parameter DATA_BITWIDTH = 16,
     parameter IFMAP_ADDR_BITWIDTH = 4,
     parameter WGHT_ADDR_BITWIDTH = 7,
-    parameter PSUM_ADDR_BITWIDTH = 5
+    parameter PSUM_ADDR_BITWIDTH = 3
 )(
     input i_clk,
     input i_rst,

@@ -15,7 +15,7 @@ module PE_top #(
     input i_inst_valid,
     output o_inst_ready,
 
-    //fifo interface
+    //fifo interface I/O
 	input [DATA_BITWIDTH-1:0] i_ifmap_fifo_data,
     input i_ifmap_fifo_valid,
     output o_ifmap_fifo_ready,
@@ -56,7 +56,7 @@ module PE_top #(
     wire [PSUM_ADDR_BITWIDTH-1:0]  psum_ra_ctrl2datapath, psum_wa_ctrl2datapath;
 
     wire ifmap_we_ctrl2datapath, wght_we_ctrl2datapath, psum_we_ctrl2datapath;
-    wire acc_sel_ctrl2datapath, rst_psum_ctrl2datapath, psum_out_valid_datapath2ctrl;
+    wire acc_sel_ctrl2datapath, rst_psum_ctrl2datapath;
 
     fifo #(
         .QUEUE_PTR_BANDWIDTH(),
@@ -163,8 +163,7 @@ module PE_top #(
         .o_wght_we(wght_we_ctrl2datapath),
         .o_psum_we(psum_we_ctrl2datapath),
         .o_acc_sel(acc_sel_ctrl2datapath),
-        .o_rst_psum(rst_psum_ctrl2datapath),
-        .i_psum_out_valid(psum_out_valid_datapath2ctrl)
+        .o_rst_psum(rst_psum_ctrl2datapath)
     );
 
     PE_datapath #(
@@ -192,8 +191,7 @@ module PE_top #(
         .i_wght_we(wght_we_ctrl2datapath),
         .i_psum_we(psum_we_ctrl2datapath),
         .i_acc_sel(acc_sel_ctrl2datapath),
-        .i_rst_psum(rst_psum_ctrl2datapath),
-        .o_psum_out_valid(psum_out_valid_datapath2ctrl)
+        .i_rst_psum(rst_psum_ctrl2datapath)
     );
 
 endmodule

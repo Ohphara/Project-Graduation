@@ -30,6 +30,7 @@
 	input i_wght_we,
 	input i_psum_we,
 
+	// TOP controller interface
 	output o_psum_out_valid
 );
 
@@ -41,15 +42,15 @@
 	wire signed [DATA_BITWIDTH-1:0] wght_rd;
 	wire signed [DATA_BITWIDTH-1:0] psum_rd;
 
-	reg [DATA_BITWIDTH-1:0] ifmap_reg, ifmap_reg_d;
+	reg [DATA_BITWIDTH-1:0] ifmap_reg;
 	reg [DATA_BITWIDTH-1:0] psum_reg, psum_reg_d, psum_reg_d2;
 	reg [DATA_BITWIDTH-1:0] wght_reg;
 
 	//control signal delayed for 2 cycles
-	reg [3:0] acc_sel_sft_reg;
+	reg [2:0] acc_sel_sft_reg;
 	reg [2:0] rst_psum_sft_reg;
 	reg [PSUM_ADDR_BITWIDTH-1:0] psum_wa_reg, psum_wa_reg_d1, psum_wa_reg_d2;
-	reg [3:0] psum_we_sftreg;
+	reg [2:0] psum_we_sftreg;
 
 	wire rst_psum = rst_psum_sft_reg[2];
 	wire psum_we = psum_we_sftreg[2];
@@ -103,7 +104,6 @@
 			psum_in_reg_d <= 0;
 
 			ifmap_reg <= 0;
-			ifmap_reg_d <= 0;
 			wght_reg <= 0;
 
 			psum_reg <= 0;
@@ -122,13 +122,12 @@
 			psum_in_reg_d2 <= psum_in_reg_d;
 
 			ifmap_reg <= ifmap_rd;
-			ifmap_reg_d <= ifmap_reg;
 			wght_reg <= wght_rd;
 			psum_reg <= psum_rd;
 			psum_reg_d <= psum_reg;
 			psum_reg_d2 <= (rst_psum) ? 0 : psum_reg_d;
 
-			psum_we_sftreg <= {psum_we_sftreg[2:0], i_psum_we};
+			psum_we_sftreg <= {psum_we_sftreg[1:0], i_psum_we};
 			psum_wa_reg <= i_psum_wa;
 			psum_wa_reg_d1 <= psum_wa_reg;
 			psum_wa_reg_d2 <= psum_wa_reg_d1;
@@ -160,6 +159,6 @@
 		endcase
 	end
 
-	assign o_psum_out_valid = acc_sel;
+	assign o_psum_out_valid = acc_sel_sft_reg[2];
 
 endmodule

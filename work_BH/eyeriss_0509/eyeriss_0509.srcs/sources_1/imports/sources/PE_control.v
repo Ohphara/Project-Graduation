@@ -46,8 +46,7 @@ module PE_control #(
 	output reg o_psum_we,
 
     output reg o_acc_sel,
-    output reg o_rst_psum,
-    input i_psum_out_valid
+    output reg o_rst_psum
 );
 
     //ISA
@@ -191,9 +190,8 @@ module PE_control #(
                 case(state)
                     LOAD_IFMAP      : counter <= (ifmap_fifo_hs) ? counter - 1 : counter;
                     LOAD_WGHT       : counter <= (wght_fifo_hs) ? counter - 1 : counter;
-                    ACCRST             : counter <= (psum_in_fifo_hs && psum_out_fifo_hs) ||
-                                                    (counter < P) ? counter - 1 : counter;
-                    default:        counter <= counter - 1;
+                    ACCRST          : counter <= ((psum_in_fifo_hs) || (counter < P)) ? counter - 1 : counter;
+                    default         : counter <= counter - 1;
                 endcase
             end 
             else begin
@@ -253,6 +251,8 @@ module PE_control #(
                 o_inst_ready = 1;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
+                o_psum_in_fifo_ready = 0;
+                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -271,6 +271,8 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
+                o_psum_in_fifo_ready = 0;
+                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -289,6 +291,8 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
+                o_psum_in_fifo_ready = 0;
+                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -307,6 +311,8 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 1;
                 o_wght_fifo_ready = 0;
+                o_psum_in_fifo_ready = 0;
+                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -328,6 +334,8 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 1;
+                o_psum_in_fifo_ready = 0;
+                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -349,6 +357,8 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
+                o_psum_in_fifo_ready = 0;
+                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = cnt_S + (S * cnt_Q);
                 o_wght_ra = (cnt_P * Q * S) + (cnt_Q * S) + cnt_S;
@@ -370,6 +380,8 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
+                o_psum_in_fifo_ready = (counter >= P);
+                o_psum_out_fifo_valid = (counter < P);
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -384,7 +396,7 @@ module PE_control #(
                 o_psum_wa = cnt_P;
                 o_psum_we = (counter < P);
 
-                o_acc_sel = (counter >= P);
+                o_acc_sel = psum_in_fifo_hs;
                 o_rst_psum = (counter < P);
             end
             DONE: begin
@@ -407,6 +419,9 @@ module PE_control #(
 
                 o_acc_sel = 0;
                 o_rst_psum = 0;
+
+                o_psum_in_fifo_ready = 0;
+                o_psum_out_fifo_valid = 0;
             end
             default: begin
                 o_inst_ready = 0;
@@ -428,10 +443,10 @@ module PE_control #(
 
                 o_acc_sel = 0;
                 o_rst_psum = 0;
+
+                o_psum_in_fifo_ready = 0;
+                o_psum_out_fifo_valid = 0;
             end
         endcase
-        o_psum_in_fifo_ready = i_psum_out_valid;
-        o_psum_out_fifo_valid = i_psum_out_valid;
     end
-
 endmodule

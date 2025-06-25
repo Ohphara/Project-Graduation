@@ -1,6 +1,7 @@
+// Dual-Port Register File
 module RF #(
-    parameter DATA_BITWIDTH = 32,
-    parameter ADDR_BITWIDTH = 5 // 2^5 = 32 registers
+    parameter DATA_BITWIDTH = 8,
+    parameter ADDR_BITWIDTH = 3
 )(
     input  wire                   i_clk,
     input  wire                   i_rst,

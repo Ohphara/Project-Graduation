@@ -3,7 +3,7 @@
 module tb_Spad;
 
     parameter DATA_BITWIDTH = 16;
-    parameter ADDR_BITWIDTH = 9;
+    parameter ADDR_BITWIDTH = 7;
     parameter RAM_DEPTH = (1 << ADDR_BITWIDTH);
 
     // Inputs
@@ -53,29 +53,29 @@ module tb_Spad;
         ena = 1; enb = 1;
         rsta = 1; rstb = 1;
         regcea = 1; regceb = 1;
-        #20;
+        repeat (10) @(posedge clka);
         rsta = 0; rstb = 0;
 
-        // Write to address 5 via Port A
-        addra = 9'd5;
-        dina = 16'h1234;
-        wea = 1;
-        #10;
-        wea = 0;
-
-        // Read from address 5 via Port B (should see result 2 cycles later)
-        #10;
+        // Write to address 5 via Port B
         addrb = 9'd5;
+        dinb = 16'h1234;
+        web = 1;
+        @(posedge clka);
         web = 0;
-        regceb = 1;
 
-        // Read latency 2 cycle → 기대: doutb = 0x1234 around t + 20ns
-        #40;
+        // Read from address 5 via Port A (should see result 2 cycles later)
+        @(posedge clka);
+        addra = 9'd5;
+        wea = 0;
+        regcea = 1;
+
+        // Read latency 2 cycle → 기대: douta = 0x1234 around t + 20ns
+        repeat (4) @(posedge clka);
 
         if (doutb === 16'h1234)
-            $display("✅ PASS: doutb = 0x%h (expected 0x1234)", doutb);
+            $display("PASS: doutb = 0x%h (expected 0x1234)", doutb);
         else
-            $display("❌ FAIL: doutb = 0x%h (expected 0x1234)", doutb);
+            $display("FAIL: doutb = 0x%h (expected 0x1234)", doutb);
 
         $finish;
     end

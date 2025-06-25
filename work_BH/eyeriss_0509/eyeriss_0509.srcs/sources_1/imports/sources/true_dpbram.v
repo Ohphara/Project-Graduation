@@ -1,4 +1,3 @@
-
 //  Xilinx True Dual Port RAM, No Change, Single Clock
 //  This code implements a parameterizable true dual port memory (both ports can read and write).
 //  This is a no change RAM which retains the last read value on the output during writes
@@ -6,9 +5,9 @@
 //  If a reset or enable is not necessary, it may be tied off or removed from the code.
 
 module true_dpbram #(
-  parameter RAM_WIDTH = 16,                       // Specify RAM data width
+  parameter RAM_WIDTH = 8,                       // Specify RAM data width
   parameter RAM_DEPTH = 1024,                     // Specify RAM depth (number of entries)
-  parameter RAM_PERFORMANCE = "HIGH_PERFORMANCE", // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
+  parameter RAM_PERFORMANCE= "HIGH_PERFORMANCE", // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
   parameter INIT_FILE = ""                        // Specify name/location of RAM initialization file if using one (leave blank if not)
 ) (
   input [clogb2(RAM_DEPTH-1)-1:0] addra,  // Port A address bus, width determined from RAM_DEPTH
@@ -16,6 +15,7 @@ module true_dpbram #(
   input [RAM_WIDTH-1:0] dina,           // Port A RAM input data
   input [RAM_WIDTH-1:0] dinb,           // Port B RAM input data
   input clka,                           // Clock
+  input clkb,
   input wea,                            // Port A write enable
   input web,                            // Port B write enable
   input ena,                            // Port A RAM Enable, for additional power savings, disable port when not in use
@@ -52,7 +52,7 @@ module true_dpbram #(
       else
         ram_data_a <= BRAM[addra];
 
-  always @(posedge clka)
+  always @(posedge clkb)
     if (enb)
       if (web)
         BRAM[addrb] <= dinb;
@@ -80,7 +80,7 @@ module true_dpbram #(
         else if (regcea)
           douta_reg <= ram_data_a;
 
-      always @(posedge clka)
+      always @(posedge clkb)
         if (rstb)
           doutb_reg <= {RAM_WIDTH{1'b0}};
         else if (regceb)
@@ -115,6 +115,7 @@ endmodule
     .dina(dina),     // Port A RAM input data, width determined from RAM_WIDTH
     .dinb(dinb),     // Port B RAM input data, width determined from RAM_WIDTH
     .clka(clka),     // Clock
+    .clkb(clkb),
     .wea(wea),       // Port A write enable
     .web(web),       // Port B write enable
     .ena(ena),       // Port A RAM Enable, for additional power savings, disable port when not in use

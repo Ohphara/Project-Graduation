@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module PE_top #(
-    parameter DATA_BITWIDTH = 16,
+    parameter DATA_BITWIDTH = 8,
     parameter IFMAP_ADDR_BITWIDTH = 4,
     parameter WGHT_ADDR_BITWIDTH = 7,
     parameter PSUM_ADDR_BITWIDTH = 3
@@ -56,7 +56,7 @@ module PE_top #(
     wire [PSUM_ADDR_BITWIDTH-1:0]  psum_ra_ctrl2datapath, psum_wa_ctrl2datapath;
 
     wire ifmap_we_ctrl2datapath, wght_we_ctrl2datapath, psum_we_ctrl2datapath;
-    wire acc_sel_ctrl2datapath, rst_psum_ctrl2datapath;
+    wire acc_sel_ctrl2datapath, rst_psum_ctrl2datapath, psum_out_valid_datapath2ctrl;
 
     fifo #(
         .QUEUE_PTR_BANDWIDTH(),
@@ -163,7 +163,8 @@ module PE_top #(
         .o_wght_we(wght_we_ctrl2datapath),
         .o_psum_we(psum_we_ctrl2datapath),
         .o_acc_sel(acc_sel_ctrl2datapath),
-        .o_rst_psum(rst_psum_ctrl2datapath)
+        .o_rst_psum(rst_psum_ctrl2datapath),
+        .i_psum_out_valid(psum_out_valid_datapath2ctrl)
     );
 
     PE_datapath #(
@@ -191,7 +192,8 @@ module PE_top #(
         .i_wght_we(wght_we_ctrl2datapath),
         .i_psum_we(psum_we_ctrl2datapath),
         .i_acc_sel(acc_sel_ctrl2datapath),
-        .i_rst_psum(rst_psum_ctrl2datapath)
+        .i_rst_psum(rst_psum_ctrl2datapath),
+        .o_psum_out_valid(psum_out_valid_datapath2ctrl)
     );
 
 endmodule

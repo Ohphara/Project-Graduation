@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
 
 module PE_control #(
-	parameter DATA_BITWIDTH = 16,
-
+	parameter DATA_BITWIDTH = 8,
 	parameter IFMAP_ADDR_BITWIDTH = 4,
 	parameter WGHT_ADDR_BITWIDTH = 8,
 	parameter PSUM_ADDR_BITWIDTH = 5
@@ -47,7 +46,8 @@ module PE_control #(
 	output reg o_psum_we,
 
     output reg o_acc_sel,
-    output reg o_rst_psum
+    output reg o_rst_psum,
+    input i_psum_out_valid
 );
 
     //ISA
@@ -253,8 +253,6 @@ module PE_control #(
                 o_inst_ready = 1;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = 0;
-                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -273,8 +271,6 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = 0;
-                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -293,8 +289,6 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = 0;
-                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -313,8 +307,6 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 1;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = 0;
-                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -336,8 +328,6 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 1;
-                o_psum_in_fifo_ready = 0;
-                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -359,8 +349,6 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = 0;
-                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = cnt_S + (S * cnt_Q);
                 o_wght_ra = (cnt_P * Q * S) + (cnt_Q * S) + cnt_S;
@@ -382,8 +370,6 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = (counter >= P);
-                o_psum_out_fifo_valid = (counter >= P);
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -405,8 +391,6 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = 0;
-                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -428,8 +412,6 @@ module PE_control #(
                 o_inst_ready = 0;
                 o_ifmap_fifo_ready = 0;
                 o_wght_fifo_ready = 0;
-                o_psum_in_fifo_ready = 0;
-                o_psum_out_fifo_valid = 0;
 
                 o_ifmap_ra = 0;
                 o_wght_ra = 0;
@@ -448,6 +430,8 @@ module PE_control #(
                 o_rst_psum = 0;
             end
         endcase
+        o_psum_in_fifo_ready = i_psum_out_valid;
+        o_psum_out_fifo_valid = i_psum_out_valid;
     end
 
 endmodule

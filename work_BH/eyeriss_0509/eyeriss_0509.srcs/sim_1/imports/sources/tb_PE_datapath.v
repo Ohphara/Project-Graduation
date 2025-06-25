@@ -5,10 +5,10 @@ module tb_PE_datapath;
 	parameter DATA_BITWIDTH = 16;
 
 	parameter IFMAP_ADDR_BITWIDTH = 4;
-	parameter WGHT_ADDR_BITWIDTH = 8;
-	parameter PSUM_ADDR_BITWIDTH = 5;
+	parameter WGHT_ADDR_BITWIDTH = 7;
+	parameter PSUM_ADDR_BITWIDTH = 3;
 
-	//conv parameter set
+	//conv parameter
     parameter P = 6;
     parameter Q = 4;
     parameter S = 3;
@@ -70,6 +70,12 @@ module tb_PE_datapath;
 		i_rst = 1;
 		i_acc_sel = 0;
 		i_rst_psum = 0;
+		i_ifmap_ra = 0;
+		i_wght_ra = 0;
+		i_psum_ra = 0;
+		i_ifmap_wa = 0;
+		i_wght_wa = 0;
+		i_psum_wa = 0;
 		i_ifmap_we = 0;
 		i_wght_we = 0;
 		i_psum_we = 0;
@@ -123,7 +129,6 @@ module tb_PE_datapath;
 		for (i = 0; i < Q; i = i + 1) begin
 			for (j = 0; j < S; j = j + 1) begin
 				for (k = 0; k < P; k = k + 1) begin
-					@(posedge i_clk);
 					i_ifmap_ra = (i * S) + j;
 					i_wght_ra = (i * S) + j + (k * Q * S);
 					i_psum_ra = k;
@@ -131,10 +136,10 @@ module tb_PE_datapath;
 					i_psum_we = 1;
 					i_rst_psum = 0;
 					i_acc_sel = 0;
+					@(posedge i_clk);
 				end
 			end
 		end
-		@(posedge i_clk);
 		i_psum_wa = 0;
 		i_psum_we = 0;
 
@@ -144,12 +149,12 @@ module tb_PE_datapath;
 
 		// Psum Accumulation
 		for (i = 0; i < 6; i = i + 1) begin
-			@(posedge i_clk);
 			i_psum_ra = i;
 			i_acc_sel = 1;
 			i_psum_data = 10;
+			@(posedge i_clk);
 		end
-		@(posedge i_clk);
+
 		i_psum_ra = 0;
 		i_acc_sel = 0;
 		i_psum_data = 0;
@@ -161,15 +166,14 @@ module tb_PE_datapath;
 
 		// Reset Psum accumulation
 		for (i = 0; i < 6; i = i + 1) begin
-			@(posedge i_clk);
 			i_rst_psum = 1;
 			i_psum_data = 0;
 			i_acc_sel = 1;
 			i_psum_wa = i;
 			i_psum_we = 1;
+			@(posedge i_clk);
 		end
 
-		@(posedge i_clk);
 		i_rst_psum = 0;
 		i_psum_data = 0;
 		i_acc_sel = 0;
@@ -182,15 +186,14 @@ module tb_PE_datapath;
 
 		// Reset Psum accumulation with i_psum_data
 		for (i = 0; i < 6; i = i + 1) begin
-			@(posedge i_clk);
 			i_rst_psum = 1;
 			i_psum_data = 10;
 			i_acc_sel = 1;
 			i_psum_wa = i;
 			i_psum_we = 1;
+			@(posedge i_clk);
 		end
 
-		@(posedge i_clk);
 		i_rst_psum = 0;
 		i_psum_data = 0;
 		i_acc_sel = 0;
